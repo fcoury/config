@@ -24,6 +24,9 @@ format = "[$user](bold white)@"
 [nodejs]
 format = "[$symbol($version )]($style)"
 
+[lua]
+format = "[$symbol($version )]($style)"
+
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
 style = ""
