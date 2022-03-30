@@ -1,33 +1,33 @@
 # Inserts a blank line between shell prompts
 add_newline = true
 
-# format = """
-# $username$hostname\
-# $character"""
-
-# Replace the "❯" symbol in the prompt with "➜"
+# Replace the "❯" symbol in the prompt with my preferences
 [character] # The name of the module we are configuring is "character"
 success_symbol = "[>](bold green) \\$" # The "success_symbol" segment is being set to "➜" with the color "bold green"
 error_symbol = "[>](bold yellow) \\$" # The "success_symbol" segment is being set to "➜" with the color "bold green"
 
-# Disable the package module, hiding it from the prompt completely
-[package]
-disabled = true
+# Always show user@host
+[username]
+show_always = true
+format = "[$user](bold white)@"
 
 [hostname]
 ssh_only = false
 format = "[$hostname](white) "
 
-[username]
-show_always = true
-format = "[$user](bold white)@"
+# Disables npm and package manager version display
+[package]
+disabled = true
 
+# Formats node version display
 [nodejs]
 format = "[$symbol($version )]($style)"
 
+# Formats lua version display
 [lua]
 format = "[$symbol($version )]($style)"
 
+# Formats my git status indicators
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
 style = ""
@@ -35,8 +35,15 @@ untracked = "!"
 modified = "●"
 stashed = ""
 
+# Formats my git branch indicators
 [git_branch]
 format = "[$symbol$branch]($style) "
 
+# Disables truncating the path down to the repo name
 [directory]
 truncate_to_repo = false
+
+# Google Cloud
+[gcloud]
+format = '[$symbol$account(@$domain)(\($region\))]($style) '
+disabled = true
