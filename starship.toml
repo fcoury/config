@@ -3,17 +3,17 @@ add_newline = true
 
 # Replace the "❯" symbol in the prompt with my preferences
 [character] # The name of the module we are configuring is "character"
-success_symbol = "[>](bold green) \\$" # The "success_symbol" segment is being set to "➜" with the color "bold green"
 error_symbol = "[>](bold yellow) \\$" # The "success_symbol" segment is being set to "➜" with the color "bold green"
+success_symbol = "[>](bold green) \\$" # The "success_symbol" segment is being set to "➜" with the color "bold green"
 
 # Always show user@host
 [username]
-show_always = true
 format = "[$user](bold white)@"
+show_always = true
 
 [hostname]
-ssh_only = false
 format = "[$hostname](white) "
+ssh_only = false
 
 # Disables npm and package manager version display
 [package]
@@ -30,10 +30,10 @@ format = "[$symbol($version )]($style)"
 # Formats my git status indicators
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
-style = ""
-untracked = "!"
 modified = "●"
 stashed = ""
+style = ""
+untracked = "!"
 
 # Formats my git branch indicators
 [git_branch]
