@@ -45,5 +45,9 @@ truncate_to_repo = false
 
 # Google Cloud
 [gcloud]
+disabled = true
 format = '[$symbol$account(@$domain)(\($region\))]($style) '
+
+# AWS
+[aws]
 disabled = true
