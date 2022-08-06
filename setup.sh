@@ -2,11 +2,40 @@
 
 SCRIPT=$(basename $0)
 SCRIPT_PATH=$(pwd)
+LINK_TARGET="$HOME/.config"
 
-mkdir -p ~/.config
+mkdir -p "$LINK_TARGET"
 
-for f in *; do
-  if [ "$f" != "$SCRIPT" ]; then
-    ln -s "$SCRIPT_PATH/$f" "$HOME/.config/$f"
+# Takes a path argument and returns it as an absolute path.
+# No-op if the path is already absolute.
+function to-abs-path {
+  local target="$1"
+
+  if [ "$target" == "." ]; then
+    echo "$(pwd)"
+  elif [ "$target" == ".." ]; then
+    echo "$(dirname "$(pwd)")"
+  else
+    echo "$(
+      cd "$(dirname "$1")"
+      pwd
+    )/$(basename "$1")"
   fi
-done
+}
+
+link-path() {
+  cd "$1"
+  for f in "$1"/*; do
+    if [ "$f" != "./$SCRIPT" ]; then
+      SOURCE=$(to-abs-path $f)
+      TARGET="${LINK_TARGET}/$1/$f"
+      TARGET="$(echo "$TARGET" | gsed -r 's|\.\/||g')"
+      echo ln -s "$SOURCE" "$TARGET"
+      ln -s "$SOURCE" "$TARGET"
+    fi
+  done
+}
+
+cd $SCRIPT_PATH
+link-path "."
+cd -
