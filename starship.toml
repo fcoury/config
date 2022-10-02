@@ -22,6 +22,7 @@ disabled = true
 # Formats node version display
 [nodejs]
 format = "[$symbol($version )]($style)"
+symbol = "📦 "
 
 # Formats lua version display
 [lua]
