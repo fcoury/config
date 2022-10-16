@@ -52,7 +52,6 @@ Plug 'nvim-telescope/telescope-file-browser.nvim'
 
 " Javascript support
 Plug 'jose-elias-alvarez/null-ls.nvim'
-Plug 'MunifTanjim/prettier.nvim', {'branch': 'main'}
 
 " Only because nvim-cmp _requires_ snippets
 " Plug 'hrsh7th/cmp-vsnip', {'branch': 'main'}
@@ -214,6 +213,10 @@ let g:lightline = {
 function! LightlineFilename()
   return expand('%:t') !=# '' ? @% : '[No Name]'
 endfunction
+
+" Copilot
+let g:copilot_node_command =
+      \ "~/.nvm/versions/node/v16.17.0/bin/node"
 
 " from http://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
 if executable('ag')
@@ -479,6 +482,9 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
+" Redo with U instead of Ctrl+R
+nnoremap <silent> U :redo<CR>
+
 " ==========================================================  coc.nvim settings
 
 
@@ -703,5 +709,6 @@ autocmd FileType typescriptreact setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType json setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType rust setlocal ts=4 sts=4 sw=4 expandtab
 
+" Terminal settings
 " Disables line numbers on the terminal
 autocmd TermOpen * setlocal nonumber norelativenumber
