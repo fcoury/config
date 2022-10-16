@@ -10,10 +10,18 @@ select = "underline"
 
 [editor.file-picker]
 hidden = true
+ignore = true
+git-ignore = true
+
+[keys.insert]
+"C-s" = ":write"
+"A-ret" = "open_below"
 
 [keys.normal]
 "0" = "goto_line_start"
 "$" = "goto_line_end"
+"backspace" = { s = [":config-reload"] }
+"backspace" = { c = [":config-open"] }
 
 [keys.select]
 "0" = "goto_line_start"
