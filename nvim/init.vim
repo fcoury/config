@@ -50,6 +50,10 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 Plug 'nvim-telescope/telescope-file-browser.nvim'
 
+" File tree (a la VSCode)
+Plug 'nvim-tree/nvim-web-devicons' " optional, for file icons
+Plug 'nvim-tree/nvim-tree.lua'
+
 " Javascript support
 Plug 'jose-elias-alvarez/null-ls.nvim'
 
@@ -297,6 +301,8 @@ set nobackup
 set nowritebackup
 " Highlight current line
 set cursorline
+" Neovide Font
+set guifont=JetBrains_Mono_NL_ExtraLight:h26
 
 " Settings needed for .lvimrc
 " set exrc
@@ -400,8 +406,9 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+" Disabled as not supported by rust-analyzer
+"xmap <leader>f  <Plug>(coc-format-selected)
+"nmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
@@ -524,12 +531,12 @@ set listchars=nbsp:¬,extends:»,precedes:«,trail:•
 lua << EOF
 -- load telescope-file-browser
 require('telescope').load_extension "file_browser"
-vim.api.nvim_set_keymap(
-  "n",
-  "<space>fs",
-  ":Telescope file_browser",
-  { noremap = true }
-)
+-- vim.api.nvim_set_keymap(
+--   "n",
+--   "<space>fs",
+--   ":Telescope file_browser",
+--   { noremap = true }
+-- )
 EOF
 
 " =============================================================================
@@ -582,11 +589,11 @@ map L $
 
 " Telescope suggested keybindings
 " Find files using Telescope command-line sugar
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-nnoremap <leader>fs <cmd>Telescope file_browser<cr>
+nnoremap <leader>f <cmd>Telescope find_files<cr>
+nnoremap <leader>xg <cmd>Telescope live_grep<cr>
+nnoremap <leader>xb <cmd>Telescope buffers<cr>
+nnoremap <leader>xh <cmd>Telescope help_tags<cr>
+nnoremap <leader>xs <cmd>Telescope file_browser<cr>
 
 " Using Lua functions
 " nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
@@ -643,7 +650,7 @@ nnoremap k gk
 nnoremap <leader><leader> <c-^>
 
 " <leader>, shows/hides hidden characters
-nnoremap <leader>, :set invlist<cr>
+" nnoremap <leader>, :set invlist<cr>
 
 " <leader>q shows stats
 nnoremap <leader>q g<c-g>
@@ -712,3 +719,26 @@ autocmd FileType rust setlocal ts=4 sts=4 sw=4 expandtab
 " Terminal settings
 " Disables line numbers on the terminal
 autocmd TermOpen * setlocal nonumber norelativenumber
+
+" NVim Tree setup
+lua <<EOF
+-- disable netrw at the very start of your init.lua (strongly advised)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.nvim_tree_ignore = { ".git", "node_modules", ".cache" }
+
+-- set termguicolors to enable highlight groups
+vim.opt.termguicolors = true
+
+-- empty setup using defaults
+require("nvim-tree").setup({
+  open_on_setup_file = true,
+  hijack_cursor = true,
+  update_focused_file = {
+    enable = true
+  }
+})
+EOF
+
+nmap <leader>t :NvimTreeToggle<CR>
+nmap <leader>, :NvimTreeFindFileToggle<CR>
