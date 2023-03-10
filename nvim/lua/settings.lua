@@ -18,7 +18,7 @@ vim.o.encoding = 'utf-8'                          -- the encoding displayed
 vim.o.scroloff = 2                                -- lines of context
 vim.o.noshowmode = true                           -- we don't need to see things like -- INSERT -- anymore
 vim.o.hidden = true                               -- enable modified buffers in background
-vim.o.nowrap = true                               -- disable line wrap
+vim.o.wrap = false				  -- disable line wrap
 vim.o.nojoinspaces = true                         -- no double spaces with join after a dot
 vim.o.signcolumn = 'yes'                          -- always show the signcolumn, otherwise it would shift the text each time
 vim.o.nobackup = true                             -- this is recommended by coc
@@ -66,6 +66,9 @@ vim.cmd.syntax = 'on'                             -- enable syntax highlighting
 vim.cmd('hi Normal ctermbg=NONE')                 -- set transparent background
 vim.cmd('filetype plugin indent on')              -- enable filetype detection
 
+-- uses system clipboard
+vim.api.nvim_set_option("clipboard","unnamed")
+
 -- disable paste mode on leaving insert mode
 vim.api.nvim_exec([[autocmd InsertLeave * set nopaste]], false)
 
@@ -78,6 +81,7 @@ vim.api.nvim_exec([[
   autocmd FileType typescriptreact setlocal ts=2 sts=2 sw=2 expandtab
   autocmd FileType json setlocal ts=2 sts=2 sw=2 expandtab
   autocmd FileType rust setlocal ts=4 sts=4 sw=4 expandtab
+  autocmd FileType lua setlocal ts=2 sts=2 sw=2 expandtab
 ]], false)
 
 -- jmp to last edit position on opening file
@@ -105,7 +109,11 @@ vim.g.nvim_tree_ignore = { ".git", "node_modules", ".cache" }
 vim.opt.termguicolors = true                                  -- enable 24-bit rgb colors to highlight groups
 
 -- where copilot will find node.js (needs 16)
-vim.g.copilot_node_command = '/opt/homebrew/bin/node'
+-- vim.g.copilot_node_command = '/opt/homebrew/bin/node'
+local handle = io.popen('rtx where nodejs@16')
+local result = handle:read('*a')
+handle:close()
+vim.g.copilot_node_command = result:gsub('%s+', '') .. '/bin/node'
 
 -- uses rg
 vim.g.grepprg = 'rg --vimgrep --no-heading --smart-case --hidden --follow --glob "!.git/*"'

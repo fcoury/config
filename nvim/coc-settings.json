@@ -2,7 +2,8 @@
   "coc.preferences.formatOnSaveFiletypes": [
     "typescript",
     "typescriptreact",
-    "json"
+    "json",
+    "rust"
   ],
   "rust-analyzer.enable": true
 }
