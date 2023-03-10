@@ -8,7 +8,12 @@ HOME = os.getenv("HOME")
 vim.g.mapleader = ' '                             -- leader key is space
 vim.g.maplocalleader = '\\'                       -- local leader key is space
 
+-- line numbers
+vim.o.relativenumber = true                       -- show relative line numbers
+vim.o.number = true                               -- show line numbers
+
 -- general options
+vim.o.termguicolors = true                        -- enable 24-bit rgb colors to highlight groups
 vim.o.nocompatible = true                         -- don't load any default settings
 vim.o.inccommand = 'nosplit'                      -- show live preview of substitutions
 vim.o.updatetime = 300                            -- faster completion
@@ -18,16 +23,17 @@ vim.o.encoding = 'utf-8'                          -- the encoding displayed
 vim.o.scroloff = 2                                -- lines of context
 vim.o.noshowmode = true                           -- we don't need to see things like -- INSERT -- anymore
 vim.o.hidden = true                               -- enable modified buffers in background
-vim.o.wrap = false				  -- disable line wrap
+vim.o.wrap = false				                        -- disable line wrap
 vim.o.nojoinspaces = true                         -- no double spaces with join after a dot
 vim.o.signcolumn = 'yes'                          -- always show the signcolumn, otherwise it would shift the text each time
 vim.o.nobackup = true                             -- this is recommended by coc
 vim.o.nowritebackup = true                        -- this is recommended by coc
 vim.o.cursorline = true                           -- enable highlighting of the current line
 vim.o.guifont = 'JetBrainsMono\\ Nerd\\ Font:h26' -- the font used in graphical neovim applications
+vim.o.backspace = 'indent,eol,start'              -- make backspace in insert mode more sensible
 vim.o.guicursor = 'n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor'
 
--- sane splits
+-- sane splis
 vim.o.splitright = true                           -- horizontal splits will automatically be below
 vim.o.splitbelow = true                           -- vertical splits will automatically be to the right
 
@@ -67,7 +73,7 @@ vim.cmd('hi Normal ctermbg=NONE')                 -- set transparent background
 vim.cmd('filetype plugin indent on')              -- enable filetype detection
 
 -- uses system clipboard
-vim.api.nvim_set_option("clipboard","unnamed")
+vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 
 -- disable paste mode on leaving insert mode
 vim.api.nvim_exec([[autocmd InsertLeave * set nopaste]], false)
@@ -106,7 +112,12 @@ end
 vim.g.loaded_netrw = 1                                        -- disable netrw suggested by nvim-tree
 vim.g.loaded_netrwPlugin = 1
 vim.g.nvim_tree_ignore = { ".git", "node_modules", ".cache" }
-vim.opt.termguicolors = true                                  -- enable 24-bit rgb colors to highlight groups
+
+-- vim-matchup
+-- vim.g.matchup_matchparen_offscreen = { method = 'popup' }     -- show matching paren in popup
+vim.g.matchup_matchparen_deferred = 1                         -- show matching paren after 1 second
+vim.g.matchup_surround_enabled = 1                            -- enable % to match surrounding tags
+
 
 -- where copilot will find node.js (needs 16)
 -- vim.g.copilot_node_command = '/opt/homebrew/bin/node'

@@ -1,3 +1,4 @@
+-- general keymaps
 nmap(';', ':')                                        -- use ; as a command prefix
 nmap('<leader>w', ':w<CR>')                           -- quick-save
 nmap(']<Space>', 'o<Esc>')                            -- quick-insert line below
@@ -7,6 +8,12 @@ vmap('<C-j>', ':nohlsearch<CR>')                      -- Ctrl+J clear search hig
 map('', 'H', '^')                                     -- move to beginning of line with H
 map('', 'L', '$')                                     -- move to end of line with L
 nmap('<leader><leader>', '<c-^>')                     -- quick switch between buffers
+
+-- splits
+nmap('<leader>sh', '<C-w>s')                          -- split horizontally
+nmap('<leader>sv', '<C-w>v')                          -- split vertically
+nmap('<leader>se', '<C-w>=')                          -- equalize splits
+nmap('<leader>sx', ':close<CR>')                      -- close current split
 
 -- copy and paste with system clipboard
 nmap('<leader>p', ':read !pbpaste<cr>')
@@ -25,3 +32,7 @@ nmap('<leader>xs', '<cmd>Telescope file_browser<cr>') -- open file browser
 -- nvim-tree mappings
 nmap('<leader>t', ':NvimTreeToggle<CR>')
 nmap('<leader>,', ':NvimTreeFindFileToggle<CR>')
+
+-- keymaps plugin
+nmap('<leader>sm', ':MaximizerToggle!<CR>')           -- toggle maximizer
+
