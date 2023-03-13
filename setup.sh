@@ -30,9 +30,14 @@ link-path() {
       SOURCE=$(to-abs-path $f)
       TARGET="${LINK_TARGET}/$1/$f"
       TARGET="$(echo "$TARGET" | gsed -r 's|\.\/||g')"
+      if [ -f "${f}/.link" ]; then
+        LINK_NAME=$(cat "${f}/.link")
+        TARGET="${LINK_TARGET}/${LINK_NAME}"
+      fi
       if [ -e "$TARGET" ]; then
         echo Skipping: $SOURCE
       else
+        echo "Linking: $SOURCE -> $TARGET"
         ln -s "$SOURCE" "$TARGET"
       fi
     fi
