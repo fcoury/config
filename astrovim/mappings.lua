@@ -1,9 +1,13 @@
 return {
   n = {
     [";"] = { ":", desc = "Remaps ; to :" },
-    ["<C-x>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
+    ['\\'] = false,
+    ["<C-x>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
+  },
+  i = {
+    ["<C-n>"] = false,
   },
   t = {
-    ["<C-x>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
+    ["<C-x>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
   }
 }
