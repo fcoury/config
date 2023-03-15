@@ -1,7 +1,9 @@
 return {
   n = {
+    ['\\'] = { false, desc = "Disable \\ so multi-cursor can work" },
     [";"] = { ":", desc = "Remaps ; to :" },
-    ['\\'] = false,
+    ["H"] = { "^", desc = "Beginning of the line" },
+    ["L"] = { "$", desc = "End of the line" },
     ["<C-x>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
   },
   i = {
