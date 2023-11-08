@@ -1,3 +1,3 @@
 return {
-  colorscheme = "nightfox"
+  colorscheme = "nightfox",
 }
