@@ -1,3 +1,4 @@
 return {
-  colorscheme = "nightfox",
+  -- colorscheme = "nightfox",
+  colorscheme = "tokyonight-night",
 }
