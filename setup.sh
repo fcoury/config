@@ -4,6 +4,13 @@ SCRIPT=$(basename $0)
 SCRIPT_PATH=$(pwd)
 LINK_TARGET="$HOME/.config"
 
+# Check if gsed is available, otherwise use sed
+if command -v gsed &> /dev/null; then
+    SED_COMMAND="gsed"
+else
+    SED_COMMAND="sed"
+fi
+
 mkdir -p "$LINK_TARGET"
 
 # Takes a path argument and returns it as an absolute path.
@@ -29,7 +36,7 @@ link-path() {
     if [ "$f" != "./$SCRIPT" ]; then
       SOURCE=$(to-abs-path $f)
       TARGET="${LINK_TARGET}/$1/$f"
-      TARGET="$(echo "$TARGET" | gsed -r 's|\.\/||g')"
+      TARGET="$(echo "$TARGET" | $SED_COMMAND -r 's|\.\/||g')"
       if [ -f "${f}/.link" ]; then
         LINK_NAME=$(cat "${f}/.link")
         TARGET="${LINK_TARGET}/${LINK_NAME}"
