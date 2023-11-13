@@ -1,6 +1,7 @@
 return {
   n = {
-    ['\\'] = { false, desc = "Disable \\ so multi-cursor can work" },
+    ['\\'] = false,
+    -- ['\\'] = { false, desc = "Disable \\ so multi-cursor can work" },
     [";"] = { ":", desc = "Remaps ; to :" },
     ["H"] = { "^", desc = "Beginning of the line" },
     ["L"] = { "$", desc = "End of the line" },
