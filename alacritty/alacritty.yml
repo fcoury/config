@@ -7,18 +7,18 @@ window:
 
 font:
   normal:
-    family: "Fira Code"
+    family: "CaskaydiaCove Nerd Font"
     style: Light
   
   bold:
-    family: "Fira Code"
+    family: "CaskaydiaCove Nerd Font"
     style: SemiBold
   
-  size: 16.0    
+  size: 18.0    
     
   offset:
     x: 1
-    y: 3
+    y: 5
     
   glyph_offset:
     x: 0
@@ -28,3 +28,73 @@ key_bindings:
   - { key: Minus, mods: Alt, chars: "\x1b-" }
   - { key: Equals, mods: Alt, chars: "\x1b=" }
   - { key: P, mods: Alt, chars: "\x1bp" }
+
+window:
+  option_as_alt: Both
+
+# # TokyoNight Alacritty Colors
+# colors:
+#   # Default colors
+#   primary:
+#     background: '0x1a1b26'
+#     foreground: '0xc0caf5'
+#
+#   # Normal colors
+#   normal:
+#     black:   '0x15161e'
+#     red:     '0xf7768e'
+#     green:   '0x9ece6a'
+#     yellow:  '0xe0af68'
+#     blue:    '0x7aa2f7'
+#     magenta: '0xbb9af7'
+#     cyan:    '0x7dcfff'
+#     white:   '0xa9b1d6'
+#
+#   # Bright colors
+#   bright:
+#     black:   '0x414868'
+#     red:     '0xf7768e'
+#     green:   '0x9ece6a'
+#     yellow:  '0xe0af68'
+#     blue:    '0x7aa2f7'
+#     magenta: '0xbb9af7'
+#     cyan:    '0x7dcfff'
+#     white:   '0xc0caf5'
+#
+#   indexed_colors:
+#     - { index: 16, color: '0xff9e64' }
+#     - { index: 17, color: '0xdb4b4b' }
+
+# # TokyoNight Alacritty Colors
+# colors:
+#   # Default colors
+#   primary:
+#     background: '0x24283b'
+#     foreground: '0xc0caf5'
+#
+#   # Normal colors
+#   normal:
+#     black:   '0x1d202f'
+#     red:     '0xf7768e'
+#     green:   '0x9ece6a'
+#     yellow:  '0xe0af68'
+#     blue:    '0x7aa2f7'
+#     magenta: '0xbb9af7'
+#     cyan:    '0x7dcfff'
+#     white:   '0xa9b1d6'
+#
+#   # Bright colors
+#   bright:
+#     black:   '0x414868'
+#     red:     '0xf7768e'
+#     green:   '0x9ece6a'
+#     yellow:  '0xe0af68'
+#     blue:    '0x7aa2f7'
+#     magenta: '0xbb9af7'
+#     cyan:    '0x7dcfff'
+#     white:   '0xc0caf5'
+#
+#   indexed_colors:
+#     - { index: 16, color: '0xff9e64' }
+#     - { index: 17, color: '0xdb4b4b' }
+    
