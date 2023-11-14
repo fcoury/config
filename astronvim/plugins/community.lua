@@ -1,8 +1,10 @@
 return {
   "AstroNvim/astrocommunity",
   {
-    { import = "astrocommunity.pack.rust" },
     { import = "astrocommunity.completion.copilot-lua" },
+    { import = "astrocommunity.pack.rust" },
+    { import = "astrocommunity.project.project-nvim" },
+    { import = "astrocommunity.test.neotest" },
     {
       "copilot.lua",
       opts = {
@@ -14,6 +16,5 @@ return {
         },
       },
     },
-    { import = "astrocommunity.test.neotest" },
   },
 }
