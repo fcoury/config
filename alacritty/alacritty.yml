@@ -5,14 +5,15 @@ window:
     x: 2
     y: 0 
 
+# settings for Iosevka
 font:
   normal:
-    family: "CaskaydiaCove Nerd Font"
-    style: Light
+    family: "Iosevka Nerd Font"
+    style: ExtraLight
   
   bold:
-    family: "CaskaydiaCove Nerd Font"
-    style: SemiBold
+    family: "Iosevka Nerd Font"
+    style: Medium 
   
   size: 18.0    
     
@@ -23,11 +24,69 @@ font:
   glyph_offset:
     x: 0
     y: 1
-    
-key_bindings:
-  - { key: Minus, mods: Alt, chars: "\x1b-" }
-  - { key: Equals, mods: Alt, chars: "\x1b=" }
-  - { key: P, mods: Alt, chars: "\x1bp" }
+# settings for Cascadia
+# font:
+#   normal:
+#     family: "CaskaydiaCove Nerd Font"
+#     style: Light
+#   
+#   bold:
+#     family: "CaskaydiaCove Nerd Font"
+#     style: SemiBold
+#   
+#   size: 14.0    
+#     
+#   offset:
+#     x: 1
+#     y: 5
+#     
+#   glyph_offset:
+#     x: 0
+#     y: 1
+
+# settings for JetBrainsMono
+# font:
+#   normal:
+#     family: "JetBrainsMono Nerd Font Mono"
+#     style: Thin 
+#   
+#   bold:
+#     family: "JetBrainsMono Nerd Font Mono"
+#     style: SemiBold
+#   
+#   size: 16.0    
+#     
+#   offset:
+#     x: 1
+#     y: 2
+#     
+#   glyph_offset:
+#     x: 0
+#     y: 1
+
+# font:
+#   normal:
+#     family: "Monaspace Neon"
+#     style: ExtraLight
+#   
+#   bold:
+#     family: "Monaspace Neon"
+#     style: SemiBold
+#   
+#   size: 14.0    
+#     
+#   offset:
+#     x: 1
+#     y: 4
+#     
+#   glyph_offset:
+#     x: 0
+#     y: 1
+#     
+# key_bindings:
+#   - { key: Minus, mods: Alt, chars: "\x1b-" }
+#   - { key: Equals, mods: Alt, chars: "\x1b=" }
+#   - { key: P, mods: Alt, chars: "\x1bp" }
 
 window:
   option_as_alt: Both
