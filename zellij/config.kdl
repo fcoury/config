@@ -51,6 +51,9 @@ keybinds {
     }
     tab {
         bind "Ctrl t" { SwitchToMode "Normal"; }
+        bind "Enter" { GoToNextTab; SwitchToMode "Normal"; }
+        bind ";" { ToggleTab; SwitchToMode "Normal"; }
+        bind "t" { GoToNextTab; SwitchToMode "Normal"; }
         bind "r" { SwitchToMode "RenameTab"; TabNameInput 0; }
         bind "h" "Left" "Up" "k" { GoToPreviousTab; }
         bind "l" "Right" "Down" "j" { GoToNextTab; }
