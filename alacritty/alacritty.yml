@@ -43,7 +43,7 @@ font:
 #     
 #   glyph_offset:
 #     x: 0
-#     y: 1
+#     y: 5
 
 # settings for JetBrainsMono
 # font:
@@ -63,7 +63,7 @@ font:
 #     
 #   glyph_offset:
 #     x: 0
-#     y: 1
+#     y: 5
 
 # font:
 #   normal:
