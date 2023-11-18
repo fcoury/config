@@ -32,6 +32,7 @@ function to-abs-path {
 
 link-path() {
   cd "$1"
+  shopt -s dotglob
   for f in "$1"/*; do
     if [ "$f" != "./$SCRIPT" ]; then
       SOURCE=$(to-abs-path $f)
