@@ -7,6 +7,7 @@ return {
     ["<Leader>fp"] = { "<cmd>Telescope projects<CR>", desc = "Open project search" },
     ["<Leader>ln"] = { "<cmd>RustRunnables<cr>", desc = "Rust Runnables" },
     ["<Leader>ly"] = { function() require("rust-tools").hover_actions.hover_actions() end, desc = "Rust hover actions" },
+    ["<Leader>."] = { function() require("telescope.builtin").find_files({ cwd = ".." }) end, desc = "Find files on parent" },
     ["<C-\\>"] = { function() vim.lsp.buf.code_action() end, desc = "Code action" },
     ["<C-.>"] = { function() vim.lsp.buf.code_action() end, desc = "Code action" },
     ["<C-,>"] = { function() require("astronvim.utils.buffer").prev() end, desc = "Previous buffer" },
