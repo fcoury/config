@@ -1,7 +1,8 @@
-theme = "dark_plus"
+theme = "default"
 
 [editor]
 cursorline = true
+true-color = true
 
 [editor.cursor-shape]
 insert = "bar"
@@ -13,6 +14,13 @@ hidden = true
 ignore = true
 git-ignore = true
 
+[editor.indent-guides]
+# character = "╎"
+render = false
+
+[editor.statusline]
+left = ["mode", "spinner", "version-control", "file-name"]
+
 [keys.insert]
 "C-s" = ":write"
 "A-ret" = "open_below"
@@ -20,10 +28,12 @@ git-ignore = true
 [keys.normal]
 "0" = "goto_line_start"
 "$" = "goto_line_end"
-"backspace" = { s = [":config-reload"] }
-"backspace" = { c = [":config-open"] }
+"backspace" = { s = [":config-reload"], c = [":config-open"] }
+";" = "command_mode"
+"esc" = ["collapse_selection", "keep_primary_selection"]
 
 [keys.select]
 "0" = "goto_line_start"
 "$" = "goto_line_end"
 "A-x" = "extend_line_above"
+
