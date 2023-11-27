@@ -1,4 +1,4 @@
-theme = "default"
+theme = "tokyonight_storm"
 
 [editor]
 cursorline = true
@@ -28,6 +28,7 @@ left = ["mode", "spinner", "version-control", "file-name"]
 [keys.normal]
 "0" = "goto_line_start"
 "$" = "goto_line_end"
+"K" = "hover"
 "backspace" = { s = [":config-reload"], c = [":config-open"] }
 ";" = "command_mode"
 "esc" = ["collapse_selection", "keep_primary_selection"]
