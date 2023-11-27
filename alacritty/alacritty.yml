@@ -92,6 +92,7 @@ key_bindings:
   - { key: P,              mods: Alt,     chars: "\x1bp"      }
   - { key: Comma,          mods: Control, chars: "\x1b[44;5u" } # CTRL-,
   - { key: Period,         mods: Control, chars: "\x1b[46;5u" } # CTRL-.
+  - { key: Semicolon,      mods: Control, chars: "\x1b[59;5u" } # CTRL-;
 
 window:
   option_as_alt: Both
