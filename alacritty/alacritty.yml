@@ -1,5 +1,8 @@
 live_config_reload: true
 
+shell:
+  program: /opt/homebrew/bin/fish
+
 window:
   padding:
     x: 2
