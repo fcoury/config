@@ -12,21 +12,22 @@ window:
 font:
   normal:
     family: "Iosevka Nerd Font"
-    style: ExtraLight
+    style: Light
+    # style: ExtraLight
   
   bold:
     family: "Iosevka Nerd Font"
     style: Medium 
   
-  size: 26.0    
+  size: 24.0    
     
   offset:
-    x: 1
-    y: 5
+    x: 0
+    y: 0
     
   glyph_offset:
     x: 0
-    y: 5
+    y: 0
 
 # settings for Cascadia
 # font:
