@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+TOKEN=`cat ~/.config/hub | grep 'oauth_token:' | sed s/oauth_token://g | xargs echo -n`
+GITHUB_REPO=`git remote -v | perl -nle 'if (/.*git\@github.com:([^\s]*?)(.git)?\s+.*/) { print "$1"; exit }'`
+
+curl -s --user "fcoury:$TOKEN" "https://api.github.com/repos/$GITHUB_REPO" | jq '.default_branch' | sed s/\"//g
