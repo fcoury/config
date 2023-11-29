@@ -23,7 +23,7 @@ function mc
 
   set prev_dir (pwd)
 
-  function onexit --on-signal SIGINT --on-signal SIGTERM --on-variable PWD
+  function onexit --on-signal SIGINT --on-signal SIGTERM
     cd $prev_dir
   end 
 
