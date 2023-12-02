@@ -22,6 +22,7 @@
     ],
     "modules-center": ["hyprland/window"],
     "modules-right": ["clock", "custom/weather"],
+//    "modules-right": ["network", "temperature","custom/power_profile","battery","backlight","pulseaudio","pulseaudio#microphone","tray"],
     "hyprland/window": {
         "format": "{}"
     },
