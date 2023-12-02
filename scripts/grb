@@ -1,0 +1,7 @@
+DEFBRANCH=$(git defbranch)
+
+git co "$DEFBRANCH"
+git pull
+git branch --merged "$DEFBRANCH" | grep -v "\* $DEFBRANCH" | grep -v master | xargs -n 1 git branch -d
+gh-merged-branches | grep -v "\* $DEFBRANCH" | grep -v master | xargs -n 1 git branch -D
+git remote prune origin

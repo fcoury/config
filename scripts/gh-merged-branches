@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+for b in $(git branch | grep -v '^*'); do
+  PR_STATE=`gh pr list --state all --head "$b" --json state | jq -r '.[0].state'`
+  if [ "$PR_STATE" == "MERGED" ]; then
+    REMOTE_EXISTS=$(git ls-remote --heads origin "$b" | wc -l)
+    if [ "$REMOTE_EXISTS" -eq "1" ]; then
+      CM_STATES=(`git rev-list --left-right --count "$b"..."origin/$b"`)
+      CM_LOCAL="${CM_STATES[0]}"
+      CM_REMOTE="${CM_STATES[1]}"
+
+      if [ "$CM_LOCAL" == "0" ] && [ "$CM_REMOTE" == "0" ]; then
+        echo $b
+      fi
+    else
+      echo $b
+    fi
+  fi
+done
