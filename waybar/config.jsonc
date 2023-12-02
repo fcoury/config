@@ -6,9 +6,22 @@
     "passthrough": false,
     "gtk-layer-shell": true,
     "height": 50,
-    "modules-left": ["clock","custom/weather","hyprland/workspaces"],
+    // "modules-left": ["clock","custom/weather","hyprland/workspaces"],
+    "modules-left": [
+        "network", 
+        "bluetooth", 
+        "cpu",
+        "temperature",
+        "custom/power_profile",
+        "battery",
+        "backlight",
+        "pulseaudio",
+        "pulseaudio#microphone",
+        "tray",
+        "hyprland/workspaces"
+    ],
     "modules-center": ["hyprland/window"],
-    "modules-right": ["network", "bluetooth", "temperature","custom/power_profile","battery","backlight","pulseaudio","pulseaudio#microphone","tray"],
+    "modules-right": ["clock", "custom/weather"],
     "hyprland/window": {
         "format": "{}"
     },
@@ -55,7 +68,7 @@
     },
 
     "clock": {
-        "format": "{: %I:%M %p   %a, %b %e}",
+        "format": "{: %a, %b %e   %I:%M %p}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },
 
@@ -112,16 +125,35 @@
     
     "temperature": {
         "thermal-zone": 1,
-        "format": "{temperatureF}°F ",
+        "format": "{temperatureC}°C ",
         "critical-threshold": 80,
         "format-critical": "{temperatureC}°C "
     },
 
+    "cpu": {
+        "interval": 3,
+        // "format": "{usage}% {icon0}{icon1}{icon2}{icon3}{icon4}{icon5}{icon6}{icon7}{icon8}{icon9}{icon10}{icon11}",
+        "format": "🖥️ {usage}% {icon}",
+        "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+        // "format-icons": [
+        //   "<span color='#69ff94'>▁</span>", // green
+        //   "<span color='#2aa9ff'>▂</span>", // blue
+        //   "<span color='#f8f8f2'>▃</span>", // white
+        //   "<span color='#f8f8f2'>▄</span>", // white
+        //   "<span color='#ffffa5'>▅</span>", // yellow
+        //   "<span color='#ffffa5'>▆</span>", // yellow
+        //   "<span color='#ff9977'>▇</span>", // orange
+        //   "<span color='#dd532e'>█</span>"  // red
+        ]
+    },
+
     "network": {
         // "interface": "wlp2*", // (Optional) To force the use of this interface
+        // "format-ethernet": "{ipaddr}/{cidr} 󰊗",
+        "interval": 3,
         "format-wifi": "  {signalStrength}%",
-        "format-ethernet": "{ipaddr}/{cidr}",
-        "tooltip-format": "{essid} - {ifname} via {gwaddr}",
+        "format-ethernet": "🔗  {bandwidthDownBits}  {bandwidthUpBits}",
+        "tooltip-format": "{essid} - {ifname} {ipaddr} via {gwaddr}",
         "format-linked": "{ifname} (No IP)",
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}"

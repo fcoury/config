@@ -59,6 +59,7 @@ tooltip {
 #temperature,
 #workspaces,
 #tray,
+#cpu,
 #backlight {
     background: #1e1e2e;
     opacity: 0.8;
@@ -68,8 +69,15 @@ tooltip {
     border: 1px solid #181825;
 }
 
-#temperature {
+#cpu {
+    color: #89b4fa;
     border-radius: 10px 0px 0px 10px;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+#temperature {
+    /* border-radius: 10px 0px 0px 10px; */
 }
 
 #temperature.critical {
@@ -108,8 +116,14 @@ tooltip {
 #clock {
     color: #fab387;
     border-radius: 10px 0px 0px 10px;
-    margin-left: 10px;
+    margin-left: 0px;
     border-right: 0px;
+}
+
+#custom-weather {
+    border-radius: 0px 10px 10px 0px;
+    border-right: 0px;
+    margin-right: 10px;
 }
 
 #network {
@@ -117,6 +131,7 @@ tooltip {
     border-radius: 10px 0px 0px 10px;
     border-left: 0px;
     border-right: 0px;
+    margin-left: 10px;
 }
 
 #bluetooth {
@@ -144,10 +159,4 @@ tooltip {
     border-radius: 0 10px 10px 0;
     margin-right: 10px;
     border-left: 0px;
-}
-
-#custom-weather {
-    border-radius: 0px 10px 10px 0px;
-    border-right: 0px;
-    margin-left: 0px;
 }
