@@ -13,7 +13,7 @@ alias gap 'git add -p'
 alias vi 'nvim'
 alias vim 'nvim'
 
-alias vivi 'cd ~/.config/nvim/lua/user; nvim'
+alias vivi 'cd ~/.config; nvim'
 
 function mc
   set dir $argv[1]
@@ -25,10 +25,10 @@ function mc
 
   function onexit --on-signal SIGINT --on-signal SIGTERM
     cd $prev_dir
-  end 
+  end
 
-  cd $HOME/code/msuite.workspace/msuite 
-  cargo run -- -d config --env-file "$dir/.env" --path "$dir" --watch 
+  cd $HOME/code/msuite
+  cargo run -- -d config --env-file "$dir/.env" --path "$dir" --watch
 
   cd $prev_dir
 end
@@ -44,10 +44,10 @@ function tt
 
   function onexit --on-signal SIGINT --on-signal SIGTERM
     cd $prev_dir
-  end 
+  end
 
-  cd $HOME/code/msuite.workspace/msuite 
-  cargo watch -x 'run -- config --path '"$dir"' --env-file '"$dir/.env"' test '"$dir/$argv"' --watch' 
+  cd $HOME/code/msuite
+  cargo watch -x 'run -- config --path '"$dir"' --env-file '"$dir/.env"' test '"$dir/$argv"' --watch'
 
   cd $prev_dir
 end
