@@ -26,15 +26,18 @@ return {
 				},
 				sections = {
 					lualine_a = { "mode" },
-					-- lualine_b = {'branch'},
-					lualine_b = { "diagnostics" },
-					lualine_c = {
+					lualine_b = {
 						{ truncated_git_branch, icon = "", color = { fg = "#8be9fd", gui = "bold" } },
+						"diff",
+						"diagnostics",
+					},
+					lualine_c = {
 						{ "filename", file_status = true, path = 1 },
 					},
 					-- lualine_x = { "require'lsp-status'.status()" },
-					lualine_x = { require("lsp-progress").progress },
-					lualine_y = { "filetype" },
+					-- lualine_x = { require("lsp-progress").progress },
+					lualine_x = { "encoding", "fileformat", "filetype" },
+					lualine_y = { "progress" },
 					lualine_z = { "location" },
 				},
 			})

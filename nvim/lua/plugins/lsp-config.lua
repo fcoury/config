@@ -24,18 +24,9 @@ return {
 		end,
 	},
 	{
-		"nvim-lua/lsp-status.nvim",
-		config = function()
-			local lsp_status = require("lsp-status")
-			lsp_status.register_progress()
-		end,
-	},
-	{
-		"linrongbin16/lsp-progress.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function()
-			require("lsp-progress").setup()
-		end,
+		"j-hui/fidget.nvim",
+		dependencies = { "simrat39/rust-tools.nvim" },
+		opts = {},
 	},
 	{
 		"neovim/nvim-lspconfig",
