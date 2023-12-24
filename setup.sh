@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SCRIPT=$(basename $0)
 SCRIPT_PATH=$(pwd)
