@@ -2,6 +2,7 @@ function rl
   sed -i '' -e "$argv[1]d" $HOME/.ssh/known_hosts
 end
 
+# git aliases
 alias gl "git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias gp 'git pull'
 alias gps 'git push'
@@ -10,10 +11,14 @@ alias gpr 'hub pull-request|xargs open'
 alias gtr 'git track'
 alias gap 'git add -p'
 
+# neovim aliases
 alias vi 'nvim'
 alias vim 'nvim'
+alias vivi 'cd ~/code/config/nvim; nvim'
 
-alias vivi 'cd ~/.config; nvim'
+function ca
+  cargo add $argv; and cargo sort
+end
 
 function mc
   set dir $argv[1]
