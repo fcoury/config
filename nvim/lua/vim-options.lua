@@ -5,6 +5,7 @@ vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
 vim.cmd("set signcolumn=yes") -- reserves gutter space for signs
 vim.cmd("set backupcopy=yes")
+vim.cmd("set splitbelow")
 
 -- system clipboard integration
 vim.cmd("set clipboard+=unnamedplus")
