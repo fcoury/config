@@ -22,6 +22,7 @@
   "mason-lspconfig.nvim": { "branch": "main", "commit": "9453e3d6cd2ca45d96e20f343e8f1b927364b630" },
   "mason-tool-installer.nvim": { "branch": "main", "commit": "8b70e7f1e0a4119c1234c3bde4a01c241cabcc74" },
   "mason.nvim": { "branch": "main", "commit": "41e75af1f578e55ba050c863587cffde3556ffa6" },
+  "mc.nvim": { "branch": "master", "commit": "b2eced172cc19523066752deb8ba93321d7ccb0e" },
   "neovim-project": { "branch": "main", "commit": "e7868b38f402be94e859d479002df1418bc1e954" },
   "neovim-session-manager": { "branch": "master", "commit": "68dde355a4304d83b40cf073f53915604bdd8e70" },
   "nvim-autopairs": { "branch": "master", "commit": "9fd41181693dd4106b3e414a822bb6569924de81" },
@@ -44,6 +45,5 @@
   "undotree": { "branch": "master", "commit": "36ff7abb6b60980338344982ad4cdf03f7961ecd" },
   "vim-bookmarks": { "branch": "master", "commit": "9cc5fa7ecc23b052bd524d07c85356c64b92aeef" },
   "vim-cool": { "branch": "master", "commit": "662e7b11064cbeedad17c45d2fe926e78d3cd0b6" },
-  "vim-plist": { "branch": "master", "commit": "60e69bec50dfca32f0a62ee2dacdfbe63fd92038" },
-  "vim-visual-multi": { "branch": "master", "commit": "aec289a9fdabaa0ee6087d044d75b32e12084344" }
+  "vim-plist": { "branch": "master", "commit": "60e69bec50dfca32f0a62ee2dacdfbe63fd92038" }
 }
