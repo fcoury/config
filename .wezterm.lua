@@ -13,7 +13,7 @@ return {
   keys = {
     { key = "d", mods = "ALT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },
     { key = "d", mods = "ALT|SHIFT", action = act.SplitVertical { domain = "CurrentPaneDomain" } },
-    { key = "w", mods = "CTRL", action = act.CloseCurrentPane { confirm = false } },
+    { key = "k", mods = "ALT|SHIFT", action = act.CloseCurrentPane { confirm = false } },
     { key = "k", mods = "ALT", action = act.Multiple {
       act.ClearScrollback "ScrollbackAndViewport",
       act.SendKey { key = "L", mods = "CTRL" },
