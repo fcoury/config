@@ -18,6 +18,7 @@ keymap.set("n", "<C-r>", "<cmd>Telescope lsp_document_symbols<cr>")
 
 -- lsp and rust
 keymap.set("n", "<leader>x", "<cmd>RustRunnables<cr>")
+keymap.set("n", "<leader>y", "<cmd>lua require'runst'.run_test()<cr>", { noremap = true, silent = true })
 
 -- buffers
 keymap.set("n", "]b", "<cmd>bnext<cr>")
