@@ -8,6 +8,8 @@ keymap.set({ "n", "x" }, "<leader>p", '"0p') -- paste not overwritten by delete
 keymap.set("n", "<leader>w", "<cmd>w<cr>") -- save current file
 keymap.set("n", "<leader>q", "<cmd>q<cr>") -- quit
 keymap.set("n", "U", "<C-r>", { noremap = true })
+keymap.set("n", "H", "^", { noremap = true })
+keymap.set("n", "L", "$", { noremap = true })
 
 -- telescope
 keymap.set("n", "<leader>d", "<cmd>Telescope diagnostics<cr>")
@@ -16,6 +18,7 @@ keymap.set("n", "<C-r>", "<cmd>Telescope lsp_document_symbols<cr>")
 
 -- lsp and rust
 keymap.set("n", "<leader>x", "<cmd>RustRunnables<cr>")
+keymap.set("n", "<leader>y", "<cmd>lua require'runst'.run_test()<cr>", { noremap = true, silent = true })
 
 -- buffers
 keymap.set("n", "]b", "<cmd>bnext<cr>")

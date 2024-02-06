@@ -7,6 +7,9 @@ vim.cmd("set signcolumn=yes") -- reserves gutter space for signs
 vim.cmd("set backupcopy=yes")
 vim.cmd("set splitbelow")
 
+-- enables highlight for current line
+vim.cmd("set cursorline")
+
 -- system clipboard integration
 vim.cmd("set clipboard+=unnamedplus")
 
