@@ -21,5 +21,8 @@ require("neovide")
 -- key mappings
 require("keymap")
 
+-- custom commands
+require("commands")
+
 -- load plugins with lazy.nvim
 require("lazy").setup("plugins")
