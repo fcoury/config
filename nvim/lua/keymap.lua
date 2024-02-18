@@ -12,8 +12,10 @@ keymap.set("n", "H", "^", { noremap = true })
 keymap.set("n", "L", "$", { noremap = true })
 
 -- telescope
+keymap.set("n", "<leader>b", "<cmd>Telescope buffers<cr>")
 keymap.set("n", "<leader>d", "<cmd>Telescope diagnostics<cr>")
 keymap.set("n", "<leader>s", "<cmd>Telescope lsp_document_symbols<cr>")
+keymap.set("n", "<leader>R", "<cmd>Telescope lsp_references<cr>")
 keymap.set("n", "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>")
 
 -- lsp and rust
