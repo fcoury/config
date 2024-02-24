@@ -12,10 +12,11 @@ keymap.set("n", "H", "^", { noremap = true })
 keymap.set("n", "L", "$", { noremap = true })
 
 -- telescope
+keymap.set("n", "<C-j>", "<cmd>Telescope buffers<cr>")
 keymap.set("n", "<leader>b", "<cmd>Telescope buffers<cr>")
 keymap.set("n", "<leader>d", "<cmd>Telescope diagnostics<cr>")
 keymap.set("n", "<leader>s", "<cmd>Telescope lsp_document_symbols<cr>")
-keymap.set("n", "<leader>R", "<cmd>Telescope lsp_references<cr>")
+keymap.set("n", "<leader>k", "<cmd>Telescope lsp_references<cr>")
 keymap.set("n", "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>")
 
 -- lsp and rust
@@ -30,5 +31,5 @@ keymap.set("n", "<leader><leader>", "<cmd>b#<cr>")
 
 -- splits
 keymap.set("n", "|", "<cmd>vsplit<cr><c-w><c-w>")
-keymap.set("n", "_", "<cmd>split<cr><c-w><c-w>")
+keymap.set("n", "_", "<cmd>split<cr>")
 keymap.set("n", "=", "<cmd>wincmd =<cr>")
