@@ -1,6 +1,0 @@
-require('plugins')
-require('settings')
-require('functions')
-require('mappings')
-require('coc')
--- require('test-vim')
