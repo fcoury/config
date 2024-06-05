@@ -20,6 +20,10 @@ function ca
   cargo add $argv; and cargo sort
 end
 
+function cr
+  cargo remove $argv; and cargo sort
+end
+
 function mc
   set dir $argv[1]
   if test -z "$argv[1]"

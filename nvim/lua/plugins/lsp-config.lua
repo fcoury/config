@@ -36,6 +36,16 @@ return {
 			lspconfig.lua_ls.setup({})
 			lspconfig.tsserver.setup({})
 
+			-- cpp setup
+			lspconfig.clangd.setup({
+				cmd = { "clangd", "--background-index" },
+				filetypes = { "c", "cpp", "objc", "objcpp" },
+				root_dir = function()
+					return vim.loop.cwd()
+				end,
+				settings = {},
+			})
+
 			local keymap = vim.keymap
 			keymap.set("n", "[d", vim.diagnostic.goto_prev)
 			keymap.set("n", "]d", vim.diagnostic.goto_next)
