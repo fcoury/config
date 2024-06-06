@@ -35,6 +35,7 @@ return {
 			local lspconfig = require("lspconfig")
 			lspconfig.lua_ls.setup({})
 			lspconfig.tsserver.setup({})
+			lspconfig.zls.setup({})
 
 			-- cpp setup
 			lspconfig.clangd.setup({
