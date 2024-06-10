@@ -44,9 +44,9 @@ return {
 		require("template-string").setup({})
 
 		-- fold
-		local opt = vim.opt
-		opt.foldmethod = "expr"
-		opt.foldexpr = "nvim_treesitter#foldexpr()"
-		opt.foldenable = false
+		-- local opt = vim.opt
+		-- opt.foldmethod = "expr"
+		-- opt.foldexpr = "nvim_treesitter#foldexpr()"
+		-- opt.foldenable = false
 	end,
 }
