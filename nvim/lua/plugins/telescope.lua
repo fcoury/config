@@ -33,6 +33,14 @@ return {
 					},
 					buffers = {
 						sort_lastused = true,
+						mappings = {
+							i = {
+								["<c-d>"] = actions.delete_buffer,
+							},
+							n = {
+								["<c-d>"] = actions.delete_buffer,
+							},
+						},
 					},
 				},
 				layout_config = {
