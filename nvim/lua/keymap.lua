@@ -3,12 +3,6 @@ local keymap = vim.keymap
 -- remaps ; to act as :
 keymap.set("n", ";", ":", { noremap = true })
 
--- disable arrows
-keymap.set({ "n", "v", "i" }, "<up>", "<nop>")
-keymap.set({ "n", "v", "i" }, "<down>", "<nop>")
-keymap.set({ "n", "v", "i" }, "<left>", "<nop>")
-keymap.set({ "n", "v", "i" }, "<right>", "<nop>")
-
 keymap.set("n", "<leader>a", "ggVG") -- select all
 keymap.set({ "n", "x" }, "<leader>p", '"0p') -- paste not overwritten by delete
 -- keymap.set("n", "<leader>w", "<cmd>w<cr>") -- save current file
@@ -50,3 +44,30 @@ vim.api.nvim_set_keymap("n", "mw", '"_dw', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "mw", '"_dw', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "miw", '"_diw', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "miw", '"_diw', { noremap = true, silent = true })
+
+-- disable arrows except in replace mode
+function _G_disable_arrows()
+	keymap.set({ "n", "v", "i" }, "<up>", "<nop>")
+	keymap.set({ "n", "v", "i" }, "<down>", "<nop>")
+	keymap.set({ "n", "v", "i" }, "<left>", "<nop>")
+	keymap.set({ "n", "v", "i" }, "<right>", "<nop>")
+end
+
+function _G_enable_arrows()
+	keymap.set({ "n", "v", "i" }, "<up>", "<up>")
+	keymap.set({ "n", "v", "i" }, "<down>", "<down>")
+	keymap.set({ "n", "v", "i" }, "<left>", "<left>")
+	keymap.set({ "n", "v", "i" }, "<right>", "<right>")
+end
+
+vim.api.nvim_exec(
+	[[
+  augroup ArrowKeysInReplaceMode
+    autocmd!
+    autocmd ModeChanged * lua if vim.fn.mode() == "R" then _G_enable_arrows() else _G_disable_arrows() end
+  augroup END
+  ]],
+	false
+)
+
+_G_disable_arrows()
