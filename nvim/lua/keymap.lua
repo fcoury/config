@@ -5,7 +5,7 @@ keymap.set("n", ";", ":", { noremap = true })
 
 keymap.set("n", "<leader>a", "ggVG") -- select all
 keymap.set({ "n", "x" }, "<leader>p", '"0p') -- paste not overwritten by delete
-keymap.set("n", "<leader>w", "<cmd>w<cr>") -- save current file
+-- keymap.set("n", "<leader>w", "<cmd>w<cr>") -- save current file
 keymap.set("n", "<leader>q", "<cmd>q<cr>") -- quit
 keymap.set("n", "U", "<C-r>", { noremap = true })
 keymap.set("n", "H", "^", { noremap = true })
@@ -16,6 +16,7 @@ keymap.set("n", "<C-j>", "<cmd>Telescope buffers<cr>")
 keymap.set("n", "<leader>b", "<cmd>Telescope buffers<cr>")
 keymap.set("n", "<leader>d", "<cmd>Telescope diagnostics<cr>")
 keymap.set("n", "<leader>s", "<cmd>Telescope lsp_document_symbols<cr>")
+keymap.set("n", "<leader>w", "<cmd>Telescope lsp_workspace_symbols<cr>")
 keymap.set("n", "<leader>k", "<cmd>Telescope lsp_references<cr>")
 keymap.set("n", "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>")
 
