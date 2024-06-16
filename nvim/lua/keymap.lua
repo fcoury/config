@@ -3,6 +3,12 @@ local keymap = vim.keymap
 -- remaps ; to act as :
 keymap.set("n", ";", ":", { noremap = true })
 
+-- disable arrows
+keymap.set({ "n", "v", "i" }, "<up>", "<nop>")
+keymap.set({ "n", "v", "i" }, "<down>", "<nop>")
+keymap.set({ "n", "v", "i" }, "<left>", "<nop>")
+keymap.set({ "n", "v", "i" }, "<right>", "<nop>")
+
 keymap.set("n", "<leader>a", "ggVG") -- select all
 keymap.set({ "n", "x" }, "<leader>p", '"0p') -- paste not overwritten by delete
 -- keymap.set("n", "<leader>w", "<cmd>w<cr>") -- save current file
