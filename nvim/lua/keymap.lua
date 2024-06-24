@@ -27,7 +27,7 @@ keymap.set("n", "<leader>x", "<cmd>RustRunnables<cr>")
 -- buffers
 keymap.set("n", "]b", "<cmd>bnext<cr>")
 keymap.set("n", "[b", "<cmd>bprevious<cr>")
-keymap.set("n", "<leader>c", "<cmd>bd<cr>")
+-- keymap.set("n", "<leader>c", "<cmd>bd<cr>")
 keymap.set("n", "<leader><leader>", "<cmd>b#<cr>")
 
 -- splits
