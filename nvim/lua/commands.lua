@@ -1,9 +1,7 @@
 vim.api.nvim_create_user_command("DiagnosticToggle", function()
-	local config = vim.diagnostic.config
-	local vt = config().virtual_text
-	config({
-		virtual_text = not vt,
-		underline = not vt,
-		signs = not vt,
-	})
+	if vim.diagnostic.is_enabled() then
+		vim.diagnostic.disable()
+	else
+		vim.diagnostic.enable()
+	end
 end, { desc = "toggle diagnostic" })

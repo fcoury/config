@@ -35,6 +35,9 @@ keymap.set("n", "|", "<cmd>vsplit<cr><c-w><c-w>")
 keymap.set("n", "_", "<cmd>split<cr>")
 keymap.set("n", "=", "<cmd>wincmd =<cr>")
 
+-- lsp related
+keymap.set("n", "<leader>,d", "<cmd>DiagnosticToggle<cr>")
+
 -- delete text (as opposed to saving it on the default register)
 vim.api.nvim_set_keymap("n", "m", '"_d', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "m", '"_d', { noremap = true, silent = true })
@@ -44,6 +47,8 @@ vim.api.nvim_set_keymap("n", "mw", '"_dw', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "mw", '"_dw', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "miw", '"_diw', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "miw", '"_diw', { noremap = true, silent = true })
+
+--== Helper Functions ==--
 
 -- disable arrows except in replace mode
 function _G_disable_arrows()
