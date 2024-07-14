@@ -1,4 +1,27 @@
-local function current_rust_test_name()
+local function get_params()
+	local params = vim.lsp.util.make_position_params()
+	params.textDocument = vim.lsp.util.make_text_document_params()
+	return params
+end
+
+local function get_current_test_args()
+	local params = get_params()
+	local result = vim.lsp.buf_request_sync(0, "experimental/runnables", params, 1000)
+	if result and result[1] and result[1].result then
+		for _, runnable in ipairs(result[1].result) do
+			if runnable.kind == "cargo" and runnable.args.executableArgs then
+				local args = runnable.args.executableArgs
+				-- Check if this is a specific test
+				if #args >= 1 and args[1]:match("^[%w_:]+::[%w_]+$") and runnable.label:match("^test ") then
+					return runnable.args
+				end
+			end
+		end
+	end
+	return nil
+end
+
+local function current_test_name_regex()
 	-- Get the current buffer and cursor position
 	local bufnr = vim.api.nvim_get_current_buf()
 
@@ -30,6 +53,25 @@ local function current_rust_test_name()
 	return nil
 end
 
+local function current_rust_test_name()
+	local cmd
+	if pcall(require, "lspconfig") then
+		local args = get_current_test_args()
+		if args == nil then
+			return nil
+		end
+		cmd = table.concat(args.cargoArgs, " ") .. " -- " .. table.concat(args.executableArgs, " ")
+	else
+		local test_name = current_test_name_regex()
+		if test_name == nil then
+			return nil
+		end
+		cmd = "test %s -- --nocapture --color=always"
+	end
+
+	return cmd
+end
+
 return {
 	"fcoury/vial.nvim",
 	dir = "~/code/vial",
@@ -39,7 +81,7 @@ return {
 
 			file_types = {
 				rust = {
-					command = "cargo test %s -- --nocapture --color=always",
+					command = "cargo %s",
 					extensions = { ".rs" },
 					extract = current_rust_test_name,
 				},
