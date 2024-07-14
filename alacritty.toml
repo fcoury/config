@@ -1,0 +1,60 @@
+live_config_reload = true
+
+[font]
+size = 20.0
+
+[font.bold]
+family = "Iosevka Nerd Font"
+style = "Medium"
+
+[font.glyph_offset]
+x = 0
+y = 0
+
+[font.normal]
+family = "Iosevka Nerd Font"
+style = "Light"
+
+[font.offset]
+x = 0
+y = 0
+
+[[keyboard.bindings]]
+chars = "\u001B-"
+key = "Minus"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u001B="
+key = "Equals"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u001Bp"
+key = "P"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u001B[44;5u"
+key = "Comma"
+mods = "Control"
+
+[[keyboard.bindings]]
+chars = "\u001B[46;5u"
+key = "Period"
+mods = "Control"
+
+[[keyboard.bindings]]
+chars = "\u001B[59;5u"
+key = "Semicolon"
+mods = "Control"
+
+[shell]
+program = "/opt/homebrew/bin/fish"
+
+[window]
+option_as_alt = "Both"
+
+[window.padding]
+x = 2
+y = 0
