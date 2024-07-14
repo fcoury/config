@@ -5,6 +5,7 @@ return {
 	dependencies = {
 		"windwp/nvim-ts-autotag",
 		"axelvc/template-string.nvim",
+		"nvim-treesitter/nvim-treesitter-textobjects",
 	},
 	config = function()
 		local config = require("nvim-treesitter.configs")
@@ -17,7 +18,7 @@ return {
 				"html",
 				"css",
 				"json",
-				"yaml",
+				-- "yaml",
 				"regex",
 				"rust",
 				"markdown",
@@ -44,9 +45,9 @@ return {
 		require("template-string").setup({})
 
 		-- fold
-		-- local opt = vim.opt
-		-- opt.foldmethod = "expr"
-		-- opt.foldexpr = "nvim_treesitter#foldexpr()"
-		-- opt.foldenable = false
+		local opt = vim.opt
+		opt.foldmethod = "expr"
+		opt.foldexpr = "nvim_treesitter#foldexpr()"
+		opt.foldenable = false
 	end,
 }
