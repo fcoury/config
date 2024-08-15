@@ -8,7 +8,7 @@ return {
 		config = function()
 			require("mason").setup()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "rust_analyzer", "biome", "tsserver" },
+				ensure_installed = { "lua_ls", "rust_analyzer", "biome", "tsserver", "html" },
 			})
 			require("mason-tool-installer").setup({
 				ensure_installed = {
@@ -19,6 +19,10 @@ return {
 					"biome",
 					"prettierd",
 					"rust-analyzer",
+					"html-lsp",
+					"css-lsp",
+					"emmet-ls",
+					"htmx-lsp",
 				},
 			})
 		end,
@@ -36,6 +40,10 @@ return {
 			lspconfig.lua_ls.setup({})
 			lspconfig.tsserver.setup({})
 			lspconfig.zls.setup({})
+			lspconfig.html.setup({})
+			lspconfig.cssls.setup({})
+			lspconfig.emmet_ls.setup({})
+			lspconfig.htmx.setup({})
 
 			-- cpp setup
 			lspconfig.clangd.setup({
@@ -89,6 +97,37 @@ return {
 
 			-- lsp actions with telescope
 			local builtin = require("telescope.builtin")
+
+			-- emmet lsp
+			local capabilities = vim.lsp.protocol.make_client_capabilities()
+			capabilities.textDocument.completion.completionItem.snippetSupport = false
+
+			lspconfig.emmet_ls.setup({
+				-- on_attach = on_attach,
+				capabilities = capabilities,
+				filetypes = {
+					"css",
+					"eruby",
+					"html",
+					"javascript",
+					"javascriptreact",
+					"less",
+					"sass",
+					"scss",
+					"svelte",
+					"pug",
+					"typescriptreact",
+					"vue",
+				},
+				init_options = {
+					html = {
+						options = {
+							-- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267
+							["bem.enabled"] = true,
+						},
+					},
+				},
+			})
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),

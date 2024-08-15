@@ -18,7 +18,7 @@ return {
 				"html",
 				"css",
 				"json",
-				-- "yaml",
+				"yaml",
 				"regex",
 				"rust",
 				"markdown",
