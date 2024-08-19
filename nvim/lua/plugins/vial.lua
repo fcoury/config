@@ -60,7 +60,7 @@ local function current_rust_test_name()
 		if args == nil then
 			return nil
 		end
-		cmd = table.concat(args.cargoArgs, " ") .. " -- " .. table.concat(args.executableArgs, " ") .. " --nocapture"
+		cmd = table.concat(args.cargoArgs, " ") .. " -- " .. table.concat(args.executableArgs, " ") -- .. " --nocapture"
 	else
 		local test_name = current_test_name_regex()
 		if test_name == nil then
