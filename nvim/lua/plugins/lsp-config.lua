@@ -29,8 +29,12 @@ return {
 	},
 	{
 		"j-hui/fidget.nvim",
-		dependencies = { "simrat39/rust-tools.nvim" },
 		opts = {},
+	},
+	{
+		"felpafel/inlay-hint.nvim",
+		event = "LspAttach",
+		config = true,
 	},
 	{
 		"neovim/nvim-lspconfig",
