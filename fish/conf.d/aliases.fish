@@ -14,7 +14,7 @@ alias gap 'git add -p'
 # neovim aliases
 alias vi 'nvim'
 alias vim 'nvim'
-alias vivi 'cd ~/code/config/nvim; nvim'
+alias vivi 'cd ~/code/config; nvim'
 
 function ca
   cargo add $argv; and cargo sort
