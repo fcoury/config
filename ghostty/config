@@ -1,0 +1,11 @@
+theme = catppuccin-mocha
+font-family = "IosevkaTerm Nerd Font Mono"
+font-size = 18
+# font-thicken = true
+
+cursor-style = block
+cursor-style-blink = false
+
+shell-integration-features = no-cursor,no-sudo
+
+adjust-cell-height = 2
