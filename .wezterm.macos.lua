@@ -30,7 +30,7 @@ local config = {
 	hide_tab_bar_if_only_one_tab = true,
 
 	-- CTRL+A is our leader key
-	leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
+	-- leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
 
 	keys = {
 		{ key = "d", mods = "CMD", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
