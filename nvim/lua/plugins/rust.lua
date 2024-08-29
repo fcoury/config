@@ -8,7 +8,7 @@ return {
 				server = {
 					---@diagnostic disable-next-line: unused-local
 					on_attach = function(client, bufnr)
-						vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#575B6E", bg = "#1F1E2F", italic = true })
+						vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#575B6E", italic = true })
 						vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 					end,
 					default_settings = {
