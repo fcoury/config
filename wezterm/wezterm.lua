@@ -32,6 +32,14 @@ local config = {
 	-- CTRL+A is our leader key
 	leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
 
+	mouse_bindings = {
+		{
+			event = { Up = { streak = 1, button = "Left" } },
+			mods = "CMD",
+			action = wezterm.action.OpenLinkAtMouseCursor,
+		},
+	},
+
 	keys = {
 		{ key = "d", mods = "CMD", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 		{ key = "d", mods = "CMD|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
