@@ -2,8 +2,10 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 
 local config = {
-	font = wezterm.font("MesloLGS Nerd Font Mono"),
-	font_size = 22.0,
+	font = wezterm.font("IosevkaTerm Nerd Font"),
+	font_size = 18.0,
+	-- font = wezterm.font("MesloLGS Nerd Font Mono"),
+	-- font_size = 22.0,
 	-- color_scheme = "catppuccin-mocha",
 	color_scheme = "Tokyo Night",
 	line_height = 1.1,
@@ -30,7 +32,7 @@ local config = {
 	hide_tab_bar_if_only_one_tab = true,
 
 	-- CTRL+A is our leader key
-	leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
+	-- leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
 
 	mouse_bindings = {
 		{
