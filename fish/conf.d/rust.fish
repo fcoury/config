@@ -4,6 +4,6 @@ end
 
 function wg
   set -l cmd (string join ' ' $argv)
-  watchexec -c -r -e rs -- cargo $cmd
+  watchexec -c -r -e rs,html -- cargo $cmd
 end
 

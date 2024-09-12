@@ -37,7 +37,7 @@ return {
 			{
 				description = "find a project based on patterns",
 				mode = { "n" },
-				"<leader>p",
+				"<leader>pp",
 				"<CMD>Telescope neovim-project discover<CR>",
 			},
 			{

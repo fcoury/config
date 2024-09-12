@@ -23,6 +23,8 @@ return {
 					"css-lsp",
 					"emmet-ls",
 					"htmx-lsp",
+					"ruff-lsp",
+					"pyright",
 				},
 			})
 		end,
@@ -48,6 +50,8 @@ return {
 			lspconfig.cssls.setup({})
 			lspconfig.emmet_ls.setup({})
 			lspconfig.htmx.setup({})
+			lspconfig.pyright.setup({})
+			lspconfig.ruff.setup({})
 
 			-- cpp setup
 			lspconfig.clangd.setup({
