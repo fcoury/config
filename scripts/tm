@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Ensure zoxide and fzf are installed
+if ! command -v zoxide &> /dev/null; then
+    echo "zoxide could not be found. Please install it first."
+    exit 1
+fi
+
+if ! command -v fzf &> /dev/null; then
+    echo "fzf could not be found. Please install it first."
+    exit 1
+fi
+
+# List tmux sessions and allow the user to pick one
+session=$(tmux list-sessions -F "#{session_name}" | fzf --prompt="Select a tmux session: ")
+
+# Check if a session was selected
+if [ -n "$session" ]; then
+    tmux attach-session -t "$session"
+else
+    echo "No session selected."
+fi
+
