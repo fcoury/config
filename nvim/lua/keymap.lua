@@ -38,6 +38,14 @@ keymap.set("n", "=", "<cmd>wincmd =<cr>")
 -- lsp related
 keymap.set("n", "<leader>,d", "<cmd>DiagnosticToggle<cr>")
 
+-- special commands
+keymap.set(
+	"n",
+	"<leader>cl",
+	"<cmd>CopyFileNameAndLine<cr>",
+	{ noremap = true, silent = true, desc = "Copy current file name and line number" }
+)
+
 -- delete text (as opposed to saving it on the default register)
 vim.api.nvim_set_keymap("n", "m", '"_d', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "m", '"_d', { noremap = true, silent = true })
