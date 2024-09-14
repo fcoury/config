@@ -1,9 +1,14 @@
 return {
 	"ThePrimeagen/harpoon",
 	branch = "harpoon2",
-	dependencies = { "nvim-lua/plenary.nvim" },
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		"nvim-telescope/telescope.nvim", -- Optional
+	},
+	lazy = false,
 	config = function()
 		local harpoon = require("harpoon")
+
 		harpoon:setup()
 
 		-- basic telescope configuration
@@ -26,28 +31,28 @@ return {
 				:find()
 		end
 
-		vim.keymap.set("n", "<C-1>", function()
-			harpoon:list():select(1)
-		end)
-		vim.keymap.set("n", "<C-2>", function()
-			harpoon:list():select(2)
-		end)
-		vim.keymap.set("n", "<C-3>", function()
-			harpoon:list():select(3)
-		end)
-		vim.keymap.set("n", "<C-4>", function()
-			harpoon:list():select(4)
-		end)
-		vim.keymap.set("n", "<leader>m", function()
+		vim.keymap.set("n", "<leader>ha", function()
 			harpoon:list():add()
-			print("added to list")
 		end)
-		vim.keymap.set("n", "<leader>n", function()
-			harpoon:list():remove()
-			print("removed from list")
-		end)
-		vim.keymap.set("n", "<C-m>", function()
+		vim.keymap.set("n", "<C-h>", function()
 			toggle_telescope(harpoon:list())
 		end)
+
+		vim.keymap.set("n", "<leader>1", function()
+			harpoon:list():select(1)
+		end)
+		vim.keymap.set("n", "<leader>2", function()
+			harpoon:list():select(2)
+		end)
+		vim.keymap.set("n", "<leader>3", function()
+			harpoon:list():select(3)
+		end)
+		vim.keymap.set("n", "<leader>3", function()
+			harpoon:list():select(4)
+		end)
+
+		-- TODO:
+		-- remove all files from harpoon
+		-- remove current file from harpoon
 	end,
 }
