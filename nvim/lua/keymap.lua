@@ -47,14 +47,11 @@ keymap.set(
 )
 
 -- delete text (as opposed to saving it on the default register)
-vim.api.nvim_set_keymap("n", "m", '"_d', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("v", "m", '"_d', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "m", '"_x', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "mm", '"_dd', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("v", "mm", '"_dd', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("v", "m", '"_x', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "mw", '"_dw', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("v", "mw", '"_dw', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "miw", '"_diw', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("v", "miw", '"_diw', { noremap = true, silent = true })
 
 --== Helper Functions ==--
 
