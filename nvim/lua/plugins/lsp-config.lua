@@ -8,7 +8,7 @@ return {
 		config = function()
 			require("mason").setup()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "rust_analyzer", "biome", "tsserver", "html" },
+				ensure_installed = { "lua_ls", "rust_analyzer", "biome", "ts_ls", "html" },
 			})
 			require("mason-tool-installer").setup({
 				ensure_installed = {
@@ -44,7 +44,7 @@ return {
 		config = function()
 			local lspconfig = require("lspconfig")
 			lspconfig.lua_ls.setup({})
-			lspconfig.tsserver.setup({})
+			lspconfig.ts_ls.setup({})
 			lspconfig.zls.setup({})
 			lspconfig.html.setup({})
 			lspconfig.cssls.setup({})
