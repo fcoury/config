@@ -22,7 +22,11 @@ return {
 
 			require("lualine").setup({
 				options = {
-					theme = "dracula",
+					-- theme = "nightfly",
+					-- theme = "horizon",
+					-- theme = "dracula",
+					theme = "lackluster",
+					-- theme = "gruvbox",
 				},
 				sections = {
 					lualine_a = { "mode" },

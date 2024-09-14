@@ -69,20 +69,20 @@ return {
 
 			-- Define the color
 			-- local bg_color = "#1f2335"
-			local bg_color = "#252739"
-			local fg_color = "white" -- For the border foreground color
+			-- local bg_color = "#252739"
+			-- local fg_color = "white" -- For the border foreground color
 
 			-- Create an autocmd that sets the highlight groups when the colorscheme changes
-			vim.api.nvim_create_autocmd("ColorScheme", {
-				pattern = "*",
-				callback = function()
-					vim.api.nvim_set_hl(0, "NormalFloat", { bg = bg_color })
-					vim.api.nvim_set_hl(0, "FloatBorder", { fg = fg_color, bg = bg_color })
-				end,
-			})
+			-- vim.api.nvim_create_autocmd("ColorScheme", {
+			-- 	pattern = "*",
+			-- 	callback = function()
+			-- 		vim.api.nvim_set_hl(0, "NormalFloat", { bg = bg_color })
+			-- 		vim.api.nvim_set_hl(0, "FloatBorder", { fg = fg_color, bg = bg_color })
+			-- 	end,
+			-- })
 
 			-- Trigger the autocmd to apply the color immediately
-			vim.cmd("doautocmd ColorScheme")
+			-- vim.cmd("doautocmd ColorScheme")
 
 			local lsp_handlers = vim.lsp.handlers
 

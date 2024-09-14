@@ -2,13 +2,18 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 
 local config = {
-	font = wezterm.font("IosevkaTerm Nerd Font"),
+	font = wezterm.font("FantasqueSansM Nerd Font"),
 	font_size = 18.0,
+	line_height = 1.2,
+	-- font = wezterm.font("IosevkaTerm Nerd Font"),
+	-- font_size = 18.0,
+	-- line_height = 1.1,
 	-- font = wezterm.font("MesloLGS Nerd Font Mono"),
 	-- font_size = 22.0,
 	-- color_scheme = "catppuccin-mocha",
-	color_scheme = "Tokyo Night",
-	line_height = 1.1,
+	-- line_height = 1.1,
+
+	-- color_scheme = "Tomorrow (light) (terminal.sexy)",
 
 	-- Window styling
 	window_decorations = "RESIZE",
@@ -95,6 +100,67 @@ local config = {
 				-- Deactivate the keytable after a timeout.
 				timeout_milliseconds = 1000,
 			}),
+		},
+	},
+
+	-- Custom theme (lackluster)
+	color_scheme = "Lackluster",
+	colors = {
+		foreground = "#deeeed", -- luster
+		background = "#101010", -- black
+		cursor_bg = "#deeeed", -- luster
+		cursor_border = "#deeeed", -- luster
+		cursor_fg = "#000000", -- black
+		selection_bg = "#444444", -- gray4
+		selection_fg = "#deeeed", -- luster
+
+		ansi = {
+			"#000000", -- black
+			"#D70000", -- red
+			"#789978", -- green
+			"#abab77", -- yellow
+			"#7788AA", -- blue
+			"#ffaa88", -- orange
+			"#708090", -- lack
+			"#aaaaaa", -- gray7
+		},
+		brights = {
+			"#555555", -- gray5
+			"#D70000", -- red
+			"#789978", -- green
+			"#abab77", -- yellow
+			"#7788AA", -- blue
+			"#ffaa88", -- orange
+			"#708090", -- lack
+			"#DDDDDD", -- gray9
+		},
+
+		tab_bar = {
+			background = "#191919", -- gray2
+
+			active_tab = {
+				bg_color = "#444444", -- gray4
+				fg_color = "#deeeed", -- luster
+				intensity = "Bold",
+			},
+			inactive_tab = {
+				bg_color = "#191919", -- gray2
+				fg_color = "#555555", -- gray5
+			},
+			inactive_tab_hover = {
+				bg_color = "#444444", -- gray4
+				fg_color = "#deeeed", -- luster
+				italic = true,
+			},
+			new_tab = {
+				bg_color = "#191919", -- gray2
+				fg_color = "#deeeed", -- luster
+			},
+			new_tab_hover = {
+				bg_color = "#789978", -- green
+				fg_color = "#191919", -- gray2
+				italic = true,
+			},
 		},
 	},
 }
