@@ -20,6 +20,29 @@ return {
 				return branch
 			end
 
+			vim.g.VM_set_statusline = 0
+			vim.g.VM_silent_exit = 1
+
+			local function vm_mode()
+				return vim.iter(string.gmatch(vim.fn["vm#themes#statusline"](), "%S+")):nth(2)
+			end
+
+			local function vm_status()
+				return vim.fn["VMInfos"]().status or ""
+			end
+
+			vim.api.nvim_create_autocmd({ "CmdlineEnter" }, {
+				pattern = { "@" },
+				callback = function(ev)
+					if vim.b.visual_multi then
+						local delay = 0
+						vim.defer_fn(function()
+							vim.cmd('execute "redrawstatus"')
+						end, delay)
+					end
+				end,
+			})
+
 			require("lualine").setup({
 				options = {
 					-- theme = "nightfly",
@@ -27,9 +50,20 @@ return {
 					-- theme = "dracula",
 					theme = "lackluster",
 					-- theme = "gruvbox",
+					-- theme = "rose-pine",
+					-- theme = "iceberg_dark",
+					-- theme = "nord",
+					-- theme = "catppuccin",
 				},
 				sections = {
-					lualine_a = { "mode" },
+					lualine_a = {
+						{
+							"mode",
+							fmt = function(mode)
+								return vm_mode() or mode
+							end,
+						},
+					},
 					lualine_b = {
 						{ truncated_git_branch, icon = "", color = { fg = "#8be9fd", gui = "bold" } },
 						"diff",
