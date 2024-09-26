@@ -1,0 +1,179 @@
+# Inserts a blank line between shell prompts
+add_newline = true
+
+format = """
+$username\
+$hostname\
+$localip\
+$shlvl\
+$singularity\
+$kubernetes\
+$directory\
+$vcsh\
+$fossil_branch\
+$custom\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$hg_branch\
+$pijul_channel\
+$docker_context\
+$package\
+$c\
+$cmake\
+$cobol\
+$daml\
+$dart\
+$deno\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$fennel\
+$golang\
+$guix_shell\
+$haskell\
+$haxe\
+$helm\
+$java\
+$julia\
+$kotlin\
+$gradle\
+$lua\
+$nim\
+$nodejs\
+$ocaml\
+$opa\
+$perl\
+$php\
+$pulumi\
+$purescript\
+$python\
+$raku\
+$rlang\
+$red\
+$ruby\
+$rust\
+$scala\
+$solidity\
+$swift\
+$terraform\
+$vlang\
+$vagrant\
+$zig\
+$buf\
+$nix_shell\
+$conda\
+$meson\
+$spack\
+$memory_usage\
+$aws\
+$gcloud\
+$openstack\
+$azure\
+$env_var\
+$crystal\
+$sudo\
+$cmd_duration\
+$line_break\
+$jobs\
+$battery\
+$time\
+$status\
+$os\
+$container\
+$shell\
+$character"""
+
+# Replace the "❯" symbol in the prompt with my preferences
+[character] # The name of the module we are configuring is "character"
+error_symbol = "[>](bold yellow) \\$" # The "success_symbol" segment is being set to "➜" with the color "bold green"
+success_symbol = "[>](bold green) \\$" # The "success_symbol" segment is being set to "➜" with the color "bold green"
+
+# Always show user@host
+[username]
+format = "[$user](bold white)@"
+show_always = true
+
+[hostname]
+format = "[$hostname](white) "
+ssh_only = false
+
+# Disables npm and package manager version display
+[package]
+disabled = true
+
+# Formats node version display
+[nodejs]
+format = "[$symbol($version )]($style)"
+symbol = "📦 "
+
+# Formats rust version display
+[rust]
+format = "[$symbol($version )]($style)"
+
+# Formats lua version display
+[lua]
+format = "[$symbol($version )]($style)"
+
+# Formats my git status indicators
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+modified = "●"
+stashed = ""
+style = ""
+untracked = "!"
+
+# Formats my git branch indicators
+#[git_branch]
+#format = "[$symbol$branch]($style) "
+
+# Disables truncating the path down to the repo name
+[directory]
+#truncate_to_repo = false
+fish_style_pwd_dir_length = 1
+
+# Google Cloud
+[gcloud]
+disabled = true
+format = '[$symbol$account(@$domain)(\($region\))]($style) '
+
+# AWS
+[aws]
+disabled = true
+
+# OrbStack
+[docker_context]
+disabled = true  
+
+[custom.gitbranch]
+symbol = ''
+style = 'bold purple'
+shell = "/bin/bash"
+command = '''
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null) || return
+    if [ ${#branch} -gt 25 ]; then
+        IFS='/' read -ra ADDR <<< "$branch"
+        if [ ${#ADDR[@]} -ge 3 ]; then
+            echo "${ADDR[0]:0:1}/${ADDR[1]:0:1}/${ADDR[2]}"
+        else
+            echo "$branch"
+        fi
+    else
+        echo "$branch"
+    fi
+'''
+# command = '''
+#     branch=$(git symbolic-ref --short HEAD 2>/dev/null) || return
+#     IFS='/' read -ra ADDR <<< "$branch"
+#     if [ ${#ADDR[@]} -ge 3 ]; then
+#         echo "${ADDR[0]:0:1}/${ADDR[1]:0:1}/${ADDR[2]}"
+#     else
+#         echo "$branch"
+#     fi
+# '''
+when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+description = "Displays the formatted git branch name"
+format = "on [$symbol ($output )]($style)"
+
