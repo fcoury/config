@@ -4,20 +4,16 @@ SCRIPT=$(basename $0)
 SCRIPT_PATH=$(pwd)
 LINK_TARGET="$HOME/.config"
 
-# Check if gsed is available, otherwise use sed
-if command -v gsed &> /dev/null; then
-    SED_COMMAND="gsed"
-else
-    SED_COMMAND="sed"
-fi
+# Detect OS
+case "$OSTYPE" in
+    darwin*)  PLATFORM="macOS" ;;
+    linux*)   PLATFORM="Linux" ;;
+    *)        PLATFORM="unknown" ;;
+esac
 
-mkdir -p "$LINK_TARGET"
-
-# Takes a path argument and returns it as an absolute path.
-# No-op if the path is already absolute.
+# Function to convert to absolute path
 function to-abs-path {
   local target="$1"
-
   if [ "$target" == "." ]; then
     echo "$(pwd)"
   elif [ "$target" == ".." ]; then
@@ -35,15 +31,32 @@ link-path() {
   shopt -s dotglob
   for f in "$1"/*; do
     if [ "$f" != "./$SCRIPT" ]; then
-      SOURCE=$(to-abs-path $f)
+      FOLDER_NAME=$(basename "$f")
+      SKIP_FOLDER=false
+
+      if [ -f "$f/.skip" ]; then
+        while IFS= read -r line; do
+          if [ "$line" == "$PLATFORM" ]; then
+            SKIP_FOLDER=true
+            break
+          fi
+        done < "$f/.skip"
+      fi
+
+      if [ "$SKIP_FOLDER" == true ]; then
+        echo "Skipping $FOLDER_NAME on $PLATFORM"
+        continue
+      fi
+
+      SOURCE=$(to-abs-path "$f")
       TARGET="${LINK_TARGET}/$1/$f"
-      TARGET="$(echo "$TARGET" | $SED_COMMAND -r 's|\.\/||g')"
+      TARGET="$(echo "$TARGET" | sed -r 's|\.\/||g')"
       if [ -f "${f}/.link" ]; then
         LINK_NAME=$(cat "${f}/.link")
         TARGET="${LINK_TARGET}/${LINK_NAME}"
       fi
       if [ -e "$TARGET" ]; then
-        echo Skipping: $SOURCE
+        echo "Skipping (already exists): $SOURCE"
       else
         echo "Linking: $SOURCE -> $TARGET"
         ln -s "$SOURCE" "$TARGET"
@@ -53,3 +66,4 @@ link-path() {
 }
 
 link-path "."
+
