@@ -40,6 +40,8 @@ in
     waybar
     ripgrep
     fd
+    tree
+    lazygit
     starship
   ];
 }
