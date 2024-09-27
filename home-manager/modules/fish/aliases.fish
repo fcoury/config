@@ -12,9 +12,9 @@ alias gtr 'git track'
 alias gap 'git add -p'
 
 # neovim aliases
-alias vivi 'cd ~/code/config/nvim; nvim'
-alias vic 'cd ~/code/config; nvim'
-alias vih 'cd ~/.config/home-config; nvim'
+alias vivi 'cd ~/config/nvim; nvim'
+alias vic 'cd ~/config; nvim'
+alias vih 'cd ~/.config/home-manager; nvim'
 
 function ca
   cargo add $argv; and cargo sort
