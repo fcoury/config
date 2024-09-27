@@ -24,7 +24,6 @@ in
 
   programs.firefox.enable = true;
 
-
   home.stateVersion = "24.05";
 
   home.packages = with pkgs; [
@@ -44,6 +43,7 @@ in
     lazygit
     starship
     hub
+    whatsapp-for-linux
   ];
 }
 
