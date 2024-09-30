@@ -45,10 +45,11 @@ return {
 
 			require("lualine").setup({
 				options = {
+					theme = "auto",
 					-- theme = "nightfly",
 					-- theme = "horizon",
 					-- theme = "dracula",
-					theme = "lackluster",
+					-- theme = "lackluster",
 					-- theme = "gruvbox",
 					-- theme = "rose-pine",
 					-- theme = "iceberg_dark",
