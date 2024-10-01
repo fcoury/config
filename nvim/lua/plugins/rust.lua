@@ -22,6 +22,15 @@ return {
 									"gistia-design-system/node_modules",
 								},
 							},
+							procMacro = {
+								ignored = {
+									leptos_macro = {
+										-- optional: --
+										-- "component",
+										"server",
+									},
+								},
+							},
 						},
 					},
 				},

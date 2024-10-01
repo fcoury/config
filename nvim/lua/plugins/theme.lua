@@ -18,8 +18,8 @@
 -- 	end,
 -- }
 
--- lackluster
 return {
+	-- lackluster
 	{
 		"slugbyte/lackluster.nvim",
 		lazy = false,
@@ -71,30 +71,30 @@ return {
 				livePreview = true,
 			})
 
+			-- 		vim.api.nvim_create_autocmd("ColorScheme", {
+			-- 			pattern = "*",
+			-- 			callback = function()
+			-- 				vim.api.nvim_set_hl(0, "LspInlayHint", {
+			-- 					fg = vim.api.nvim_get_hl_by_name("LspInlayHint", true).foreground, -- Retain the current foreground color
+			-- 					bg = "NONE", -- Set background to NONE for transparency
+			-- 					blend = vim.api.nvim_get_hl_by_name("LspInlayHint", true).blend, -- Retain the current blend value
+			-- 				})
+			-- 			end,
+			-- 		})
+
 			vim.api.nvim_create_autocmd("ColorScheme", {
 				pattern = "*",
 				callback = function()
-					vim.api.nvim_set_hl(0, "LspInlayHint", {
-						fg = vim.api.nvim_get_hl_by_name("LspInlayHint", true).foreground, -- Retain the current foreground color
-						bg = "NONE", -- Set background to NONE for transparency
-						blend = vim.api.nvim_get_hl_by_name("LspInlayHint", true).blend, -- Retain the current blend value
-					})
+					local current_colorscheme = vim.g.colors_name or ""
+					if current_colorscheme:match("^rose%-pine") then
+						vim.api.nvim_set_hl(0, "LspInlayHint", {
+							fg = "#6e6a86", -- Keep the original foreground color
+							bg = "NONE", -- Set background to NONE for transparency
+							blend = 10, -- Keep the original blend value
+						})
+					end
 				end,
 			})
-
-			-- vim.api.nvim_create_autocmd("ColorScheme", {
-			-- 	pattern = "*",
-			-- 	callback = function()
-			-- 		local current_colorscheme = vim.g.colors_name or ""
-			-- 		if current_colorscheme:match("^rose%-pine") then
-			-- 			vim.api.nvim_set_hl(0, "LspInlayHint", {
-			-- 				fg = "#6e6a86", -- Keep the original foreground color
-			-- 				bg = "NONE", -- Set background to NONE for transparency
-			-- 				blend = 10, -- Keep the original blend value
-			-- 			})
-			-- 		end
-			-- 	end,
-			-- })
 		end,
 	},
 }

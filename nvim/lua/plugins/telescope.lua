@@ -9,7 +9,12 @@ return {
 			local keymap = vim.keymap
 			keymap.set("n", "<C-p>", builtin.find_files, {})
 			-- keymap.set("n", "<leader>g", builtin.live_grep, {})
-			keymap.set("n", "<leader>g", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>", {})
+			keymap.set(
+				"n",
+				"<leader>g",
+				":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",
+				{ desc = "Live grep with args" }
+			)
 
 			local actions = require("telescope.actions")
 			local lga_actions = require("telescope-live-grep-args.actions")

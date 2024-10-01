@@ -10,7 +10,7 @@ return {
 			require("todo-comments").jump_prev()
 		end)
 
-		vim.keymap.set("n", "<leader>td", "<cmd>TodoTelescope<cr>")
+		vim.keymap.set("n", "<leader>td", "<cmd>TodoTelescope<cr>", { desc = "Search TODOs" })
 
 		require("todo-comments").setup()
 	end,

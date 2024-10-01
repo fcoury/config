@@ -145,19 +145,38 @@ return {
 
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
-					local opts = { buffer = ev.buf }
-					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-					vim.keymap.set("n", "D", vim.diagnostic.open_float, opts)
-					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-					vim.keymap.set("n", "<C-A-k>", vim.lsp.buf.signature_help, opts)
-					vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)
-					vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-					vim.keymap.set("n", "gr", builtin.lsp_references, opts)
+					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = ev.bum, desc = "Go to declaration" })
+					vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.bum, desc = "Go to definition" })
+					vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = ev.bum, desc = "Show hover information" })
+					vim.keymap.set(
+						"n",
+						"D",
+						vim.diagnostic.open_float,
+						{ buffer = ev.bum, desc = "Open diagnostic window" }
+					)
+					vim.keymap.set(
+						"n",
+						"gi",
+						vim.lsp.buf.implementation,
+						{ buffer = ev.bum, desc = "Go to implementation" }
+					)
+					vim.keymap.set(
+						"n",
+						"<C-A-k>",
+						vim.lsp.buf.signature_help,
+						{ buffer = ev.bum, desc = "Show signature help" }
+					)
+					vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = ev.bum, desc = "Rename symbol" })
+					vim.keymap.set(
+						{ "n", "v" },
+						"<leader>ca",
+						vim.lsp.buf.code_action,
+						{ buffer = ev.bum, desc = "Open code actions" }
+					)
+					vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = ev.bum, desc = "Show references" })
 					vim.keymap.set("n", "<leader>f", function()
 						vim.lsp.buf.format({ async = true })
-					end, opts)
+					end, { buffer = ev.bum, desc = "Format document" })
 				end,
 			})
 		end,
