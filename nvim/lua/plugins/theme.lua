@@ -39,6 +39,32 @@ return {
 	{ "morhetz/gruvbox" },
 	{ "AlexvZyl/nordic.nvim" },
 	{ "catppuccin/nvim" },
+	{ "yorumicolors/yorumi.nvim" },
+	{
+		"baliestri/aura-theme",
+		lazy = false,
+		priority = 1000,
+		config = function(plugin)
+			vim.opt.rtp:append(plugin.dir .. "/packages/neovim")
+		end,
+	},
+	{
+		"uloco/bluloco.nvim",
+		lazy = false,
+		priority = 1000,
+		dependencies = { "rktjmp/lush.nvim" },
+	},
+	{
+		"zenbones-theme/zenbones.nvim",
+		dependencies = "rktjmp/lush.nvim",
+		lazy = false,
+		priority = 1000,
+	},
+	{ "nyoom-engineering/oxocarbon.nvim" },
+	{ "bluz71/vim-moonfly-colors" },
+	{ "bluz71/vim-nightfly-colors" },
+	{ "Shatur/neovim-ayu" },
+	{ "ribru17/bamboo.nvim" },
 	{
 		"zaldih/themery.nvim",
 		lazy = false,
@@ -50,6 +76,27 @@ return {
 					"lackluster-hack",
 					"lackluster-mint",
 					"lackluster-night",
+					"zenwritten",
+					"neobones",
+					"vimbones",
+					"rosebones",
+					"forestbones",
+					"nordbones",
+					"seoulbones",
+					"duckbones",
+					"zenburned",
+					"kanagawabones",
+					"bamboo",
+					"bluloco-dark",
+					"bluloco-light",
+					"aura-dark",
+					"aura-dark-soft-text",
+					"aura-soft-dark",
+					"aura-soft-dark-soft-text",
+					"oxocarbon",
+					"moonfly",
+					"nightfly",
+					"yorumi",
 					"iceberg",
 					"everforest",
 					"kanagawa",
@@ -64,35 +111,22 @@ return {
 					"nordic",
 					"gruvbox",
 					"catppuccin-mocha",
-					"catppuccin-frappe",
 					"catppuccin-macchiato",
+					"catppuccin-frappe",
 					"catppuccin-latte",
 				},
 				livePreview = true,
 			})
 
-			-- 		vim.api.nvim_create_autocmd("ColorScheme", {
-			-- 			pattern = "*",
-			-- 			callback = function()
-			-- 				vim.api.nvim_set_hl(0, "LspInlayHint", {
-			-- 					fg = vim.api.nvim_get_hl_by_name("LspInlayHint", true).foreground, -- Retain the current foreground color
-			-- 					bg = "NONE", -- Set background to NONE for transparency
-			-- 					blend = vim.api.nvim_get_hl_by_name("LspInlayHint", true).blend, -- Retain the current blend value
-			-- 				})
-			-- 			end,
-			-- 		})
-
+			-- Always removes the background color of inlay hints
 			vim.api.nvim_create_autocmd("ColorScheme", {
 				pattern = "*",
 				callback = function()
-					local current_colorscheme = vim.g.colors_name or ""
-					if current_colorscheme:match("^rose%-pine") then
-						vim.api.nvim_set_hl(0, "LspInlayHint", {
-							fg = "#6e6a86", -- Keep the original foreground color
-							bg = "NONE", -- Set background to NONE for transparency
-							blend = 10, -- Keep the original blend value
-						})
-					end
+					vim.api.nvim_set_hl(0, "LspInlayHint", {
+						fg = vim.api.nvim_get_hl_by_name("LspInlayHint", true).foreground, -- Retain the current foreground color
+						bg = "NONE", -- Set background to NONE for transparency
+						blend = vim.api.nvim_get_hl_by_name("LspInlayHint", true).blend, -- Retain the current blend value
+					})
 				end,
 			})
 		end,
