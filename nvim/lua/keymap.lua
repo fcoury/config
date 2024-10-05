@@ -78,4 +78,25 @@ vim.api.nvim_exec(
 	false
 )
 
+-- move up and down with j and k when count is 0 and with gj and gk when count is not 0
+
+_G.conditional_move_j = function()
+	if vim.v.count == 0 then
+		return "gj"
+	else
+		return "j"
+	end
+end
+
+_G.conditional_move_k = function()
+	if vim.v.count == 0 then
+		return "gk"
+	else
+		return "k"
+	end
+end
+
+keymap.set("n", "j", "v:lua.conditional_move_j()", { expr = true, noremap = true })
+keymap.set("n", "k", "v:lua.conditional_move_k()", { expr = true, noremap = true })
+
 _G_disable_arrows()
