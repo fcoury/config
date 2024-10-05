@@ -1,3 +1,5 @@
+-- https://github.com/leath-dub/snipe.nvim
+-- Efficient targetted menu built for fast buffer navigation
 return {
 	"leath-dub/snipe.nvim",
 	config = function()
