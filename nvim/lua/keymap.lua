@@ -18,6 +18,15 @@ keymap.set("n", "<leader>w", "<cmd>Telescope lsp_workspace_symbols<cr>", { desc 
 keymap.set("n", "<leader>k", "<cmd>Telescope lsp_references<cr>", { desc = "open references" })
 keymap.set("n", "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "open document symbols" })
 
+-- snipe
+vim.keymap.set("n", "<S-l>", function()
+	local toggle = require("snipe").create_buffer_menu_toggler({
+		-- Limit the width of path buffer names
+		max_path_width = 1,
+	})
+	toggle()
+end, { desc = "[P]Snipe" })
+
 -- lsp and rust
 keymap.set("n", "<leader>x", "<cmd>RustRunnables<cr>", { desc = "run rust runnables" })
 -- keymap.set("n", "<leader>y", "<cmd>lua require'runst'.run_test()<cr>", { noremap = true, silent = true })
