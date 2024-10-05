@@ -78,7 +78,6 @@ return {
 					"lackluster-night",
 					"zenwritten",
 					"neobones",
-					"vimbones",
 					"rosebones",
 					"forestbones",
 					"nordbones",
