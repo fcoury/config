@@ -13,7 +13,7 @@
       end
 
       set -gx EDITOR "${pkgs.neovim}/bin/nvim"
-      set -gx TERM "tmux-256color"
+      set -gx TERM "xterm-256color"
 
       set PATH $HOME/.local/bin $HOME/.cargo/bin $PATH
       set -g CDPATH . $HOME $HOME/code

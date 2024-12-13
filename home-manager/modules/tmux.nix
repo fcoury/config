@@ -64,7 +64,7 @@ in
     enable = true;
 
     shell = "${pkgs.fish}/bin/fish";
-    terminal = "tmux-256color";
+    terminal = "xterm-256color";
     historyLimit = 100000;
     baseIndex = 1;
     prefix = "C-S";
@@ -93,7 +93,7 @@ in
     ];
 
     extraConfig = ''
-      set -g default-terminal "tmux-256color"
+      set -g default-terminal "xterm-256color"
       set -ag terminal-overrides ",xterm-256color:RGB"
 
       unbind r
