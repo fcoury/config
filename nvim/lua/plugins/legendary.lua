@@ -7,7 +7,92 @@ return {
 	lazy = false,
 	config = function()
 		local legendary = require("legendary")
+		require("legendary").setup({ extensions = { lazy_nvim = true } })
+
 		legendary.keymaps({
+			-- remaps ; to act as :
+			{ ";", ":", mode = "n", opts = { noremap = true }, description = "Remap ; to :" },
+
+			-- select all
+			{ "<leader>a", "ggVG", mode = "n", description = "Select all" },
+
+			-- paste not overwritten by delete
+			{ "<leader>p", '"0p', mode = { "n", "x" }, description = "Paste and doesn't overwrite" },
+
+			-- redo
+			{ "U", "<C-r>", mode = "n", opts = { noremap = true }, description = "Redo" },
+
+			-- move to beginning/end of line
+			-- { "H", "^", mode = "n", opts = { noremap = true }, description = "Move to beginning of line" },
+			-- { "L", "$", mode = "n", opts = { noremap = true }, description = "Move to end of line" },
+
+			-- telescope
+			{ "<C-j>", "<cmd>Telescope buffers<cr>", mode = "n", description = "Open buffers" },
+			{ "<leader>b", "<cmd>Telescope buffers<cr>", mode = "n", description = "Open buffers" },
+			{ "<leader>d", "<cmd>Telescope diagnostics<cr>", mode = "n", description = "Open diagnostics" },
+			{
+				"<leader>s",
+				"<cmd>Telescope lsp_document_symbols<cr>",
+				mode = "n",
+				description = "Open document symbols",
+			},
+			{
+				"<leader>w",
+				"<cmd>Telescope lsp_workspace_symbols<cr>",
+				mode = "n",
+				description = "Open workspace symbols",
+			},
+			{ "<leader>k", "<cmd>Telescope lsp_references<cr>", mode = "n", description = "Open references" },
+			{ "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>", mode = "n", description = "Open document symbols" },
+
+			-- lsp and rust
+			{ "<leader>x", "<cmd>RustRunnables<cr>", mode = "n", description = "Run Rust runnables" },
+
+			-- buffers
+			{ "]b", "<cmd>bnext<cr>", mode = "n", description = "Next buffer" },
+			{ "[b", "<cmd>bprevious<cr>", mode = "n", description = "Previous buffer" },
+			{ "<leader><leader>", "<cmd>b#<cr>", mode = "n", description = "Switch to last buffer" },
+
+			-- splits
+			{ "|", "<cmd>vsplit<cr><c-w><c-w>", mode = "n", description = "Split vertically" },
+			{ "_", "<cmd>split<cr>", mode = "n", description = "Split horizontally" },
+			{ "=", "<cmd>wincmd =<cr>", mode = "n", description = "Balance splits" },
+
+			-- lsp related
+			{ "<leader>,d", "<cmd>DiagnosticToggle<cr>", mode = "n", description = "Toggle diagnostics" },
+
+			-- special commands
+			{
+				"<leader>cl",
+				"<cmd>CopyFileNameAndLine<cr>",
+				mode = "n",
+				opts = { noremap = true, silent = true },
+				description = "Copy current file name and line number",
+			},
+
+			-- delete text
+			{ "m", '"_x', mode = "n", opts = { noremap = true, silent = true }, description = "Delete text" },
+			{ "mm", '"_dd', mode = "n", opts = { noremap = true, silent = true }, description = "Delete line" },
+			{ "m", '"_x', mode = "v", opts = { noremap = true, silent = true }, description = "Delete text" },
+			{ "mw", '"_dw', mode = "n", opts = { noremap = true, silent = true }, description = "Delete word" },
+			{ "miw", '"_diw', mode = "n", opts = { noremap = true, silent = true }, description = "Delete inner word" },
+
+			-- conditional move
+			{
+				"j",
+				"v:lua.conditional_move_j()",
+				mode = "n",
+				opts = { expr = true, noremap = true },
+				description = "Conditional move j",
+			},
+			{
+				"k",
+				"v:lua.conditional_move_k()",
+				mode = "n",
+				opts = { expr = true, noremap = true },
+				description = "Conditional move k",
+			},
+
 			-- duplicate
 			{
 				description = "Line: duplicate up",
@@ -40,12 +125,6 @@ return {
 				"<leader>pp",
 				"<CMD>Telescope neovim-project discover<CR>",
 			},
-			-- {
-			-- 	description = "select a project from your recent history",
-			-- 	mode = { "n" },
-			-- 	"<leader>hh",
-			-- 	"<CMD>Telescope neovim-project history<CR>",
-			-- },
 		})
 	end,
 }

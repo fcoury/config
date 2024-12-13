@@ -2,6 +2,16 @@
 -- Efficient targetted menu built for fast buffer navigation
 return {
 	"leath-dub/snipe.nvim",
+	keys = {
+		{
+			"<S-l>",
+			function()
+				require("snipe").open_buffer_menu()
+			end,
+			mode = { "n" },
+			desc = "[P]Snipe",
+		},
+	},
 	config = function()
 		local snipe = require("snipe")
 		snipe.setup({
@@ -16,12 +26,12 @@ return {
 				-- In case you changed your mind, provide a keybind that lets you
 				-- cancel the snipe and close the window.
 				-- cancel_snipe = "<esc>",
-				cancel_snipe = "q",
+				cancel_snipe = "<esc>",
 
 				-- Remove "j" and "k" from your dictionary to navigate easier to delete
 				-- Close the buffer under the cursor
 				-- NOTE: Make sure you don't use the character below on your dictionary
-				-- close_buffer = "d",
+				close_buffer = "d",
 			},
 			-- Define the way buffers are sorted by default
 			-- Can be any of "default" (sort buffers by their number) or "last" (sort buffers by last accessed)

@@ -12,19 +12,20 @@ return {
 			})
 			require("mason-tool-installer").setup({
 				ensure_installed = {
-					"lua-language-server",
-					"stylua",
-					"eslint_d",
-					"prettierd",
 					"biome",
-					"prettierd",
-					"rust-analyzer",
-					"html-lsp",
+					"codelldb",
 					"css-lsp",
 					"emmet-ls",
+					"eslint_d",
+					"html-lsp",
 					"htmx-lsp",
-					"ruff-lsp",
+					"lua-language-server",
+					"prettierd",
 					"pyright",
+					"ruff-lsp",
+					"rust-analyzer",
+					"stylua",
+					"debugpy",
 				},
 			})
 		end,
@@ -101,6 +102,17 @@ return {
 				config = config or {}
 				config.border = border_style
 				vim.lsp.handlers.signature_help(err, result, ctx, config)
+			end
+
+			-- temporary fix for rust analyzer cancelation
+			for _, method in ipairs({ "textDocument/diagnostic", "workspace/diagnostic" }) do
+				local default_diagnostic_handler = vim.lsp.handlers[method]
+				vim.lsp.handlers[method] = function(err, result, context, config)
+					if err ~= nil and err.code == -32802 then
+						return
+					end
+					return default_diagnostic_handler(err, result, context, config)
+				end
 			end
 
 			-- lsp actions with telescope
