@@ -17,6 +17,12 @@ alias vim 'nvim'
 alias vivi 'cd ~/code/config/nvim; nvim'
 alias vic 'cd ~/code/config; nvim'
 
+# homebrew
+alias bi 'HOMEBREW_NO_AUTO_UPDATE=1 brew install'
+
+# tmux
+alias tn 'tmux new-session -s'
+
 function ca
   cargo add $argv; and cargo sort
 end
