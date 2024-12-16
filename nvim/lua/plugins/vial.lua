@@ -77,7 +77,7 @@ return {
 	dir = "~/code/vial",
 	config = function()
 		require("vial").setup({
-			vial_path = "/root/.cargo/bin/vial",
+			vial_path = "/Users/fcoury/.cargo/bin/vial",
 
 			file_types = {
 				rust = {
