@@ -76,6 +76,8 @@ return {
 			{ "m", '"_x', mode = "v", opts = { noremap = true, silent = true }, description = "Delete text" },
 			{ "mw", '"_dw', mode = "n", opts = { noremap = true, silent = true }, description = "Delete word" },
 			{ "miw", '"_diw', mode = "n", opts = { noremap = true, silent = true }, description = "Delete inner word" },
+			{ "diq", 'di"', mode = "n", opts = { noremap = true, silent = true }, description = "Delete inside quote" },
+			{ "ciq", 'ci"', mode = "n", opts = { noremap = true, silent = true }, description = "Change inside quote" },
 
 			-- conditional move
 			{
