@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 hostname"
+    exit 1
+fi
+
+hostname="$1"
+known_hosts="$HOME/.ssh/known_hosts"
+
+if [ ! -f "$known_hosts" ]; then
+    echo "Error: known_hosts file not found at $known_hosts"
+    exit 1
+fi
+
+# Use sed to remove the line containing the hostname
+sed -i.bak "/^$hostname[, ]/d" "$known_hosts"
+
+echo "Removed entries for $hostname from known_hosts file"

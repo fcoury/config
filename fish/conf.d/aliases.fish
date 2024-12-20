@@ -1,7 +1,3 @@
-function rl
-  sed -i '' -e "$argv[1]d" $HOME/.ssh/known_hosts
-end
-
 # git aliases
 alias gl "git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias gp 'git pull'
