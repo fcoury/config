@@ -65,6 +65,9 @@ return {
 	{ "bluz71/vim-nightfly-colors" },
 	{ "Shatur/neovim-ayu" },
 	{ "ribru17/bamboo.nvim" },
+	-- from this reddit discussion:
+	-- https://www.reddit.com/r/neovim/comments/1hnfvk5/comment/m41bzyk/?context=3&share_id=A_1wRGroXytW-uBkw54s6&utm_medium=ios_app&utm_name=ioscss&utm_source=share&utm_term=10
+	{ "gbprod/nord.nvim" },
 	{
 		"zaldih/themery.nvim",
 		lazy = false,
@@ -76,6 +79,7 @@ return {
 					"lackluster-hack",
 					"lackluster-mint",
 					"lackluster-night",
+					"nord",
 					"zenwritten",
 					"neobones",
 					"rosebones",
