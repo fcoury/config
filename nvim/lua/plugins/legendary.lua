@@ -76,15 +76,29 @@ return {
 			{ "m", '"_x', mode = "v", opts = { noremap = true, silent = true }, description = "Delete text" },
 			{ "mw", '"_dw', mode = "n", opts = { noremap = true, silent = true }, description = "Delete word" },
 			{ "miw", '"_diw', mode = "n", opts = { noremap = true, silent = true }, description = "Delete inner word" },
+			-- {
+			-- 	"viq",
+			-- 	'vi"',
+			-- 	mode = "n",
+			-- 	opts = { noremap = true, silent = true },
+			-- 	description = "Visual selection inside quotes",
+			-- },
+			-- { "diq", 'di"', mode = "n", opts = { noremap = true, silent = true }, description = "Delete inside quote" },
+			-- { "ciq", 'ci"', mode = "n", opts = { noremap = true, silent = true }, description = "Change inside quote" },
+
+			-- text objects
 			{
-				"viq",
-				'vi"',
-				mode = "n",
-				opts = { noremap = true, silent = true },
-				description = "Visual selection inside quotes",
+				"iq",
+				":lua select_inside_quotes()<CR>",
+				mode = { "x", "o" },
+				description = "Select inside double quotes",
 			},
-			{ "diq", 'di"', mode = "n", opts = { noremap = true, silent = true }, description = "Delete inside quote" },
-			{ "ciq", 'ci"', mode = "n", opts = { noremap = true, silent = true }, description = "Change inside quote" },
+			{
+				"aq",
+				":lua select_around_quotes()<CR>",
+				mode = { "x", "o" },
+				description = "Select around double quotes",
+			},
 
 			-- conditional move
 			{

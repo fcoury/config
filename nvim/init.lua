@@ -21,6 +21,9 @@ require("neovide")
 -- key mappings
 require("keymap")
 
+-- text objects
+require("text-objects")
+
 -- custom commands
 require("commands")
 
