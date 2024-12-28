@@ -1,5 +1,6 @@
 return {
 	"coffebar/neovim-project",
+	cond = not vim.g.neovide,
 	opts = {
 		projects = { -- define project roots
 			"~/code/*",
