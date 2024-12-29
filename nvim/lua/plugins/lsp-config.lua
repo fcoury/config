@@ -26,6 +26,7 @@ return {
 					"rust-analyzer",
 					"stylua",
 					"debugpy",
+					"zls",
 				},
 			})
 		end,
