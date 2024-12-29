@@ -81,7 +81,7 @@ return {
 
 			file_types = {
 				rust = {
-					command = "cargo %s",
+					command = "CARGO_TERM_COLOR=always cargo %s",
 					extensions = { ".rs" },
 					extract = current_rust_test_name,
 				},
