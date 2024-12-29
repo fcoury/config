@@ -63,3 +63,13 @@ function tt
 
   cd $prev_dir
 end
+
+function tm
+  set session_name (basename (pwd))
+
+  if tmux has-session -t $session_name
+    tmux attach-session -t $session_name
+  else
+    tmux new-session -s $session_name
+  end
+end
