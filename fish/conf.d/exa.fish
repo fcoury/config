@@ -2,7 +2,7 @@
 functions -e ls
 
 # Check if 'eza' command exists
-if type -q eza || test -e /opt/homebrew/bin/exa
+if type -q eza || test -e /opt/homebrew/bin/eza
     # Define the 'ls' function
     function ls
         # Check if '-rt' is in the arguments
