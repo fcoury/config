@@ -4,12 +4,23 @@ font-family = "FantasqueSansM Nerd Font Mono"
 font-size = 18
 # font-thicken = true
 
+macos-option-as-alt = true
+
 cursor-style = block
 cursor-style-blink = false
 
 shell-integration-features = no-cursor,no-sudo
 
-adjust-cell-height = 2
+adjust-cell-height = 10%
+
+# Keybindings
+# keybind = unconsumed:ctrl+h=goto_split:left
+# keybind = unconsumed:ctrl+l=goto_split:right
+# keybind = unconsumed:ctrl+j=goto_split:bottom
+# keybind = unconsumed:ctrl+k=goto_split:top
+
+# Cmd+Shift+J edit scrollback
+# keybind = cmd+shift+j=write_screen_file:paste
 
 # Lackluster theme converted for Ghostty
 
