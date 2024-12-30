@@ -10,15 +10,36 @@ return {
 					auto_trigger = true,
 					keymap = {
 						accept = "<c-l>",
+						next = "<M-]>",
+						prev = "<M-[>",
 					},
 				},
 			})
 		end,
 	},
+	-- {
+	-- 	"zbirenbaum/copilot-cmp",
+	-- 	config = function()
+	-- 		require("copilot_cmp").setup()
+	-- 	end,
+	-- },
 	{
-		"zbirenbaum/copilot-cmp",
+		"CopilotC-Nvim/CopilotChat.nvim",
+		dependencies = {
+			{ "zbirenbaum/copilot.lua" },
+		},
+		cmd = "CopilotChat",
+		build = "make tiktoken",
+		keys = {
+			{
+				"<leader>ch",
+				"<cmd>CopilotChat<cr>",
+				mode = "n",
+				desc = "Open Copilot Chat",
+			},
+		},
 		config = function()
-			require("copilot_cmp").setup()
+			require("CopilotChat").setup()
 		end,
 	},
 }
