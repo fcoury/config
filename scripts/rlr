@@ -1,0 +1,51 @@
+#!/usr/bin/ruby
+
+# Removes a line from the ~/.ssh/known_hosts file.
+# It was designed to be used when you get the man-in-the-middle
+# attack warning (see below) often and want a quick way to get 
+# rid of it.
+
+# Example of output when you have the warning:
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+# Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+# It is also possible that the RSA host key has just been changed.
+# The fingerprint for the RSA key sent by the remote host is
+# fc:46:69:9b:42:fe:19:73:d4:c0:56:8e:6a:55:fe:44.
+# Please contact your system administrator.
+# Add correct host key in /home/fcoury/.ssh/known_hosts to get rid of this message.
+# Offending key in /home/fcoury/.ssh/known_hosts:34
+# RSA host key for 67.123.129.232 has changed and you have requested strict checking.
+# Host key verification failed.
+# 
+
+# Usage:
+#   rl line_to_remove
+# line_to_remove is the line described as offending in the output:
+#   Offending key in /home/fcoury/.ssh/known_hosts:34
+# in this case you would run:
+#   rl 34
+# and be done with it.
+
+require 'tempfile'
+
+line = ARGV[0]
+file = ARGV[1] || "#{ENV['HOME']}/.ssh/known_hosts" 
+
+lines = File.open(file, "r").readlines
+
+tmpfile = Tempfile.new('enc')
+File.open(tmpfile.path, 'w') do |f|
+  lines.each_with_index do |fileline, i|
+    unless i+1 == line.to_i
+      f.puts fileline 
+    end
+  end
+end
+
+new_lines = File.open(tmpfile.path, "r").readlines
+
+File.delete(file)
+File.rename(tmpfile.path, file)
