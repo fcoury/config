@@ -65,11 +65,11 @@ function tt
 end
 
 function tm
-  set session_name (basename (pwd))
+  set session_name (basename (pwd) | string replace '.' '_')
 
-  if tmux has-session -t $session_name
-    tmux attach-session -t $session_name
+  if tmux has-session -t "$session_name"
+    tmux attach-session -t "$session_name"
   else
-    tmux new-session -s $session_name
+    tmux new-session -s "$session_name"
   end
 end
