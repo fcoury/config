@@ -87,18 +87,19 @@ return {
 			-- { "ciq", 'ci"', mode = "n", opts = { noremap = true, silent = true }, description = "Change inside quote" },
 
 			-- text objects
-			{
-				"iq",
-				":lua select_inside_quotes()<CR>",
-				mode = { "x", "o" },
-				description = "Select inside double quotes",
-			},
-			{
-				"aq",
-				":lua select_around_quotes()<CR>",
-				mode = { "x", "o" },
-				description = "Select around double quotes",
-			},
+			-- deprecated in favor of mini.ai
+			-- {
+			-- 	"iq",
+			-- 	":lua select_inside_quotes()<CR>",
+			-- 	mode = { "x", "o" },
+			-- 	description = "Select inside double quotes",
+			-- },
+			-- {
+			-- 	"aq",
+			-- 	":lua select_around_quotes()<CR>",
+			-- 	mode = { "x", "o" },
+			-- 	description = "Select around double quotes",
+			-- },
 
 			-- conditional move
 			{
