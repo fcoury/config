@@ -1,0 +1,70 @@
+theme = "frappe.json"
+mouse_scroll_lines = 3
+log_file = "/tmp/red.log"
+show_diagnostics = true
+
+[keys.insert]
+Enter = "InsertNewLine"
+Backspace = "DeletePreviousChar"
+Tab = "InsertTab"
+Esc = { EnterMode = "Normal" }
+
+[keys.normal]
+"w" = [ "MoveToNextWord" ]
+"b" = [ "MoveToPreviousWord" ]
+"o" = [ "InsertLineBelowCursor", { EnterMode = "Insert" } ]
+"O" = [ "InsertLineAtCursor", { EnterMode = "Insert" } ]
+"G" = "MoveToBottom"
+"g" = { "g" = "MoveToTop", "d" = "GoToDefinition" }
+"u" = "Undo"
+"Down" = "MoveDown"
+"Left" = "MoveLeft"
+"Right" = "MoveRight"
+"Up" = "MoveUp"
+"k" = "MoveUp"
+"j" = "MoveDown"
+"h" = "MoveLeft"
+"l" = "MoveRight"
+"0" = "MoveToLineStart"
+"Home" = "MoveToLineStart"
+"$" = "MoveToLineEnd"
+"End" = "MoveToLineEnd"
+"Ctrl-b" = "PageUp"
+"Ctrl-f" = "PageDown"
+"x" = "DeleteCharAtCursorPos"
+"d" = { "d" = "DeleteCurrentLine", "b" = "DumpBuffer", "w" = "DeleteWord" }
+"z" = { "z" = "MoveLineToViewportCenter" }
+"n" = [ "FindNext" ]
+"N" = [ "FindPrevious" ]
+"a" = [{ EnterMode = "Insert" }, "MoveRight" ]
+"i" = { EnterMode = "Insert" }
+";" = { EnterMode = "Command" }
+":" = { EnterMode = "Command" }
+"/" = { EnterMode = "Search" }
+"|" = "Split" 
+"_" = "SplitVertical"
+"Ctrl-w" = { "w" = "NextWindow", "Ctrl-w" = "NextWindow" }
+"Ctrl-p" = "FilePicker"
+"Ctrl-z" = "Suspend"
+"K" = "Hover"
+"W" = "ToggleWrap"
+"L" = "DecreaseLeft"
+"R" = "IncreaseLeft"
+
+[keys.normal." "]
+"n" = "NextBuffer"
+"p" = "PreviousBuffer"
+"b" = { PluginCommand = "BufferPicker" }
+
+[keys.command]
+Esc = { EnterMode = "Normal" }
+
+[keys.search]
+Esc = { EnterMode = "Normal" }
+
+[commands]
+"write" = "Save"
+"quit" = "Quit"
+
+[plugins]
+buffer_picker = "buffer_picker.js"
