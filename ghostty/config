@@ -1,6 +1,7 @@
 # Look and feel
 macos-titlebar-style = tabs
 font-family = "FantasqueSansM Nerd Font Mono"
+# font-family = "Hack Nerd Font Mono"
 font-size = 23
 # font-thicken = true
 adjust-cell-height = 10
@@ -18,8 +19,8 @@ shell-integration-features = no-cursor,no-sudo
 config-file = lackluster-theme.conf
 
 # Keybindings
-# keybind = unconsumed:ctrl+h=goto_split:left
-# keybind = unconsumed:ctrl+l=goto_split:right
-# keybind = unconsumed:ctrl+j=goto_split:bottom
-# keybind = unconsumed:ctrl+k=goto_split:top
+keybind = cmd+h=goto_split:left
+keybind = cmd+l=goto_split:right
+keybind = cmd+j=goto_split:bottom
+keybind = cmd+k=goto_split:top
 
