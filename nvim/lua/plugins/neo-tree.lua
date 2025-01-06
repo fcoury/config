@@ -14,7 +14,8 @@ return {
 	config = function()
 		require("neo-tree").setup({
 			window = {
-				width = 35,
+				position = "left",
+				width = 30,
 			},
 			filesystem = {
 				follow_current_file = {
