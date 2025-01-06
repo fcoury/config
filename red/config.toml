@@ -1,7 +1,28 @@
-theme = "frappe.json"
+# This is a sample configuration file for red.
+#
+# The configuration file is a TOML file. The configuration file is read from
+# the following locations:
+#
+# 1. $XDG_CONFIG_HOME/red/config.toml
+# 2. $HOME/.config/red/config.toml
+# 
+
+# Name of the VSCode theme to use. The theme file should be present in the
+# themes directory: $XDG_CONFIG_HOME/red/themes or $HOME/.config/red/themes
+theme = "mocha.json"
+
+# The number of lines to scroll when using the mouse wheel
 mouse_scroll_lines = 3
+
+# The full path to the log file. If the log file is not present, red will
+# create it. If the log file is present, red will append to it.
+# This setting is optional, if not present, red will not log anything.
 log_file = "/tmp/red.log"
-show_diagnostics = true
+
+# When this setting is either absent or set to true, red will show
+# diagnostics in the log file. When set to false, red will not show
+# them.
+# show_diagnostics = true 
 
 [keys.insert]
 Enter = "InsertNewLine"
@@ -41,25 +62,54 @@ Esc = { EnterMode = "Normal" }
 ";" = { EnterMode = "Command" }
 ":" = { EnterMode = "Command" }
 "/" = { EnterMode = "Search" }
-"|" = "Split" 
-"_" = "SplitVertical"
-"Ctrl-w" = { "w" = "NextWindow", "Ctrl-w" = "NextWindow" }
+# "|" = "Split" 
+# "_" = "SplitVertical"
+# "Ctrl-w" = { "w" = "NextWindow", "Ctrl-w" = "NextWindow" }
 "Ctrl-p" = "FilePicker"
 "Ctrl-z" = "Suspend"
 "K" = "Hover"
-"W" = "ToggleWrap"
-"L" = "DecreaseLeft"
-"R" = "IncreaseLeft"
+# "W" = "ToggleWrap"
+# "L" = "DecreaseLeft"
+# "R" = "IncreaseLeft"
+"v" = { EnterMode = "Visual" }
+"V" = { EnterMode = "VisualLine" }
+"Ctrl-v" = { EnterMode = "VisualBlock" }
+"p" = "Paste"
+"P" = "PasteBefore"
 
 [keys.normal." "]
 "n" = "NextBuffer"
 "p" = "PreviousBuffer"
 "b" = { PluginCommand = "BufferPicker" }
 
+[keys.search]
+Esc = { EnterMode = "Normal" }
+
 [keys.command]
 Esc = { EnterMode = "Normal" }
 
-[keys.search]
+[keys.visual]
+Esc = { EnterMode = "Normal" } 
+"k" = "MoveUp"
+"j" = "MoveDown"
+"h" = "MoveLeft"
+"l" = "MoveRight"
+"y" = [ "Yank", { EnterMode = "Normal" } ]
+"x" = [ "Delete", { EnterMode = "Normal" } ]
+"p" = [ "Paste", { EnterMode = "Normal" } ]
+"w" = "MoveToNextWord"
+"b" = "MoveToPreviousWord"
+"I" = "InsertBlock"
+
+# TODO: "i" = "SelectInside"
+# TODO: "o" = "SelectOutside"
+# TODO: "c" = "ChangeBlock"
+# TODO: "r" = "ReplaceBlock"
+
+[keys.visual_block]
+Esc = { EnterMode = "Normal" }
+
+[keys.visual_line]
 Esc = { EnterMode = "Normal" }
 
 [commands]
