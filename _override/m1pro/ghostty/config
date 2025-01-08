@@ -1,6 +1,6 @@
 theme = catppuccin-mocha
 # font-family = "Iosevka Nerd Font"
-font-family = "FantasqueSansM Nerd Font Mono"
+font-family = "FantasqueSansM Nerd Font"
 font-size = 23
 # font-thicken = true
 

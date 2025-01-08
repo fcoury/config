@@ -1,7 +1,7 @@
 theme = catppuccin-mocha
 # font-family = "Iosevka Nerd Font"
-font-family = "FantasqueSansM Nerd Font Mono"
-font-size = 18
+font-family = "FantasqueSansM Nerd Font"
+font-size = 19
 # font-thicken = true
 
 macos-option-as-alt = true
