@@ -78,7 +78,7 @@ Esc = { EnterMode = "Normal" }
 "P" = "PasteBefore"
 
 [keys.normal." "]
-"n" = "NextBuffer"
+" " = "NextBuffer"
 "p" = "PreviousBuffer"
 "b" = { PluginCommand = "BufferPicker" }
 
