@@ -1,3 +1,4 @@
+-- hides sensitive information in files
 return {
 	"laytan/cloak.nvim",
 	config = function()

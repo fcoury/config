@@ -1,3 +1,4 @@
+-- format code on save
 return {
 	"stevearc/conform.nvim",
 	lazy = false,
