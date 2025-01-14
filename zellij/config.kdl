@@ -4,7 +4,12 @@ keybinds {
         // uncomment this and adjust key if using copy_on_select=false
         // bind "Alt c" { Copy; }
         // bind "Alt k" { ClearScrollback 2; }
-        bind "Ctrl k" { Clear; }
+        bind "Ctrl s" { SwitchToMode "Pane"; }
+        // bind "Ctrl k" { Clear; }
+        bind "Ctrl k" { MoveFocus "Up"; }
+        bind "Ctrl j" { MoveFocus "Down"; }
+        bind "Ctrl h" { MoveFocus "Left"; }
+        bind "Ctrl l" { MoveFocus "Right"; }
         bind "Alt m" {
             LaunchPlugin "file:~/.config/zellij/plugins/monocle.wasm" {
                 in_place true
@@ -38,11 +43,11 @@ keybinds {
         bind "k" "Up" { MoveFocus "Up"; }
         bind "p" { SwitchFocus; }
         bind "n" { NewPane; SwitchToMode "Normal"; }
-        bind "d" { NewPane "Down"; SwitchToMode "Normal"; }
-        bind "r" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "d" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "s" { NewPane "Down"; SwitchToMode "Normal"; }
         bind "x" { CloseFocus; SwitchToMode "Normal"; }
-        bind "f" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
-        bind "z" { TogglePaneFrames; SwitchToMode "Normal"; }
+        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        bind "f" { TogglePaneFrames; SwitchToMode "Normal"; }
         bind "w" { ToggleFloatingPanes; SwitchToMode "Normal"; }
         bind "Ctrl w" { ToggleFloatingPanes; SwitchToMode "Normal"; }
         bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }

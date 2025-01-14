@@ -38,6 +38,7 @@ return {
 	{ "rose-pine/neovim", as = "rose-pine" },
 	{ "morhetz/gruvbox" },
 	{ "AlexvZyl/nordic.nvim" },
+	{ "fcancelinha/nordern.nvim", branch = "master", priority = 1000 },
 	{ "catppuccin/nvim" },
 	{ "yorumicolors/yorumi.nvim" },
 	{
@@ -68,6 +69,8 @@ return {
 	-- from this reddit discussion:
 	-- https://www.reddit.com/r/neovim/comments/1hnfvk5/comment/m41bzyk/?context=3&share_id=A_1wRGroXytW-uBkw54s6&utm_medium=ios_app&utm_name=ioscss&utm_source=share&utm_term=10
 	{ "gbprod/nord.nvim" },
+	{ "sam4llis/nvim-tundra" },
+	{ "ramojus/mellifluous.nvim" },
 	{
 		"zaldih/themery.nvim",
 		lazy = false,
@@ -80,6 +83,8 @@ return {
 					"lackluster-mint",
 					"lackluster-night",
 					"nord",
+					"nordic",
+					"nordern",
 					"zenwritten",
 					"neobones",
 					"rosebones",
@@ -111,12 +116,13 @@ return {
 					"rose-pine-main",
 					"rose-pine-dawn",
 					"rose-pine-moon",
-					"nordic",
 					"gruvbox",
 					"catppuccin-mocha",
 					"catppuccin-macchiato",
 					"catppuccin-frappe",
 					"catppuccin-latte",
+					"tundra",
+					"mellifluous",
 				},
 				livePreview = true,
 			})

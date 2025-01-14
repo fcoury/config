@@ -36,6 +36,7 @@ return {
 				"<cmd>CopilotChat<cr>",
 				mode = "n",
 				desc = "Open Copilot Chat",
+				silent = true,
 			},
 		},
 		config = function()

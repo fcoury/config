@@ -7,6 +7,10 @@ alias gpr 'hub pull-request|xargs open'
 alias gtr 'git track'
 alias gap 'git add -p'
 
+# best lsusb for macOS is cyme
+# https://github.com/tuna-f1sh/cyme
+alias lsusb 'cyme'
+
 # neovim aliases
 alias vi 'nvim'
 alias vim 'nvim'

@@ -9,6 +9,7 @@
                 "rules": [
                     {
                         "description": "Map opt+h/j/k/l to arrow keys",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "from": {

@@ -10,6 +10,7 @@ return {
 				end,
 				mode = { "n" },
 				desc = "Toggle breakpoint",
+				silent = true,
 			},
 			{
 				"<Leader>Dc",
@@ -18,6 +19,7 @@ return {
 				end,
 				mode = { "n" },
 				desc = "Continue or Start debugger",
+				silent = true,
 			},
 		},
 		dependendecies = {

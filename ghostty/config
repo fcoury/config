@@ -1,14 +1,15 @@
 # Look and feel
-macos-titlebar-style = tabs
+
 font-family = "FantasqueSansM Nerd Font"
 # font-family = "Hack Nerd Font Mono"
 font-size = 23
 # font-thicken = true
 adjust-cell-height = 10
 
-# old font
-# font-family = "Iosevka Nerd Font"
-# adjust-cell-height = 3
+# Show tabs instead of a title bar
+macos-titlebar-style = tabs
+# Option behaves as alt
+macos-option-as-alt = true
 
 cursor-style = block
 cursor-style-blink = false
@@ -24,3 +25,6 @@ keybind = cmd+l=goto_split:right
 keybind = cmd+j=goto_split:bottom
 keybind = cmd+k=goto_split:top
 
+# old font
+# font-family = "Iosevka Nerd Font"
+# adjust-cell-height = 3
