@@ -3,7 +3,7 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	build = ":TSUpdate",
 	dependencies = {
-		"windwp/nvim-ts-autotag",
+		-- "windwp/nvim-ts-autotag",
 		"axelvc/template-string.nvim",
 		"nvim-treesitter/nvim-treesitter-textobjects",
 	},
@@ -28,9 +28,9 @@ return {
 			auto_install = true,
 			highlight = { enable = true, additional_vim_regex_highlighting = false },
 			indent = { enable = true },
-			autotag = {
-				enable = true,
-			},
+			-- autotag = {
+			-- 	enable = true,
+			-- },
 			incremental_selection = {
 				enable = true,
 				keymaps = {

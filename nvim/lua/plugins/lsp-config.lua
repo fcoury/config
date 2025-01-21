@@ -15,7 +15,7 @@ return {
 					"biome",
 					"codelldb",
 					"css-lsp",
-					"emmet-ls",
+					-- "emmet-ls",
 					"eslint_d",
 					"html-lsp",
 					"htmx-lsp",
@@ -50,7 +50,7 @@ return {
 			lspconfig.zls.setup({})
 			lspconfig.html.setup({})
 			lspconfig.cssls.setup({})
-			lspconfig.emmet_ls.setup({})
+			-- lspconfig.emmet_ls.setup({})
 			lspconfig.htmx.setup({})
 			lspconfig.pyright.setup({})
 			lspconfig.ruff.setup({})
@@ -123,32 +123,31 @@ return {
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
 			capabilities.textDocument.completion.completionItem.snippetSupport = false
 
-			lspconfig.emmet_ls.setup({
-				-- on_attach = on_attach,
-				capabilities = capabilities,
-				filetypes = {
-					"css",
-					"eruby",
-					"html",
-					"javascript",
-					"javascriptreact",
-					"less",
-					"sass",
-					"scss",
-					"svelte",
-					"pug",
-					"typescriptreact",
-					"vue",
-				},
-				init_options = {
-					html = {
-						options = {
-							-- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267
-							["bem.enabled"] = true,
-						},
-					},
-				},
-			})
+			-- lspconfig.emmet_ls.setup({
+			-- 	-- on_attach = on_attach,
+			-- 	capabilities = capabilities,
+			-- 	filetypes = {
+			-- 		"css",
+			-- 		"eruby",
+			-- 		"html",
+			-- 		"javascriptreact",
+			-- 		"less",
+			-- 		"sass",
+			-- 		"scss",
+			-- 		"svelte",
+			-- 		"pug",
+			-- 		"typescriptreact",
+			-- 		"vue",
+			-- 	},
+			-- 	init_options = {
+			-- 		html = {
+			-- 			options = {
+			-- 				-- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267
+			-- 				["bem.enabled"] = true,
+			-- 			},
+			-- 		},
+			-- 	},
+			-- })
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),

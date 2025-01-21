@@ -3,13 +3,13 @@ return {
 	version = "v2.*",
 	build = "make install_jsregexp",
 	config = function()
-		require("luasnip.loaders.from_vscode").lazy_load()
 		local ls = require("luasnip")
 		local s = ls.snippet
 		local t = ls.text_node
 		local i = ls.insert_node
 		local f = ls.function_node
 
+		-- Custom function
 		local function to_camel_case(args)
 			local name = args[1][1]
 			local result = name:gsub("_(%l)", function(c)
@@ -17,6 +17,9 @@ return {
 			end)
 			return result:gsub("^%l", string.upper)
 		end
+
+		-- VSCode Snippets
+		-- require("luasnip.loaders.from_vscode").lazy_load()
 
 		-- snippets
 		ls.add_snippets("rust", {
@@ -30,6 +33,14 @@ return {
 				t({ "", "\t" }),
 				i(0),
 				t({ "", "}" }),
+			}),
+		})
+
+		ls.add_snippets("javascript", {
+			s("logx", {
+				t("console.log("),
+				i(1, "message"),
+				t(");"),
 			}),
 		})
 

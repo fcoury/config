@@ -13,9 +13,7 @@ return {
 	},
 	config = function()
 		local cmp = require("cmp")
-
 		local luasnip = require("luasnip")
-
 		local lspkind = require("lspkind")
 
 		cmp.setup({
@@ -42,7 +40,7 @@ return {
 				{ name = "nvim_lsp" },
 				{ name = "copilot" },
 				{ name = "path" },
-				{ name = "luasnip" }, -- For luasnip users.
+				{ name = "luasnip" },
 				{ name = "crates" },
 			}, {
 				{ name = "buffer" },
@@ -77,8 +75,8 @@ return {
 		})
 
 		-- snippets
-		require("luasnip.loaders.from_vscode").load({
-			paths = { "~/.config/nvim/snippets" },
-		})
+		-- require("luasnip.loaders.from_vscode").load({
+		-- 	paths = { "~/.config/nvim/snippets" },
+		-- })
 	end,
 }
