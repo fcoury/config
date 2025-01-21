@@ -20,7 +20,7 @@ git-ignore = true
 render = true
 
 [editor.statusline]
-# left = ["mode", "spinner", "version-control", "file-name"]
+left = ["mode", "spinner", "version-control", "file-name"]
 
 [editor.lsp]
 display-messages = true
@@ -46,6 +46,7 @@ other-lines = "error"
 "esc" = ["collapse_selection", "keep_primary_selection"]
 "X" = "extend_line_up"
 "C-p" = "file_picker"
+"space" = { space = "goto_last_accessed_file" }
 
 [keys.select]
 "0" = "goto_line_start"
