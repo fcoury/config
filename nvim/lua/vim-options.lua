@@ -83,6 +83,26 @@ vim.diagnostic.config({
 	},
 })
 
+-- attempt to highlight text/babel within html
+-- vim.filetype.add({
+-- 	extension = {
+-- 		html = {
+-- 			pattern = {
+-- 				'<script\\s+type="text/babel"\\s*>.-</script>', -- Matches <script type="text/babel"> tags
+-- 			},
+-- 		},
+-- 	},
+-- })
+
+-- another attempt
+-- vim.cmd([[
+--   augroup BabelSyntax
+--     autocmd!
+--     autocmd FileType html syntax include @JS syntax/javascript.vim
+--     autocmd FileType html syntax region babelScript matchgroup=htmlScriptTag start=+<script[^>]*type="text/babel"[^>]*>+ keepend end=+</script>+ contains=@JS,htmlScriptTag
+--   augroup END
+-- ]])
+
 -- identation
 -- Set indentation for HTML files to 2 spaces
 -- vim.api.nvim_create_autocmd("FileType", {
@@ -93,3 +113,12 @@ vim.diagnostic.config({
 -- 		vim.opt_local.expandtab = true
 -- 	end,
 -- })
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "dts",
+	callback = function()
+		vim.bo.tabstop = 4
+		vim.bo.shiftwidth = 4
+		vim.bo.expandtab = true
+	end,
+})
