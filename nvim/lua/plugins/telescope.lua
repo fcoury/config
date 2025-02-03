@@ -118,4 +118,12 @@ return {
 			require("telescope").load_extension("live_grep_args")
 		end,
 	},
+	{
+		"nvim-telescope/telescope-frecency.nvim",
+		-- install the latest stable version
+		version = "*",
+		config = function()
+			require("telescope").load_extension("frecency")
+		end,
+	},
 }
