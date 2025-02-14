@@ -26,6 +26,7 @@ return {
 					"rust-analyzer",
 					"stylua",
 					"debugpy",
+					"yamlls",
 					"zls",
 				},
 			})
@@ -54,6 +55,7 @@ return {
 			lspconfig.htmx.setup({})
 			lspconfig.pyright.setup({})
 			lspconfig.ruff.setup({})
+			lspconfig.yamlls.setup({})
 
 			-- cpp setup
 			lspconfig.clangd.setup({
