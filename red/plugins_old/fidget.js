@@ -1,0 +1,1 @@
+/Users/fcoury/code/red/plugins/fidget.js
