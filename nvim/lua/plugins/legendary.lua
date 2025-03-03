@@ -9,6 +9,8 @@ return {
 		local legendary = require("legendary")
 		require("legendary").setup({ extensions = { lazy_nvim = true } })
 
+		local builtin = require("telescope.builtin")
+
 		legendary.keymaps({
 			-- remaps ; to act as :
 			{ ";", ":", mode = "n", opts = { noremap = true }, description = "Remap ; to :" },
@@ -30,6 +32,14 @@ return {
 			{ "<C-j>", "<cmd>Telescope buffers<cr>", mode = "n", description = "Open buffers" },
 			{ "<leader>b", "<cmd>Telescope buffers<cr>", mode = "n", description = "Open buffers" },
 			{ "<leader>d", "<cmd>Telescope diagnostics<cr>", mode = "n", description = "Open diagnostics" },
+			{
+				"<leader>e",
+				function()
+					builtin.diagnostics({ severity = vim.diagnostic.severity.ERROR })
+				end,
+				mode = "n",
+				description = "Open errors",
+			},
 			{
 				"<leader>s",
 				"<cmd>Telescope lsp_document_symbols<cr>",

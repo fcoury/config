@@ -9,7 +9,7 @@ return {
 	},
 	keys = {
 		{ "<C-e>", mode = { "n" }, ":Neotree filesystem toggle left<CR>", desc = "Toggle file tree", silent = true },
-		{ "<leader>e", mode = { "n" }, ":Neotree filesystem reveal left<CR>", desc = "Open file tree", silent = true },
+		-- { "<leader>e", mode = { "n" }, ":Neotree filesystem reveal left<CR>", desc = "Open file tree", silent = true },
 	},
 	config = function()
 		require("neo-tree").setup({
