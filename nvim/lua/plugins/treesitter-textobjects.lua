@@ -19,6 +19,10 @@ return {
 							query = "@function.inner",
 							desc = "Select inner part of a method/function definition",
 						},
+						["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
+						["ic"] = { query = "@class.inner", desc = "Select inner part of a class" },
+						["ak"] = { query = "@comment.outer", desc = "Select outer part of a comment" },
+						["ik"] = { query = "@comment.inner", desc = "Select inner part of a comment" },
 					},
 				},
 				swap = {
