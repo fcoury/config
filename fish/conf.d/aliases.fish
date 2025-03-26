@@ -121,3 +121,22 @@ function tp
   end
 end
 
+function tv
+  set session_name (basename (pwd) | string replace '.' '_')
+  
+  if test (count $argv) -gt 0
+    set file_to_edit $argv[1]
+  else
+    set file_to_edit ""
+  end
+
+  if tmux has-session -t "$session_name"
+    tmux attach-session -t "$session_name"
+  else
+    if test -n "$file_to_edit"
+      tmux new-session -s "$session_name" "nvim $file_to_edit"
+    else
+      tmux new-session -s "$session_name" "nvim"
+    end
+  end
+end
