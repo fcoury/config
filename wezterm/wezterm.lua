@@ -3,13 +3,13 @@ local act = wezterm.action
 
 local config = {
 	font = wezterm.font("FantasqueSansM Nerd Font"),
-	font_size = 18.0,
+	font_size = 22.0,
 	line_height = 1.1,
 	-- font = wezterm.font("Cousine Nerd Font Mono"),
 	-- font_size = 16.0,
 	-- line_height = 1.1,
 	-- font = wezterm.font("IosevkaTerm Nerd Font"),
-	-- font_size = 18.0,
+	-- font_size = 20.0,
 	-- line_height = 1.1,
 	-- font = wezterm.font("MesloLGS Nerd Font Mono"),
 	-- font_size = 22.0,
@@ -17,6 +17,11 @@ local config = {
 	-- line_height = 1.1,
 
 	-- color_scheme = "Tomorrow (light) (terminal.sexy)",
+
+	-- Max Acceleration
+	max_fps = 120,
+	front_end = "WebGpu",
+	webgpu_power_preference = "HighPerformance",
 
 	-- Window styling
 	window_decorations = "RESIZE",
@@ -39,8 +44,8 @@ local config = {
 	send_composed_key_when_right_alt_is_pressed = true,
 	hide_tab_bar_if_only_one_tab = true,
 
-	-- CTRL+A is our leader key
-	-- leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
+	-- CTRL+S is our leader key
+	leader = { key = "s", mods = "CTRL", timeout_milliseconds = 1000 },
 
 	mouse_bindings = {
 		{
@@ -51,6 +56,35 @@ local config = {
 	},
 
 	keys = {
+
+		-- Navigation between panes (equivalent to tmux hjkl navigation)
+		{ key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
+		{ key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
+		{ key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
+		{ key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
+
+		-- Control versions (equivalent to tmux C-hjkl navigation)
+		{ key = "h", mods = "CTRL", action = act.ActivatePaneDirection("Left") },
+		{ key = "j", mods = "CTRL", action = act.ActivatePaneDirection("Down") },
+		{ key = "k", mods = "CTRL", action = act.ActivatePaneDirection("Up") },
+		{ key = "l", mods = "CTRL", action = act.ActivatePaneDirection("Right") },
+
+		-- Resize pane (replacing your existing resize_pane function)
+		{ key = "H", mods = "LEADER", action = act.AdjustPaneSize({ "Left", 5 }) },
+		{ key = "J", mods = "LEADER", action = act.AdjustPaneSize({ "Down", 5 }) },
+		{ key = "K", mods = "LEADER", action = act.AdjustPaneSize({ "Up", 5 }) },
+		{ key = "L", mods = "LEADER", action = act.AdjustPaneSize({ "Right", 5 }) },
+
+		-- Clone pane
+		{ key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = false }) },
+
+		-- Maximize pane (already in your config as CMD+SHIFT+Enter)
+		{ key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
+
+		-- Creating panes (already have similar with CMD+d and CMD+SHIFT+d)
+		{ key = "d", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+		{ key = "s", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
+
 		{ key = "d", mods = "CMD", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 		{ key = "d", mods = "CMD|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
 		{ key = "w", mods = "CMD", action = act.CloseCurrentPane({ confirm = false }) },
