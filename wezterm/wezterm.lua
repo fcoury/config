@@ -4,7 +4,7 @@ local act = wezterm.action
 local config = {
 	font = wezterm.font("FantasqueSansM Nerd Font"),
 	font_size = 22.0,
-	line_height = 1.1,
+	line_height = 1.2,
 	-- font = wezterm.font("Cousine Nerd Font Mono"),
 	-- font_size = 16.0,
 	-- line_height = 1.1,
@@ -56,7 +56,6 @@ local config = {
 	},
 
 	keys = {
-
 		-- Navigation between panes (equivalent to tmux hjkl navigation)
 		{ key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
 		{ key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
@@ -94,8 +93,8 @@ local config = {
 			key = "k",
 			mods = "CMD",
 			action = act.Multiple({
+				-- act.SendKey({ key = "L", mods = "CTRL" }),
 				act.ClearScrollback("ScrollbackAndViewport"),
-				act.SendKey({ key = "L", mods = "CTRL" }),
 			}),
 		},
 		{ key = "[", mods = "CMD", action = act.ActivatePaneDirection("Prev") },
