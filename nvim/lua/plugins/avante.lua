@@ -17,6 +17,9 @@ return {
 		behaviour = {
 			auto_set_keymaps = false,
 		},
+		hints = {
+			enabled = false, -- Set this to false to disable the visual selection hint
+		},
 	},
 	-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 	build = "make",
