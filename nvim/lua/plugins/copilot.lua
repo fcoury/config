@@ -9,7 +9,7 @@ return {
 					enabled = true,
 					auto_trigger = true,
 					keymap = {
-						accept = "<c-l>",
+						accept = "<C-;>",
 						next = "<M-]>",
 						prev = "<M-[>",
 					},
