@@ -3,7 +3,7 @@ local act = wezterm.action
 
 local config = {
 	font = wezterm.font("FantasqueSansM Nerd Font"),
-	font_size = 22.0,
+	font_size = 28.0,
 	line_height = 1.2,
 	-- font = wezterm.font("Cousine Nerd Font Mono"),
 	-- font_size = 16.0,
@@ -19,21 +19,17 @@ local config = {
 	-- color_scheme = "Tomorrow (light) (terminal.sexy)",
 
 	-- Max Acceleration
-	max_fps = 120,
-	front_end = "WebGpu",
-	webgpu_power_preference = "HighPerformance",
+	-- max_fps = 120,
+	-- front_end = "WebGpu",
+	-- webgpu_power_preference = "HighPerformance",
 
 	-- Window styling
 	window_decorations = "RESIZE",
-	window_frame = {
-		font = wezterm.font({ family = "MesloLGS Nerd Font Mono", weight = "Bold" }),
-		font_size = 15,
-	},
 	window_padding = {
 		left = 5,
 		right = 0,
 		top = 5,
-		bottom = 5,
+		bottom = 0,
 	},
 
 	set_environment_variables = {
@@ -47,13 +43,36 @@ local config = {
 	-- CTRL+S is our leader key
 	leader = { key = "s", mods = "CTRL", timeout_milliseconds = 1000 },
 
-	mouse_bindings = {
-		{
-			event = { Up = { streak = 1, button = "Left" } },
-			mods = "CMD",
-			action = wezterm.action.OpenLinkAtMouseCursor,
-		},
-	},
+	-- hyperlink_rules = {
+	-- 	-- Linkify URLs with fixed regex
+	-- 	{
+	-- 		regex = [[\b(https?://[\w-]+\.[\w.-]+(/[\w\-./?%&=+]*)?)\b]],
+	-- 		format = "$0",
+	-- 	},
+	-- },
+
+	-- Click to open links
+	-- mouse_bindings = {
+	-- 	{
+	-- 		event = { Up = { streak = 1, button = "Left" } },
+	-- 		mods = "CMD",
+	-- 		action = wezterm.action.OpenLinkAtMouseCursor,
+	-- 	},
+	-- {
+	-- 	event = { Up = { streak = 1, button = "Left" } },
+	-- 	mods = "NONE",
+	-- 	action = wezterm.action.DisableDefaultAssignment,
+	-- },
+	--
+	-- {
+	-- 	event = { Up = { streak = 1, button = "Left" } },
+	-- 	mods = "CMD",
+	-- 	action = wezterm.action.Multiple({
+	-- 		wezterm.action.OpenLinkAtMouseCursor,
+	-- 		wezterm.action.Nop,
+	-- 	}),
+	-- },
+	-- },
 
 	keys = {
 		-- Navigation between panes (equivalent to tmux hjkl navigation)
@@ -63,6 +82,10 @@ local config = {
 		{ key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
 
 		-- Control versions (equivalent to tmux C-hjkl navigation)
+		-- create_vim_aware_key("h", "Left"),
+		-- create_vim_aware_key("j", "Down"),
+		-- create_vim_aware_key("k", "Up"),
+		-- create_vim_aware_key("l", "Right"),
 		{ key = "h", mods = "CTRL", action = act.ActivatePaneDirection("Left") },
 		{ key = "j", mods = "CTRL", action = act.ActivatePaneDirection("Down") },
 		{ key = "k", mods = "CTRL", action = act.ActivatePaneDirection("Up") },
@@ -139,6 +162,18 @@ local config = {
 		},
 	},
 
+	-- Tabs
+	use_fancy_tab_bar = false,
+	tab_max_width = 24,
+	show_tab_index_in_tab_bar = false,
+	tab_bar_at_bottom = true,
+	window_frame = {
+		font = wezterm.font({ family = "SF Pro", weight = "Medium" }),
+		font_size = 13.0,
+		active_titlebar_bg = "#191919",
+		inactive_titlebar_bg = "#191919",
+	},
+
 	-- Custom theme (lackluster)
 	color_scheme = "Lackluster",
 	colors = {
@@ -172,32 +207,74 @@ local config = {
 		},
 
 		tab_bar = {
-			background = "#191919", -- gray2
+			background = "#101010",
 
 			active_tab = {
-				bg_color = "#444444", -- gray4
-				fg_color = "#deeeed", -- luster
-				intensity = "Bold",
+				bg_color = "#333333",
+				fg_color = "#deeeed",
+				intensity = "Normal",
+				underline = "None",
+				italic = false,
+				strikethrough = false,
 			},
+
 			inactive_tab = {
-				bg_color = "#191919", -- gray2
-				fg_color = "#555555", -- gray5
+				bg_color = "#1a1a1a",
+				fg_color = "#999999",
+				intensity = "Normal",
+				underline = "None",
+				italic = false,
+				strikethrough = false,
 			},
+
 			inactive_tab_hover = {
-				bg_color = "#444444", -- gray4
-				fg_color = "#deeeed", -- luster
-				italic = true,
+				bg_color = "#252525",
+				fg_color = "#cccccc",
+				intensity = "Normal",
+				underline = "None",
+				italic = false,
+				strikethrough = false,
 			},
+
 			new_tab = {
-				bg_color = "#191919", -- gray2
-				fg_color = "#deeeed", -- luster
+				bg_color = "#1a1a1a",
+				fg_color = "#999999",
 			},
+
 			new_tab_hover = {
-				bg_color = "#789978", -- green
-				fg_color = "#191919", -- gray2
-				italic = true,
+				bg_color = "#333333",
+				fg_color = "#deeeed",
+				italic = false,
 			},
 		},
+
+		-- tab_bar = {
+		-- 	background = "#191919", -- gray2
+		--
+		-- 	active_tab = {
+		-- 		bg_color = "#444444", -- gray4
+		-- 		fg_color = "#deeeed", -- luster
+		-- 		intensity = "Bold",
+		-- 	},
+		-- 	inactive_tab = {
+		-- 		bg_color = "#191919", -- gray2
+		-- 		fg_color = "#555555", -- gray5
+		-- 	},
+		-- 	inactive_tab_hover = {
+		-- 		bg_color = "#444444", -- gray4
+		-- 		fg_color = "#deeeed", -- luster
+		-- 		italic = true,
+		-- 	},
+		-- 	new_tab = {
+		-- 		bg_color = "#191919", -- gray2
+		-- 		fg_color = "#deeeed", -- luster
+		-- 	},
+		-- 	new_tab_hover = {
+		-- 		bg_color = "#789978", -- green
+		-- 		fg_color = "#191919", -- gray2
+		-- 		italic = true,
+		-- 	},
+		-- },
 	},
 }
 
@@ -263,6 +340,53 @@ wezterm.on("update-status", function(window)
 		{ Foreground = { Color = fg } },
 		{ Text = " " .. wezterm.hostname() .. " " },
 	}))
+end)
+
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+	local title = tab.active_pane.title
+	local process = tab.active_pane.foreground_process_name or ""
+
+	-- Extract just the last part of the path for process names
+	process = process:gsub("^.*/([^/]+)$", "%1")
+
+	-- Determine appropriate icon based on process
+	local icon = ""
+	if process:match("vim") or process:match("nvim") then
+		icon = " "
+	elseif process:match("git") then
+		icon = " "
+	elseif process:match("ssh") then
+		icon = " "
+	elseif process:match("bash") or process:match("zsh") or process:match("fish") then
+		icon = " "
+	elseif process:match("node") then
+		icon = " "
+	elseif process:match("python") then
+		icon = " "
+	elseif process:match("rust") or process:match("cargo") then
+		icon = " "
+	else
+		icon = "  "
+	end
+
+	-- Clean up the title
+	title = title:gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
+
+	-- Truncate long titles
+	if #title > 16 then
+		title = title:sub(1, 14) .. "…"
+	end
+
+	-- If title is empty or just whitespace, use process name instead
+	if title == "" or title:match("^%s*$") then
+		title = process
+	end
+
+	-- Format tab index
+	local index = tab.tab_index + 1
+	local index_str = " " .. index .. " "
+
+	return " " .. index .. ": " .. title .. " " -- .. icon .. " "
 end)
 
 return config
