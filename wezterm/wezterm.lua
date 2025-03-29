@@ -3,7 +3,7 @@ local act = wezterm.action
 
 local config = {
 	font = wezterm.font("FantasqueSansM Nerd Font"),
-	font_size = 28.0,
+	font_size = 22.0,
 	line_height = 1.2,
 	-- font = wezterm.font("Cousine Nerd Font Mono"),
 	-- font_size = 16.0,
@@ -86,10 +86,10 @@ local config = {
 		-- create_vim_aware_key("j", "Down"),
 		-- create_vim_aware_key("k", "Up"),
 		-- create_vim_aware_key("l", "Right"),
-		{ key = "h", mods = "CTRL", action = act.ActivatePaneDirection("Left") },
-		{ key = "j", mods = "CTRL", action = act.ActivatePaneDirection("Down") },
-		{ key = "k", mods = "CTRL", action = act.ActivatePaneDirection("Up") },
-		{ key = "l", mods = "CTRL", action = act.ActivatePaneDirection("Right") },
+		{ key = "h", mods = "ALT", action = act.ActivatePaneDirection("Left") },
+		{ key = "j", mods = "ALT", action = act.ActivatePaneDirection("Down") },
+		{ key = "k", mods = "ALT", action = act.ActivatePaneDirection("Up") },
+		{ key = "l", mods = "ALT", action = act.ActivatePaneDirection("Right") },
 
 		-- Resize pane (replacing your existing resize_pane function)
 		{ key = "H", mods = "LEADER", action = act.AdjustPaneSize({ "Left", 5 }) },
