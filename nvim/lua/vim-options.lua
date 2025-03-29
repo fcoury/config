@@ -48,6 +48,9 @@ vim.wo.number = true -- show line numbers
 -- leader
 vim.g.mapleader = " " -- set leader to space
 
+-- Rounded border
+vim.o.winborder = "rounded"
+
 -- diagnostics
 vim.diagnostic.config({
 	float = {
@@ -112,5 +115,19 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.bo.tabstop = 4
 		vim.bo.shiftwidth = 4
 		vim.bo.expandtab = true
+	end,
+})
+
+-- Temporary hack to avoid double borders with Telescope
+vim.api.nvim_create_autocmd("User", {
+	pattern = "TelescopeFindPre",
+	callback = function()
+		vim.opt_local.winborder = "none"
+		vim.api.nvim_create_autocmd("WinLeave", {
+			once = true,
+			callback = function()
+				vim.opt_local.winborder = "rounded"
+			end,
+		})
 	end,
 })

@@ -10,6 +10,12 @@ return {
 					on_attach = function(client, bufnr)
 						vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#575B6E", italic = true })
 						vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+
+						-- overrides the default lsp hover with our Rust specialized one
+						vim.keymap.set("n", "K", function()
+							print("K")
+							vim.cmd.RustLsp({ "hover", "actions" })
+						end, { silent = true, buffer = bufnr, desc = "Show hover information" })
 					end,
 					default_settings = {
 						["rust-analyzer"] = {
