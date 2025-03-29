@@ -19,7 +19,7 @@ return {
 			{ "<leader>a", "ggVG", mode = "n", description = "Select all" },
 
 			-- paste not overwritten by delete
-			{ "<leader>p", '"0p', mode = { "n", "x" }, description = "Paste and doesn't overwrite" },
+			-- { "<leader>p", '"0p', mode = { "n", "x" }, description = "Paste and doesn't overwrite" },
 
 			-- redo
 			{ "U", "<C-r>", mode = "n", opts = { noremap = true }, description = "Redo" },
@@ -29,17 +29,17 @@ return {
 			-- { "L", "$", mode = "n", opts = { noremap = true }, description = "Move to end of line" },
 
 			-- telescope
-			{ "<C-j>", "<cmd>Telescope buffers<cr>", mode = "n", description = "Open buffers" },
-			{ "<leader>b", "<cmd>Telescope buffers<cr>", mode = "n", description = "Open buffers" },
-			{ "<leader>d", "<cmd>Telescope diagnostics<cr>", mode = "n", description = "Open diagnostics" },
-			{
-				"<leader>e",
-				function()
-					builtin.diagnostics({ severity = vim.diagnostic.severity.ERROR })
-				end,
-				mode = "n",
-				description = "Open errors",
-			},
+			-- { "<C-j>", "<cmd>Telescope buffers<cr>", mode = "n", description = "Open buffers" },
+			-- { "<leader>b", "<cmd>Telescope buffers<cr>", mode = "n", description = "Open buffers" },
+			-- { "<leader>d", "<cmd>Telescope diagnostics<cr>", mode = "n", description = "Open diagnostics" },
+			-- {
+			-- 	"<leader>e",
+			-- 	function()
+			-- 		builtin.diagnostics({ severity = vim.diagnostic.severity.ERROR })
+			-- 	end,
+			-- 	mode = "n",
+			-- 	description = "Open errors",
+			-- },
 			{
 				"<leader>s",
 				"<cmd>Telescope lsp_document_symbols<cr>",
@@ -153,12 +153,12 @@ return {
 				"<CMD>VisualDuplicate +1<CR>",
 			},
 			-- project
-			{
-				description = "find a project based on patterns",
-				mode = { "n" },
-				"<leader>pp",
-				"<CMD>Telescope neovim-project discover<CR>",
-			},
+			-- {
+			-- 	description = "find a project based on patterns",
+			-- 	mode = { "n" },
+			-- 	"<leader>pp",
+			-- 	"<CMD>Telescope neovim-project discover<CR>",
+			-- },
 		})
 	end,
 }

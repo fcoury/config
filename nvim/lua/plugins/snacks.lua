@@ -1,6 +1,7 @@
 return {
 	"folke/snacks.nvim",
 	keys = {
+		-- <C-p> = files
 		{
 			"<C-p>",
 			function()
@@ -14,6 +15,84 @@ return {
 				})
 			end,
 			desc = "Find Files",
+		},
+
+		-- <leader>y = keymaps
+		{
+			"<leader>y",
+			function()
+				Snacks.picker.keymaps()
+			end,
+			desc = "Keymaps",
+		},
+
+		-- <leader>d = diagnostics
+		{
+			"<leader>d",
+			function()
+				Snacks.picker.diagnostics()
+			end,
+		},
+
+		-- <leader>e = errors
+		{
+			"<leader>e",
+			function()
+				Snacks.picker.diagnostics({
+					severity = vim.diagnostic.severity.ERROR,
+				})
+			end,
+			desc = "Errors",
+		},
+
+		-- <leader>g = grep
+		{
+			"<leader>g",
+			function()
+				Snacks.picker.grep()
+			end,
+			desc = "Find in Files",
+		},
+
+		-- <leader>,g = git log
+		{
+			"<leader>,g",
+			function()
+				Snacks.picker.git_log()
+			end,
+			desc = "Git Log",
+		},
+
+		-- <leader>,b = git branches
+		{
+			"<leader>,b",
+			function()
+				Snacks.picker.git_branches()
+			end,
+			desc = "Git Branches",
+		},
+
+		-- <C-j> = open buffers
+		{
+			"<C-j>",
+			function()
+				Snacks.picker.buffers({
+					-- buffers picker start in normal mode
+					on_show = function()
+						vim.cmd.stopinsert()
+					end,
+					sort_lastused = true,
+					win = {
+						input = {
+							keys = {
+								["d"] = "bufdelete",
+							},
+						},
+						list = { keys = { ["d"] = "bufdelete" } },
+					},
+				})
+			end,
+			desc = "Open Buffers",
 		},
 	},
 	opts = {
