@@ -1,7 +1,6 @@
 return {
 	"folke/snacks.nvim",
 	keys = {
-		-- <C-p> = files
 		{
 			"<C-p>",
 			function()
@@ -17,7 +16,6 @@ return {
 			desc = "Find Files",
 		},
 
-		-- <leader>y = keymaps
 		{
 			"<leader>y",
 			function()
@@ -26,7 +24,6 @@ return {
 			desc = "Keymaps",
 		},
 
-		-- <leader>d = diagnostics
 		{
 			"<leader>d",
 			function()
@@ -34,7 +31,6 @@ return {
 			end,
 		},
 
-		-- <leader>e = errors
 		{
 			"<leader>e",
 			function()
@@ -45,7 +41,21 @@ return {
 			desc = "Errors",
 		},
 
-		-- <leader>g = grep
+		{
+			"<leader>k",
+			function()
+				Snacks.picker.lsp_references()
+			end,
+			desc = "Open references",
+		},
+
+		{
+			"<C-t>",
+			function()
+				Snacks.picker.lsp_symbols()
+			end,
+		},
+
 		{
 			"<leader>g",
 			function()
@@ -54,7 +64,6 @@ return {
 			desc = "Find in Files",
 		},
 
-		-- <leader>,g = git log
 		{
 			"<leader>,g",
 			function()
@@ -63,7 +72,6 @@ return {
 			desc = "Git Log",
 		},
 
-		-- <leader>,b = git branches
 		{
 			"<leader>,b",
 			function()
@@ -72,7 +80,6 @@ return {
 			desc = "Git Branches",
 		},
 
-		-- <C-j> = open buffers
 		{
 			"<C-j>",
 			function()
