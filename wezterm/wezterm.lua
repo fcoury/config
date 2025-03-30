@@ -51,6 +51,16 @@ local config = {
 	-- 	},
 	-- },
 
+	-- Avoid auto selecting text when clicking on different panes
+	mouse_bindings = {
+		-- Disable selection when clicking to focus
+		{
+			event = { Down = { streak = 1, button = "Left" } },
+			mods = "NONE",
+			action = act.Nop,
+		},
+	},
+
 	-- Click to open links
 	-- mouse_bindings = {
 	-- 	{
