@@ -52,8 +52,8 @@ return {
 				mode = "n",
 				description = "Open workspace symbols",
 			},
-			{ "<leader>k", "<cmd>Telescope lsp_references<cr>", mode = "n", description = "Open references" },
-			{ "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>", mode = "n", description = "Open document symbols" },
+			-- { "<leader>k", "<cmd>Telescope lsp_references<cr>", mode = "n", description = "Open references" },
+			-- { "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>", mode = "n", description = "Open document symbols" },
 
 			-- lsp and rust
 			{ "<leader>x", "<cmd>RustRunnables<cr>", mode = "n", description = "Run Rust runnables" },
