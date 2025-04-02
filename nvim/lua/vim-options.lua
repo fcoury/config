@@ -53,6 +53,9 @@ vim.o.winborder = "rounded"
 
 -- diagnostics
 vim.diagnostic.config({
+	-- underline = false,
+	virtual_lines = false,
+	virtual_text = { current_line = false },
 	float = {
 		border = "rounded",
 	},
