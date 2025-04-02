@@ -7,9 +7,15 @@ return {
 	lazy = false,
 	config = function()
 		local legendary = require("legendary")
-		require("legendary").setup({ extensions = { lazy_nvim = true } })
+		require("legendary").setup({
+			extensions = {
+				lazy_nvim = true,
+				smart_splits = {},
+			},
+		})
 
-		local builtin = require("telescope.builtin")
+		-- we no longer use telescope
+		-- local builtin = require("telescope.builtin")
 
 		legendary.keymaps({
 			-- remaps ; to act as :

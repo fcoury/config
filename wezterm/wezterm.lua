@@ -1,9 +1,10 @@
 local wezterm = require("wezterm")
+local smart_splits = wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim")
 local act = wezterm.action
 
 local config = {
 	font = wezterm.font("FantasqueSansM Nerd Font"),
-	font_size = 22.0,
+	font_size = 18.0,
 	line_height = 1.2,
 	-- font = wezterm.font("Cousine Nerd Font Mono"),
 	-- font_size = 16.0,
@@ -52,14 +53,14 @@ local config = {
 	-- },
 
 	-- Avoid auto selecting text when clicking on different panes
-	mouse_bindings = {
-		-- Disable selection when clicking to focus
-		{
-			event = { Down = { streak = 1, button = "Left" } },
-			mods = "NONE",
-			action = act.Nop,
-		},
-	},
+	-- mouse_bindings = {
+	-- 	-- Disable selection when clicking to focus
+	-- 	{
+	-- 		event = { Down = { streak = 1, button = "Left" } },
+	-- 		mods = "NONE",
+	-- 		action = act.Nop,
+	-- 	},
+	-- },
 
 	-- Click to open links
 	-- mouse_bindings = {
@@ -288,6 +289,28 @@ local config = {
 	},
 }
 
+smart_splits.apply_to_config(config, {
+	-- the default config is here, if you'd like to use the default keys,
+	-- you can omit this configuration table parameter and just use
+	-- smart_splits.apply_to_config(config)
+
+	-- directional keys to use in order of: left, down, up, right
+	direction_keys = { "h", "j", "k", "l" },
+	-- if you want to use separate direction keys for move vs. resize, you
+	-- can also do this:
+	direction_keys = {
+		move = { "h", "j", "k", "l" },
+		resize = { "LeftArrow", "DownArrow", "UpArrow", "RightArrow" },
+	},
+	-- modifier keys to combine with direction_keys
+	modifiers = {
+		move = "CTRL", -- modifier to use for pane movement, e.g. CTRL+h to move left
+		resize = "META", -- modifier to use for pane resize, e.g. META+h to resize to the left
+	},
+	-- log level to use: info, warn, error
+	log_level = "info",
+})
+
 local function resize_pane(key, direction)
 	return {
 		key = key,
@@ -350,6 +373,30 @@ wezterm.on("update-status", function(window)
 		{ Foreground = { Color = fg } },
 		{ Text = " " .. wezterm.hostname() .. " " },
 	}))
+end)
+
+local last_focused_pane_id = nil
+
+wezterm.on("update-status", function(window, pane)
+	local current_pane_id = pane:pane_id()
+
+	-- If this is a new pane being focused and it's running nvim
+	if last_focused_pane_id ~= current_pane_id and pane:get_foreground_process_name():find("nvim") then
+		-- Briefly disable mouse input to prevent the focus click from selecting text
+		window:perform_action(
+			wezterm.action.SendKey({ key = "\x1b[?1000l" }), -- Disable mouse reporting
+			pane
+		)
+
+		-- Re-enable after a short delay
+		wezterm.sleep_ms(100)
+		window:perform_action(
+			wezterm.action.SendKey({ key = "\x1b[?1000h" }), -- Re-enable mouse reporting
+			pane
+		)
+	end
+
+	last_focused_pane_id = current_pane_id
 end)
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
