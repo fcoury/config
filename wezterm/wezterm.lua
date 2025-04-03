@@ -24,6 +24,9 @@ local config = {
 	-- front_end = "WebGpu",
 	-- webgpu_power_preference = "HighPerformance",
 
+	-- Set unlimited scrollback
+	scrollback_lines = 35000,
+
 	-- Window styling
 	window_decorations = "RESIZE",
 	window_padding = {
