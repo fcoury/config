@@ -10,7 +10,7 @@ return {
 		require("legendary").setup({
 			extensions = {
 				lazy_nvim = true,
-				smart_splits = {},
+				-- smart_splits = {},
 			},
 		})
 
