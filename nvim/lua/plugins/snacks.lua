@@ -113,10 +113,11 @@ return {
 						["<C-h>"] = { "history_back", mode = { "i", "n" } },
 						["<C-l>"] = { "history_forward", mode = { "i", "n" } },
 						-- I'm used to scrolling like this in LazyGit
-						["J"] = { "preview_scroll_down", mode = { "i", "n" } },
-						["K"] = { "preview_scroll_up", mode = { "i", "n" } },
-						["H"] = { "preview_scroll_left", mode = { "i", "n" } },
-						["L"] = { "preview_scroll_right", mode = { "i", "n" } },
+						-- conflicts with actually typing J, K, H, L
+						-- ["J"] = { "preview_scroll_down", mode = { "i", "n" } },
+						-- ["K"] = { "preview_scroll_up", mode = { "i", "n" } },
+						-- ["H"] = { "preview_scroll_left", mode = { "i", "n" } },
+						-- ["L"] = { "preview_scroll_right", mode = { "i", "n" } },
 					},
 				},
 			},
