@@ -1,5 +1,6 @@
 local function get_params()
-	local params = vim.lsp.util.make_position_params()
+	local winid = vim.api.nvim_get_current_win()
+	local params = vim.lsp.util.make_position_params(winid, "utf-8")
 	params.textDocument = vim.lsp.util.make_text_document_params()
 	return params
 end
