@@ -1,7 +1,7 @@
 return {
 	{
 		"mrcjkb/rustaceanvim",
-		version = "^5",
+		version = "^6",
 		lazy = false,
 		config = function()
 			vim.g.rustaceanvim = {
@@ -13,7 +13,6 @@ return {
 
 						-- overrides the default lsp hover with our Rust specialized one
 						vim.keymap.set("n", "K", function()
-							print("K")
 							vim.cmd.RustLsp({ "hover", "actions" })
 						end, { silent = true, buffer = bufnr, desc = "Show hover information" })
 					end,
