@@ -42,6 +42,13 @@ return {
 		},
 
 		{
+			"<leader>w",
+			function()
+				Snacks.picker.lsp_workspace_symbols()
+			end,
+		},
+
+		{
 			"<leader>k",
 			function()
 				Snacks.picker.lsp_references()
@@ -54,6 +61,7 @@ return {
 			function()
 				Snacks.picker.lsp_symbols()
 			end,
+			desc = "Open document symbols",
 		},
 
 		{
@@ -100,6 +108,14 @@ return {
 				})
 			end,
 			desc = "Open Buffers",
+		},
+
+		{
+			"gr",
+			function()
+				Snacks.picker.lsp_references()
+			end,
+			desc = "Show references",
 		},
 	},
 	opts = {

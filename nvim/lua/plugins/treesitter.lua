@@ -31,15 +31,15 @@ return {
 			-- autotag = {
 			-- 	enable = true,
 			-- },
-			incremental_selection = {
-				enable = true,
-				keymaps = {
-					init_selection = "<cr>",
-					node_incremental = "<cr>",
-					scope_incremental = false,
-					node_decremental = "<bs>",
-				},
-			},
+			-- incremental_selection = {
+			-- 	enable = true,
+			-- 	keymaps = {
+			-- 		init_selection = "<cr>",
+			-- 		node_incremental = "<cr>",
+			-- 		scope_incremental = false,
+			-- 		node_decremental = "<bs>",
+			-- 	},
+			-- },
 		})
 
 		require("template-string").setup({})

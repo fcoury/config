@@ -46,18 +46,18 @@ return {
 			-- 	mode = "n",
 			-- 	description = "Open errors",
 			-- },
-			{
-				"<leader>s",
-				"<cmd>Telescope lsp_document_symbols<cr>",
-				mode = "n",
-				description = "Open document symbols",
-			},
-			{
-				"<leader>w",
-				"<cmd>Telescope lsp_workspace_symbols<cr>",
-				mode = "n",
-				description = "Open workspace symbols",
-			},
+			-- {
+			-- 	"<leader>s",
+			-- 	"<cmd>Telescope lsp_document_symbols<cr>",
+			-- 	mode = "n",
+			-- 	description = "Open document symbols",
+			-- },
+			-- {
+			-- 	"<leader>w",
+			-- 	"<cmd>Telescope lsp_workspace_symbols<cr>",
+			-- 	mode = "n",
+			-- 	description = "Open workspace symbols",
+			-- },
 			-- { "<leader>k", "<cmd>Telescope lsp_references<cr>", mode = "n", description = "Open references" },
 			-- { "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>", mode = "n", description = "Open document symbols" },
 

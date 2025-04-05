@@ -119,7 +119,7 @@ return {
 			end
 
 			-- lsp actions with telescope
-			local builtin = require("telescope.builtin")
+			-- local builtin = require("telescope.builtin")
 
 			-- emmet lsp
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -187,7 +187,7 @@ return {
 						vim.lsp.buf.code_action,
 						{ buffer = ev.bum, desc = "Open code actions" }
 					)
-					vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = ev.bum, desc = "Show references" })
+					-- vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = ev.bum, desc = "Show references" })
 					vim.keymap.set("n", "<leader>f", function()
 						vim.lsp.buf.format({ async = true })
 					end, { buffer = ev.bum, desc = "Format document" })

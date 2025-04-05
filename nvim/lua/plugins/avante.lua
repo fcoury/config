@@ -11,6 +11,16 @@ return {
 			enabled = false, -- Set this to false to disable the visual selection hint
 		},
 	},
+	keys = {
+		{
+			"<leader>vv",
+			function()
+				require("avante").toggle()
+			end,
+			mode = { "n" },
+			desc = "Toggle Avante",
+		},
+	},
 	-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 	build = "make",
 	-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
@@ -21,8 +31,8 @@ return {
 		"MunifTanjim/nui.nvim",
 		--- The below dependencies are optional,
 		"echasnovski/mini.pick", -- for file_selector provider mini.pick
-		"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-		"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+		-- "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+		-- "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
 		"ibhagwan/fzf-lua", -- for file_selector provider fzf
 		"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 		"zbirenbaum/copilot.lua", -- for providers='copilot'
