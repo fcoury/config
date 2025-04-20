@@ -89,6 +89,9 @@ local config = {
 	-- },
 
 	keys = {
+		-- Leader key then A sends the leader key
+		{ key = "a", mods = "LEADER", action = act.SendKey({ key = "s", mods = "CTRL" }) },
+
 		-- Navigation between panes (equivalent to tmux hjkl navigation)
 		{ key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
 		{ key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
