@@ -88,6 +88,20 @@ local config = {
 	-- },
 	-- },
 
+	mouse_bindings = {
+		-- CMD-click will open the link under the mouse cursor
+		{
+			event = { Up = { streak = 1, button = "Left" } },
+			mods = "NONE",
+			action = wezterm.action.DisableDefaultAssignment,
+		},
+		{
+			event = { Up = { streak = 1, button = "Left" } },
+			mods = "CMD",
+			action = wezterm.action.OpenLinkAtMouseCursor,
+		},
+	},
+
 	keys = {
 		-- Leader key then A sends the leader key
 		{ key = "a", mods = "LEADER", action = act.SendKey({ key = "s", mods = "CTRL" }) },
@@ -405,32 +419,33 @@ wezterm.on("update-status", function(window, pane)
 	last_focused_pane_id = current_pane_id
 end)
 
-wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+wezterm.on("format-tab-title", function(tab, tabs, panes, cfg, hover, max_width)
 	local title = tab.active_pane.title
 	local process = tab.active_pane.foreground_process_name or ""
 
 	-- Extract just the last part of the path for process names
 	process = process:gsub("^.*/([^/]+)$", "%1")
 
+	-- Not using icons for now
 	-- Determine appropriate icon based on process
-	local icon = ""
-	if process:match("vim") or process:match("nvim") then
-		icon = " "
-	elseif process:match("git") then
-		icon = " "
-	elseif process:match("ssh") then
-		icon = " "
-	elseif process:match("bash") or process:match("zsh") or process:match("fish") then
-		icon = " "
-	elseif process:match("node") then
-		icon = " "
-	elseif process:match("python") then
-		icon = " "
-	elseif process:match("rust") or process:match("cargo") then
-		icon = " "
-	else
-		icon = "  "
-	end
+	-- local icon = ""
+	-- if process:match("vim") or process:match("nvim") then
+	-- 	icon = " "
+	-- elseif process:match("git") then
+	-- 	icon = " "
+	-- elseif process:match("ssh") then
+	-- 	icon = " "
+	-- elseif process:match("bash") or process:match("zsh") or process:match("fish") then
+	-- 	icon = " "
+	-- elseif process:match("node") then
+	-- 	icon = " "
+	-- elseif process:match("python") then
+	-- 	icon = " "
+	-- elseif process:match("rust") or process:match("cargo") then
+	-- 	icon = " "
+	-- else
+	-- 	icon = "  "
+	-- end
 
 	-- Clean up the title
 	title = title:gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
@@ -447,7 +462,7 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 
 	-- Format tab index
 	local index = tab.tab_index + 1
-	local index_str = " " .. index .. " "
+	-- local index_str = " " .. index .. " "
 
 	return " " .. index .. ": " .. title .. " " -- .. icon .. " "
 end)
