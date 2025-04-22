@@ -18,6 +18,7 @@ return {
 							},
 							files = {
 								excludeDirs = {
+									".venv",
 									"node_modules",
 									"gistia-design-system/node_modules",
 								},

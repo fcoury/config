@@ -1,8 +1,8 @@
 -- Rust specific keymaps
 local bufnr = vim.api.nvim_get_current_buf()
 vim.keymap.set("n", "<leader>ca", function()
-	vim.cmd.RustLsp("codeAction") -- supports rust-analyzer's grouping
-	-- vim.lsp.buf.code_action()
+	-- vim.cmd.RustLsp("codeAction") -- supports rust-analyzer's grouping
+	vim.lsp.buf.code_action()
 end, { silent = true, buffer = bufnr, desc = "Rust code actions" })
 vim.keymap.set(
 	"n",
