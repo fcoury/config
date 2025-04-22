@@ -15,13 +15,18 @@ return {
 						["rust-analyzer"] = {
 							cargo = {
 								allFeatures = true,
+								extraEnv = { RUSTFLAGS = "-C debuginfo=0" },
 							},
 							files = {
 								excludeDirs = {
+									".git",
 									".venv",
+									".terraform",
+									"target",
 									"node_modules",
 									"gistia-design-system/node_modules",
 								},
+								watcher = "client",
 							},
 							procMacro = {
 								ignored = {
@@ -31,6 +36,9 @@ return {
 										"server",
 									},
 								},
+							},
+							cache = {
+								warmup = true,
 							},
 						},
 					},
