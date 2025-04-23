@@ -85,6 +85,13 @@ return {
 				opts = { noremap = true, silent = true },
 				description = "Copy current file name and line number",
 			},
+			{
+				"<leader>cf",
+				"<cmd>CopyRelativePathAndLine<cr>",
+				mode = "n",
+				opts = { noremap = true, silent = true },
+				description = "Copy current relative path, file name and line number",
+			},
 
 			-- delete text
 			{ "m", '"_x', mode = "n", opts = { noremap = true, silent = true }, description = "Delete text" },
