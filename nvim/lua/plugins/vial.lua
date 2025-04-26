@@ -20,7 +20,7 @@ local function get_current_test_args()
 						-- 	and #exec_args >= 1
 						-- 	and exec_args[1]:match("^[%w_:]+::[%w_]+$")
 						-- 	and runnable.label:match("^test ")
-						if runnable.label:match("^test") then
+						if runnable.label:match("^test ") then
 							return runnable.args
 						end
 					end
@@ -55,7 +55,8 @@ local function current_test_name_regex()
 
 	for i = function_declaration_line, 1, -1 do
 		local line = vim.api.nvim_buf_get_lines(bufnr, i - 1, i, false)[1]
-		if line:match("^%s*#%[test%]") then
+		-- if line:match("^%s*#%[test%]") then
+		if line:match("^%s*#%[tokio::?test%]") then
 			return function_name
 		end
 	end
@@ -65,12 +66,14 @@ end
 
 local function current_rust_test_name()
 	local cmd
+	-- local test_name = current_test_name_regex()
 	if pcall(require, "lspconfig") then
 		local args = get_current_test_args()
 		if args == nil then
 			return nil
 		end
-		cmd = table.concat(args.cargoArgs, " ") .. " -- " .. table.concat(args.executableArgs, " ") -- .. " --nocapture"
+		cmd = table.concat(args.cargoArgs, " ") .. " -- " .. table.concat(args.executableArgs, " ") .. " " -- .. " --nocapture"
+		-- cmd = table.concat(args.cargoArgs, " ") .. " -- " .. table.concat(args.executableArgs, " ") .. " " .. test_name -- .. " --nocapture"
 	else
 		local test_name = current_test_name_regex()
 		if test_name == nil then
