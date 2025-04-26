@@ -8,13 +8,22 @@ end
 local function get_current_test_args()
 	local params = get_params()
 	local result = vim.lsp.buf_request_sync(0, "experimental/runnables", params, 1000)
-	if result and result[1] and result[1].result then
-		for _, runnable in ipairs(result[1].result) do
-			if runnable.kind == "cargo" and runnable.args.executableArgs then
-				local args = runnable.args.executableArgs
-				-- Check if this is a specific test
-				if #args >= 1 and args[1]:match("^[%w_:]+::[%w_]+$") and runnable.label:match("^test ") then
-					return runnable.args
+	if result then
+		for _, response in pairs(result) do
+			if response.result then
+				for _, runnable in ipairs(response.result) do
+					if runnable.kind == "cargo" then
+						-- Check executableArgs for direct test invocation
+						-- local exec_args = runnable.args.executableArgs
+						-- if
+						-- 	exec_args
+						-- 	and #exec_args >= 1
+						-- 	and exec_args[1]:match("^[%w_:]+::[%w_]+$")
+						-- 	and runnable.label:match("^test ")
+						if runnable.label:match("^test") then
+							return runnable.args
+						end
+					end
 				end
 			end
 		end
