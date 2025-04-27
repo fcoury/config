@@ -24,6 +24,9 @@ require("keymap")
 -- custom commands
 require("commands")
 
+-- new neovim lsp config
+require("lsp")
+
 -- load plugins with lazy.nvim
 -- require("lazy").setup("plugins")
 require("lazy").setup({
