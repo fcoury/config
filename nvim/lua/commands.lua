@@ -39,3 +39,10 @@ vim.api.nvim_create_user_command("CopyRelativePathAndLine", function()
 	vim.fn.setreg("+", clipboard_content)
 	print("Copied to clipboard: " .. clipboard_content)
 end, {})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "qf",
+	callback = function()
+		vim.api.nvim_buf_set_keymap(0, "n", "<CR>", "<CR>:cclose<CR>", { noremap = true, silent = true })
+	end,
+})
