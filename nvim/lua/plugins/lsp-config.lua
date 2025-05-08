@@ -22,7 +22,7 @@ return {
 					"lua-language-server",
 					"prettierd",
 					"pyright",
-					"ruff-lsp",
+					"ruff",
 					"rust-analyzer",
 					"stylua",
 					"debugpy",
