@@ -5,7 +5,7 @@ return {
 	dependencies = {
 		"hrsh7th/cmp-buffer", -- source for text in buffer
 		"hrsh7th/cmp-path", -- source for file system paths
-		"L3MON4D3/LuaSnip", -- snippet engine
+		-- "L3MON4D3/LuaSnip", -- snippet engine
 		"saadparwaiz1/cmp_luasnip", -- for autocompletion
 		"onsails/lspkind.nvim", -- vs-code like pictograms
 		"hrsh7th/cmp-nvim-lsp",
@@ -13,7 +13,7 @@ return {
 	},
 	config = function()
 		local cmp = require("cmp")
-		local luasnip = require("luasnip")
+		-- local luasnip = require("luasnip")
 		local lspkind = require("lspkind")
 
 		cmp.setup({
@@ -26,11 +26,11 @@ return {
 					ellipsis_char = "...",
 				}),
 			},
-			snippet = { -- configure how nvim-cmp interacts with snippet engine
-				expand = function(args)
-					luasnip.lsp_expand(args.body)
-				end,
-			},
+			-- snippet = { -- configure how nvim-cmp interacts with snippet engine
+			-- 	expand = function(args)
+			-- 		luasnip.lsp_expand(args.body)
+			-- 	end,
+			-- },
 			mapping = cmp.mapping.preset.insert({
 				["<C-Space>"] = cmp.mapping.complete(),
 				["<CR>"] = cmp.mapping.confirm({ select = false }),
@@ -40,7 +40,7 @@ return {
 				{ name = "nvim_lsp" },
 				{ name = "copilot" },
 				{ name = "path" },
-				{ name = "luasnip" },
+				-- { name = "luasnip" },
 				{ name = "crates" },
 			}, {
 				{ name = "buffer" },
