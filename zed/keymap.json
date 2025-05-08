@@ -1,7 +1,9 @@
 [
   {
     "bindings": {
-      "ctrl-x": "terminal_panel::ToggleFocus"
+      "ctrl-x": "terminal_panel::ToggleFocus",
+      "ctrl-e": "workspace::ToggleLeftDock",
+      "ctrl-p": "file_finder::Toggle"
     }
   },
   {
