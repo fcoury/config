@@ -1,33 +1,33 @@
-vim.lsp.config("rust-analyzer", {
-	settings = {
-		["rust-analyzer"] = {
-			cargo = {
-				allFeatures = true,
-				extraEnv = { RUSTFLAGS = "-C debuginfo=0" },
-			},
-			files = {
-				excludeDirs = {
-					".git",
-					".venv",
-					".terraform",
-					"target",
-					"node_modules",
-					"gistia-design-system/node_modules",
-				},
-				watcher = "client",
-			},
-			procMacro = {
-				ignored = {
-					leptos_macro = {
-						-- optional: --
-						-- "component",
-						"server",
-					},
-				},
-			},
-			cache = {
-				warmup = true,
-			},
-		},
-	},
-})
+-- vim.lsp.config("rust-analyzer", {
+-- 	settings = {
+-- 		["rust-analyzer"] = {
+-- 			cargo = {
+-- 				allFeatures = true,
+-- 				extraEnv = { RUSTFLAGS = "-C debuginfo=0" },
+-- 			},
+-- 			files = {
+-- 				excludeDirs = {
+-- 					".git",
+-- 					".venv",
+-- 					".terraform",
+-- 					"target",
+-- 					"node_modules",
+-- 					"gistia-design-system/node_modules",
+-- 				},
+-- 				watcher = "client",
+-- 			},
+-- 			procMacro = {
+-- 				ignored = {
+-- 					leptos_macro = {
+-- 						-- optional: --
+-- 						-- "component",
+-- 						"server",
+-- 					},
+-- 				},
+-- 			},
+-- 			cache = {
+-- 				warmup = true,
+-- 			},
+-- 		},
+-- 	},
+-- })

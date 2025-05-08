@@ -47,6 +47,7 @@ vim.wo.number = true -- show line numbers
 
 -- leader
 vim.g.mapleader = " " -- set leader to space
+vim.g.maplocalleader = "," -- set local leader to space
 
 -- Rounded border
 vim.o.winborder = "rounded"

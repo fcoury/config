@@ -23,7 +23,7 @@ return {
 					"prettierd",
 					"pyright",
 					"ruff",
-					"rust-analyzer",
+					-- "rust-analyzer",
 					"stylua",
 					"debugpy",
 					"yamlls",

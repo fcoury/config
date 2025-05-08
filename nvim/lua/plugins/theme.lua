@@ -39,6 +39,7 @@ return {
 	{ "morhetz/gruvbox" },
 	{ "AlexvZyl/nordic.nvim" },
 	{ "fcancelinha/nordern.nvim", branch = "master", priority = 1000 },
+	{ "rmehri01/onenord.nvim" },
 	{ "catppuccin/nvim" },
 	{ "yorumicolors/yorumi.nvim" },
 	{
@@ -85,6 +86,7 @@ return {
 					"nord",
 					"nordic",
 					"nordern",
+					"onenord",
 					"zenwritten",
 					"neobones",
 					"rosebones",
