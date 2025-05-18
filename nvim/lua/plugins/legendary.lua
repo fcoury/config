@@ -21,6 +21,18 @@ return {
 			-- remaps ; to act as :
 			{ ";", ":", mode = "n", opts = { noremap = true }, description = "Remap ; to :" },
 
+			-- toggle Legendary
+			{ "<leader>,l", "<cmd>Legendary<cr>", mode = "n", description = "Toggle Legendary" },
+
+			-- git
+			{
+				"<leader>tb",
+				"<cmd>Gitsigns toggle_current_line_blame<cr>",
+				mode = "n",
+				description = "Toggle Git blame",
+			},
+			{ "<leader>,gs", "<cmd>Git<cr>", mode = "n", description = "Git commands" },
+
 			-- select all
 			{ "<leader>a", "ggVG", mode = "n", description = "Select all" },
 
