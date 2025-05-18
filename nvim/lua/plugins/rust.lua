@@ -26,7 +26,22 @@ return {
 									"node_modules",
 									"gistia-design-system/node_modules",
 								},
-								watcher = "client",
+								-- Server-side file watcher is more responsive
+								watcher = "server",
+							},
+							-- Improve responsiveness
+							checkOnSave = {
+								enable = true,
+								command = "check",
+								extraArgs = { "--target-dir", "target/rust-analyzer-check" },
+							},
+							-- Better diagnostics handling
+							diagnostics = {
+								enable = true,
+								experimental = {
+									enable = false,
+								},
+								refreshSupport = false,
 							},
 							procMacro = {
 								ignored = {
@@ -39,6 +54,10 @@ return {
 							},
 							cache = {
 								warmup = true,
+							},
+							-- Workspace reload optimization
+							workspace = {
+								refreshTime = 150,
 							},
 						},
 					},

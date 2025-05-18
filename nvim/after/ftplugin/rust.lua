@@ -12,3 +12,21 @@ vim.keymap.set(
 	end,
 	{ silent = true, buffer = bufnr, desc = "Rust hover actions" }
 )
+
+-- Add keymaps to help with stale RustAnalyzer
+vim.keymap.set("n", "<leader>rr", function()
+	vim.cmd.RustLsp("reloadWorkspace")
+	print("Reloaded Rust workspace")
+end, { silent = true, buffer = bufnr, desc = "Reload Rust workspace" })
+
+vim.keymap.set("n", "<leader>rs", function()
+	vim.cmd.RustLsp({ "rebuildProcMacros" })
+	print("Rebuilt proc macros")
+end, { silent = true, buffer = bufnr, desc = "Rebuild Rust proc macros" })
+
+-- Command to force restart RustAnalyzer
+vim.keymap.set("n", "<leader>rR", function()
+	vim.lsp.stop_client(vim.lsp.get_active_clients({ name = "rust-analyzer" }))
+	vim.cmd.e()
+	print("Restarted RustAnalyzer")
+end, { silent = true, buffer = bufnr, desc = "Restart RustAnalyzer" })
