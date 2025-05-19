@@ -27,6 +27,13 @@ local config = {
 	-- Set unlimited scrollback
 	scrollback_lines = 35000,
 
+	-- scrollbar
+	enable_scroll_bar = true,
+
+	-- swallow first pane selecting click
+	swallow_mouse_click_on_window_focus = true,
+	swallow_mouse_click_on_pane_focus = true,
+
 	-- Window styling
 	window_decorations = "RESIZE",
 	window_padding = {
