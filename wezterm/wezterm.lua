@@ -163,6 +163,8 @@ local config = {
 		{ key = "t", mods = "CMD", action = act.SpawnTab("CurrentPaneDomain") },
 		{ key = "Enter", mods = "CMD|SHIFT", action = act.TogglePaneZoomState },
 		{ key = "s", mods = "OPT", action = act.PaneSelect({ mode = "SwapWithActive" }) },
+		-- Fix the Opt+Enter bug and Claude Code needs it
+		{ key = "Enter", mods = "OPT", action = act.SendKey({ key = "Enter", mods = "ALT" }) },
 
 		-- Search thingies
 		{ key = "u", mods = "CTRL", action = act.CopyMode("ClearPattern") },
