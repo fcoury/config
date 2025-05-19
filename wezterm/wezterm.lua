@@ -4,7 +4,7 @@ local act = wezterm.action
 
 local config = {
 	font = wezterm.font("FantasqueSansM Nerd Font"),
-	font_size = 24.0,
+	font_size = 20.0,
 	line_height = 1.2,
 	-- font = wezterm.font("Cousine Nerd Font Mono"),
 	-- font_size = 16.0,
