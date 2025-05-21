@@ -10,12 +10,12 @@
   "agent": {
     "default_model": {
       "provider": "zed.dev",
-      "model": "claude-3-5-sonnet-latest"
+      "model": "claude-3-7-sonnet-latest"
     },
     "version": "2"
   },
   "cursor_blink": false,
-  "theme": "Catppuccin Espresso (Blur)",
+  "theme": "Ayu Mirage",
   "buffer_font_family": "FantasqueSansM Nerd Font",
   "buffer_line_height": "standard",
   "ui_font_size": 16,
