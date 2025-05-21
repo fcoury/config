@@ -2,20 +2,20 @@
 live_config_reload = true
 
 [font]
-size = 22.0
+size = 21.0
 
-[font.bold]
-family = "Iosevka Nerd Font"
-style = "Medium"
+[font.normal]
+family = "IosevkaTerm Nerd Font"
 
-[font.glyph_offset]
+[font.offset]
 x = 0
 y = 0
 
-[font.normal]
-family = "FantasqueSansM Nerd Font"
+[font.bold]
+family = "IosevkaTerm Nerd Font"
+style = "Medium"
 
-[font.offset]
+[font.glyph_offset]
 x = 0
 y = 0
 
