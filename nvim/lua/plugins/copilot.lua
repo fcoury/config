@@ -14,6 +14,10 @@ return {
 						prev = "<M-[>",
 					},
 				},
+				filetypes = {
+					markdown = true, -- Explicitly enable for markdown
+					["*"] = true, -- Enable for all other filetypes
+				},
 			})
 		end,
 	},

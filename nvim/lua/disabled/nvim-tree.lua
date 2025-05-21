@@ -7,6 +7,7 @@ return {
 		local api = require("nvim-tree.api")
 		local lib = require("nvim-tree.lib")
 
+		vim.keymap.set("v", "<C-e>", api.tree.toggle)
 		vim.keymap.set("n", "<C-e>", api.tree.toggle)
 
 		local function my_on_attach(bufnr)
@@ -22,6 +23,7 @@ return {
 
 			api.config.mappings.default_on_attach(bufnr)
 
+			vim.keymap.set("v", "<C-e>", api.tree.toggle, opts("Toggle"))
 			vim.keymap.set("n", "<C-e>", api.tree.toggle, opts("Toggle"))
 			vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
 			vim.keymap.set("n", "l", function()
