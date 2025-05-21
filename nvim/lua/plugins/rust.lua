@@ -13,6 +13,9 @@ return {
 					end,
 					default_settings = {
 						["rust-analyzer"] = {
+							trace = {
+								server = "verbose",
+							},
 							cargo = {
 								allFeatures = true,
 								extraEnv = { RUSTFLAGS = "-C debuginfo=0" },
@@ -27,7 +30,8 @@ return {
 									"gistia-design-system/node_modules",
 								},
 								-- Server-side file watcher is more responsive
-								watcher = "server",
+								watcher = "client",
+								-- watcher = "server",
 							},
 							-- Improve responsiveness
 							checkOnSave = {
