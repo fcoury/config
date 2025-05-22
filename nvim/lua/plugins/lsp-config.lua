@@ -8,6 +8,7 @@ return {
 		config = function()
 			require("mason").setup()
 			require("mason-lspconfig").setup({
+				automatic_enable = false,
 				ensure_installed = { "lua_ls", "biome", "ts_ls", "html" },
 			})
 			require("mason-tool-installer").setup({
