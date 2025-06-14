@@ -1,0 +1,378 @@
+#!/bin/bash
+
+# sync.sh - Enhanced repository synchronization script
+# Usage: ./sync.sh [options] [repo-name] [direction]
+
+set -e
+
+# Configuration
+CONFIG_FILE="$HOME/.config/sync.conf"
+DEFAULT_SOURCE_HOST="mba"
+DEFAULT_BASE_PATH="~/code"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Default excludes
+DEFAULT_EXCLUDES=(
+    ".git"
+    ".venv"
+    "policies.db"
+    "old.db"
+    "target"
+    "node_modules"
+    "target-trunk"
+    "policies"
+    "__pycache__"
+    ".DS_Store"
+    "*.pyc"
+    ".env"
+    ".env.local"
+    "dist/"
+    "build/"
+)
+
+# Function to print colored output
+print_status() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Function to show usage
+show_usage() {
+    cat << EOF
+Usage: $0 [options] [repo-name] [direction]
+
+Options:
+    -h, --help          Show this help message
+    -c, --config        Show current configuration
+    -n, --dry-run       Show what would be synced without actually doing it
+    -v, --verbose       Enable verbose output
+    -e, --exclude FILE  Add additional exclude pattern
+    -H, --host HOST     Override source host (default from config)
+    --no-gitignore      Skip reading .gitignore patterns
+    --init              Initialize configuration file
+
+Arguments:
+    repo-name           Name of the repository (default: current directory name)
+    direction           'pull' (from remote) or 'push' (to remote) (default: pull)
+
+Examples:
+    $0                  # Sync current directory from remote
+    $0 msx pull         # Pull msx repo from remote
+    $0 myproject push   # Push myproject repo to remote
+    $0 --dry-run        # Show what would be synced
+    $0 -H laptop msx    # Pull msx repo from 'laptop' host
+EOF
+}
+
+# Function to initialize config file
+init_config() {
+    # Ensure .config directory exists
+    mkdir -p "$(dirname "$CONFIG_FILE")"
+    
+    if [[ -f "$CONFIG_FILE" ]]; then
+        print_warning "Config file already exists at $CONFIG_FILE"
+        read -p "Overwrite? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            return 0
+        fi
+    fi
+
+    cat > "$CONFIG_FILE" << EOF
+# Repository sync configuration
+SOURCE_HOST="$DEFAULT_SOURCE_HOST"
+BASE_PATH="$DEFAULT_BASE_PATH"
+
+# Additional excludes (one per line)
+# CUSTOM_EXCLUDES=(
+#     "*.log"
+#     "temp/"
+# )
+EOF
+
+    print_success "Configuration file created at $CONFIG_FILE"
+    print_status "Edit this file to customize your sync settings"
+}
+
+# Function to load configuration
+load_config() {
+    if [[ -f "$CONFIG_FILE" ]]; then
+        source "$CONFIG_FILE"
+    fi
+    
+    # Set defaults if not configured
+    SOURCE_HOST="${SOURCE_HOST:-$DEFAULT_SOURCE_HOST}"
+    BASE_PATH="${BASE_PATH:-$DEFAULT_BASE_PATH}"
+}
+
+# Function to read .gitignore patterns
+read_gitignore() {
+    local gitignore_file="$1/.gitignore"
+    local patterns=()
+    
+    if [[ -f "$gitignore_file" ]]; then
+        while IFS= read -r line; do
+            # Skip empty lines and comments
+            if [[ -n "$line" && ! "$line" =~ ^[[:space:]]*# ]]; then
+                # Remove leading/trailing whitespace
+                line=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                if [[ -n "$line" ]]; then
+                    patterns+=("$line")
+                fi
+            fi
+        done < "$gitignore_file"
+    fi
+    
+    echo "${patterns[@]}"
+}
+
+# Function to build exclude arguments
+build_excludes() {
+    local repo_path="$1"
+    local excludes=""
+    
+    # Add default excludes
+    for exclude in "${DEFAULT_EXCLUDES[@]}"; do
+        excludes+=" --exclude='$exclude'"
+    done
+    
+    # Add .gitignore patterns if available
+    local gitignore_patterns
+    if [[ -n "$repo_path" && "$USE_GITIGNORE" == "true" ]]; then
+        gitignore_patterns=$(read_gitignore "$repo_path")
+        if [[ -n "$gitignore_patterns" ]]; then
+            print_status "Using .gitignore from $repo_path ($(echo $gitignore_patterns | wc -w) patterns)"
+            for pattern in $gitignore_patterns; do
+                excludes+=" --exclude='$pattern'"
+            done
+        fi
+    fi
+    
+    # Add custom excludes from config
+    if [[ -n "${CUSTOM_EXCLUDES[@]}" ]]; then
+        for exclude in "${CUSTOM_EXCLUDES[@]}"; do
+            excludes+=" --exclude='$exclude'"
+        done
+    fi
+    
+    # Add command line excludes
+    for exclude in "${EXTRA_EXCLUDES[@]}"; do
+        excludes+=" --exclude='$exclude'"
+    done
+    
+    echo "$excludes"
+}
+
+# Function to perform the sync
+do_sync() {
+    local repo_name="$1"
+    local direction="$2"
+    local dry_run="$3"
+    local verbose="$4"
+    
+    local rsync_opts="-azh"
+    if [[ "$dry_run" == "true" ]]; then
+        rsync_opts+="n"
+        print_warning "DRY RUN MODE - No files will be transferred"
+    fi
+    if [[ "$verbose" == "true" ]]; then
+        rsync_opts+="v"
+    fi
+    
+    local excludes
+    local repo_path
+    
+    # For .gitignore reading, use existing local directory or current directory
+    if [[ "$direction" == "pull" ]]; then
+        # Check if destination exists, otherwise use current directory as fallback
+        if [[ -d "../${repo_name}" ]]; then
+            repo_path="../${repo_name}"
+        else
+            # If we're in a repo directory, use current directory's .gitignore
+            if [[ -f ".gitignore" ]]; then
+                repo_path="."
+            else
+                repo_path=""  # No .gitignore available
+            fi
+        fi
+    else
+        repo_path="."
+    fi
+    
+    # Build excludes before printing status messages
+    excludes=$(build_excludes "$repo_path")
+    
+    local source_path dest_path
+    
+    if [[ "$direction" == "pull" ]]; then
+        source_path="${SOURCE_HOST}:${BASE_PATH}/${repo_name}/"
+        dest_path="../${repo_name}/"
+        print_status "Pulling $repo_name from $SOURCE_HOST"
+    else
+        source_path="../${repo_name}/"
+        dest_path="${SOURCE_HOST}:${BASE_PATH}/${repo_name}/"
+        print_status "Pushing $repo_name to $SOURCE_HOST"
+    fi
+    
+    # Ensure destination directory exists
+    if [[ "$direction" == "pull" ]]; then
+        mkdir -p "../${repo_name}"
+    else
+        ssh "$SOURCE_HOST" "mkdir -p ${BASE_PATH}/${repo_name}"
+    fi
+    
+    print_status "Source: $source_path"
+    print_status "Destination: $dest_path"
+    
+    # Execute rsync directly without eval to avoid syntax issues
+    if [[ "$verbose" == "true" ]]; then
+        print_status "Executing rsync with options: $rsync_opts"
+        print_status "Excludes: $excludes"
+    fi
+    
+    # Use a function to execute rsync safely
+    exec_rsync() {
+        local opts="$1"
+        local excludes_str="$2"
+        local src="$3"
+        local dest="$4"
+        
+        # Build command as array to handle spaces properly
+        local cmd=(rsync)
+        
+        # Add options
+        for opt in $(echo "$opts" | grep -o .); do
+            if [[ "$opt" != "-" ]]; then
+                cmd+=("-$opt")
+            fi
+        done
+        
+        # Add excludes by parsing the string
+        while [[ "$excludes_str" =~ --exclude=\'([^\']*)\' ]]; do
+            cmd+=(--exclude "${BASH_REMATCH[1]}")
+            excludes_str="${excludes_str//${BASH_REMATCH[0]}/}"
+        done
+        
+        # Add source and destination
+        cmd+=("$src" "$dest")
+        
+        # Execute the command
+        "${cmd[@]}"
+    }
+    
+    exec_rsync "$rsync_opts" "$excludes" "$source_path" "$dest_path"
+    
+    if [[ "$dry_run" != "true" ]]; then
+        print_success "Sync completed successfully"
+    fi
+}
+
+# Parse command line arguments
+REPO_NAME=""
+DIRECTION="pull"
+DRY_RUN="false"
+VERBOSE="false"
+USE_GITIGNORE="true"
+OVERRIDE_HOST=""
+EXTRA_EXCLUDES=()
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            show_usage
+            exit 0
+            ;;
+        -c|--config)
+            load_config
+            echo "Current configuration:"
+            echo "  Source host: $SOURCE_HOST"
+            if [[ -n "$OVERRIDE_HOST" ]]; then
+                echo "  Override host: $OVERRIDE_HOST"
+            fi
+            echo "  Base path: $BASE_PATH"
+            echo "  Config file: $CONFIG_FILE"
+            exit 0
+            ;;
+        -n|--dry-run)
+            DRY_RUN="true"
+            shift
+            ;;
+        -v|--verbose)
+            VERBOSE="true"
+            shift
+            ;;
+        -e|--exclude)
+            EXTRA_EXCLUDES+=("$2")
+            shift 2
+            ;;
+        -H|--host)
+            OVERRIDE_HOST="$2"
+            shift 2
+            ;;
+        --init)
+            init_config
+            exit 0
+            ;;
+        --no-gitignore)
+            USE_GITIGNORE="false"
+            shift
+            ;;
+        -*)
+            print_error "Unknown option $1"
+            show_usage
+            exit 1
+            ;;
+        *)
+            if [[ -z "$REPO_NAME" ]]; then
+                REPO_NAME="$1"
+            elif [[ -z "$DIRECTION" || "$DIRECTION" == "pull" ]]; then
+                DIRECTION="$1"
+            else
+                print_error "Too many arguments"
+                show_usage
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+# Load configuration
+load_config
+
+# Override host if specified
+if [[ -n "$OVERRIDE_HOST" ]]; then
+    SOURCE_HOST="$OVERRIDE_HOST"
+    print_status "Using override host: $SOURCE_HOST"
+fi
+
+# Default repo name to current directory
+if [[ -z "$REPO_NAME" ]]; then
+    REPO_NAME=$(basename "$PWD")
+fi
+
+# Validate direction
+if [[ "$DIRECTION" != "pull" && "$DIRECTION" != "push" ]]; then
+    print_error "Direction must be 'pull' or 'push'"
+    exit 1
+fi
+
+# Perform the sync
+do_sync "$REPO_NAME" "$DIRECTION" "$DRY_RUN" "$VERBOSE"
