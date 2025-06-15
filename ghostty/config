@@ -1,30 +1,76 @@
 # Look and feel
 
-font-family = "FantasqueSansM Nerd Font"
+font-family = "Iosevka Nerd Font Mono"
+adjust-cell-height = 3
+font-size = 18
+
+# font-family = "FantasqueSansM Nerd Font"
+# adjust-cell-height = 10
+# font-size = 23
+
+# font-family = "JetBrains Mono"
+# adjust-cell-height = 2
+# font-size = 18
+
+# font-family = "Opus One"
+# font-family = "FantasqueSansM Nerd Font"
+# font-family = "Maple Mono NF"
 # font-family = "Hack Nerd Font Mono"
-font-size = 23
 # font-thicken = true
-adjust-cell-height = 10
 
 # Show tabs instead of a title bar
 macos-titlebar-style = tabs
+
 # Option behaves as alt
 macos-option-as-alt = true
 
+# Almost no dim for unfocused panes
+unfocused-split-opacity = 0.9
+
+# Cursor styles, no blinking
 cursor-style = block
 cursor-style-blink = false
 
+# Shell integration
 shell-integration-features = no-cursor,no-sudo
 
 # Theme
 config-file = lackluster-theme.conf
 
 # Keybindings
-keybind = cmd+h=goto_split:left
-keybind = cmd+l=goto_split:right
-keybind = cmd+j=goto_split:bottom
-keybind = cmd+k=goto_split:top
+# keybind = cmd+h=goto_split:left
+# keybind = cmd+l=goto_split:right
+# keybind = cmd+j=goto_split:bottom
+# keybind = cmd+k=goto_split:top
 
-# old font
-# font-family = "Iosevka Nerd Font"
-# adjust-cell-height = 3
+# Navigation between panes (equivalent to tmux hjkl navigation)
+# keybind = ctrl+s>h=goto_split:left
+# keybind = ctrl+s>j=goto_split:bottom
+# keybind = ctrl+s>k=goto_split:top
+# keybind = ctrl+s>l=goto_split:right
+
+# Alt versions for pane navigation
+# keybind = alt+h=goto_split:left
+# keybind = alt+j=goto_split:bottom
+# keybind = alt+k=goto_split:top
+# keybind = alt+l=goto_split:right
+
+# Resize panes with leader key (using uppercase letters)
+# keybind = ctrl+s>shift+h=resize_split:left,10
+# keybind = ctrl+s>shift+j=resize_split:down,10
+# keybind = ctrl+s>shift+k=resize_split:up,10
+# keybind = ctrl+s>shift+l=resize_split:right,10
+
+# Close current pane
+# keybind = ctrl+s>x=close_surface
+
+# Toggle pane zoom
+# keybind = ctrl+s>z=toggle_split_zoom
+
+# Creating panes
+# keybind = ctrl+s>d=new_split:right
+# keybind = ctrl+s>s=new_split:down
+
+# Clear screen
+# keybind = super+k=clear_screen
+
