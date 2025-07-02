@@ -78,6 +78,16 @@ function tm
   end
 end
 
+function zm
+  set session_name (basename (pwd) | string replace '.' '_')
+
+  if zellij list-sessions -n | grep -q "^$session_name"
+    zellij attach "$session_name"
+  else
+    zellij --session "$session_name"
+  end
+end
+
 function tp
   # Check if tmux is running
   if not command -q tmux
