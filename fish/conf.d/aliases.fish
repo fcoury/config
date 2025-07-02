@@ -23,6 +23,9 @@ alias bi 'HOMEBREW_NO_AUTO_UPDATE=1 brew install'
 # tmux
 alias tn 'tmux new-session -s'
 
+# ai and vibecoding
+alias yolo 'vt claude --dangerously-skip-permissions'
+
 function ca
   cargo add $argv; and cargo sort
 end
