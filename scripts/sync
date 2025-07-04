@@ -67,6 +67,7 @@ Options:
     -H, --host HOST     Override source host (default from config)
     --no-gitignore      Skip reading .gitignore patterns
     --init              Initialize configuration file
+    --new PROJECT       Clone remote project to new local directory
 
 Arguments:
     repo-name           Name of the repository (default: current directory name)
@@ -78,6 +79,7 @@ Examples:
     $0 myproject push   # Push myproject repo to remote
     $0 --dry-run        # Show what would be synced
     $0 -H laptop msx    # Pull msx repo from 'laptop' host
+    $0 --new myproject  # Clone remote myproject to new local directory
 EOF
 }
 
@@ -328,6 +330,66 @@ while [[ $# -gt 0 ]]; do
             ;;
         --init)
             init_config
+            exit 0
+            ;;
+        --new)
+            if [[ $# -lt 2 ]]; then
+                print_error "--new requires a project name"
+                exit 1
+            fi
+            # Get project name and create new directory
+            PROJECT_NAME="$2"
+            TARGET_DIR="$(pwd)/$PROJECT_NAME"
+            
+            # Check if directory already exists
+            if [[ -d "$TARGET_DIR" ]]; then
+                print_error "Directory $TARGET_DIR already exists"
+                exit 1
+            fi
+            
+            # Create the directory
+            mkdir -p "$TARGET_DIR"
+            
+            # Load config to get source host and base path
+            load_config
+            
+            # Override host if specified
+            if [[ -n "$OVERRIDE_HOST" ]]; then
+                SOURCE_HOST="$OVERRIDE_HOST"
+            fi
+            
+            print_status "Initializing $PROJECT_NAME from $SOURCE_HOST"
+            print_status "Creating directory: $TARGET_DIR"
+            
+            # Perform sync from remote to new local directory
+            source_path="${SOURCE_HOST}:${BASE_PATH}/${PROJECT_NAME}/"
+            dest_path="$TARGET_DIR/"
+            
+            # Build excludes but remove .git from the list since we want the full repo
+            excludes=$(build_excludes "")
+            # Remove .git exclude if present
+            excludes=$(echo "$excludes" | sed "s/--exclude='\.git'//")
+            
+            print_status "Source: $source_path"
+            print_status "Destination: $dest_path"
+            
+            # Execute rsync directly
+            if [[ "$DRY_RUN" == "true" ]]; then
+                print_status "Would execute: rsync -azh $excludes $source_path $dest_path"
+            else
+                # Build rsync command
+                cmd="rsync -azh"
+                
+                # Add excludes
+                if [[ -n "$excludes" ]]; then
+                    cmd="$cmd $excludes"
+                fi
+                
+                # Execute
+                eval "$cmd \"$source_path\" \"$dest_path\""
+            fi
+            
+            print_success "Project $PROJECT_NAME initialized successfully in $TARGET_DIR"
             exit 0
             ;;
         --no-gitignore)
