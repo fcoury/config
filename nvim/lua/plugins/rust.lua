@@ -69,4 +69,5 @@ return {
 			}
 		end,
 	},
+	{ "rhaiscript/vim-rhai", ft = "rhai" },
 }
