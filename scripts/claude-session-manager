@@ -1,0 +1,411 @@
+#!/bin/bash
+
+# Claude Code Session Manager
+# Helps list and copy Claude Code sessions between machines
+
+set -e
+
+CLAUDE_DIR="$HOME/.claude"
+PROJECTS_DIR="$CLAUDE_DIR/projects"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_color() {
+    local color=$1
+    local message=$2
+    echo -e "${color}${message}${NC}"
+}
+
+# Function to show usage
+show_usage() {
+    echo "Claude Code Session Manager"
+    echo
+    echo "Usage: $0 [COMMAND] [OPTIONS]"
+    echo
+    echo "Commands:"
+    echo "  list [PROJECT]         List all sessions with details (optionally filter by project)"
+    echo "  list-projects          List unique projects"
+    echo "  export [PROJECT]       Export project sessions to tar.gz"
+    echo "  import [FILE]          Import sessions from tar.gz"
+    echo "  copy-to [HOST] [USER]  Copy all sessions to remote machine"
+    echo "  help                   Show this help message"
+    echo
+    echo "Examples:"
+    echo "  $0 list"
+    echo "  $0 list husk"
+    echo "  $0 list-projects"
+    echo "  $0 export husk"
+    echo "  $0 import sessions-backup.tar.gz"
+    echo "  $0 copy-to server.example.com user"
+}
+
+# Function to get project name from directory
+get_project_name() {
+    local dir_name=$1
+    # Remove leading dashes and convert path separators to readable format
+    echo "$dir_name" | sed 's/^-*//' | sed 's/-Users-[^-]*-code-/-/' | sed 's/^-//' | sed 's/-/ /g'
+}
+
+# Function to get last message from JSONL file
+get_last_message() {
+    local file=$1
+    if [[ -f "$file" ]]; then
+        # Look for the last user or assistant message, not system messages
+        local last_message=$(tac "$file" | python3 -c "
+import json, sys, re
+try:
+    for line in sys.stdin:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            data = json.loads(line)
+            
+            # Skip system messages and meta messages
+            if data.get('type') == 'system' or data.get('isMeta', False):
+                continue
+                
+            content = ''
+            msg_type = data.get('type', '')
+            
+            # Handle different message formats
+            if 'message' in data and isinstance(data['message'], dict):
+                # Format: {'message': {'role': 'user', 'content': '...'}}
+                raw_content = data['message'].get('content', '')
+                role = data['message'].get('role', msg_type)
+            elif 'content' in data:
+                # Format: {'content': '...', 'type': '...'}
+                raw_content = data['content']
+                role = msg_type or 'unknown'
+            else:
+                continue
+            
+            # Handle content that might be a list or string
+            content = ''
+            if isinstance(raw_content, list):
+                # Extract text from list of content blocks
+                for item in raw_content:
+                    if isinstance(item, dict) and 'text' in item:
+                        content += item['text'] + ' '
+                    elif isinstance(item, str):
+                        content += item + ' '
+                content = content.strip()
+            elif isinstance(raw_content, str):
+                content = raw_content
+            else:
+                content = str(raw_content)
+                
+            if content:
+                # Clean up content
+                content = re.sub(r'\x1b\[[0-9;]*m', '', content)  # Remove ANSI codes
+                content = content.replace('\n', ' ').replace('\r', ' ')
+                content = ' '.join(content.split())  # Normalize whitespace
+                
+                if len(content) > 100:
+                    content = content[:97] + '...'
+                    
+                role_prefix = {'user': '👤', 'assistant': '🤖', 'system': '⚙️'}.get(role, '💬')
+                print(f'{role_prefix} {content}')
+                break
+        except json.JSONDecodeError:
+            continue
+    else:
+        print('No readable messages found')
+except Exception as e:
+    print(f'Error parsing: {str(e)}')
+" 2>/dev/null || echo "Unable to parse messages")
+        
+        if [[ -z "$last_message" || "$last_message" == "No readable messages found" ]]; then
+            echo "No messages found"
+        else
+            echo "$last_message"
+        fi
+    else
+        echo "File not found"
+    fi
+}
+
+# Function to get session info from JSONL file
+get_session_info() {
+    local file=$1
+    local show_last_message=$2
+    if [[ -f "$file" ]]; then
+        local line_count=$(wc -l < "$file" 2>/dev/null || echo "0")
+        local file_size=$(ls -lh "$file" | awk '{print $5}')
+        local last_modified=$(stat -f "%Sm" -t "%Y-%m-%d %H:%M" "$file" 2>/dev/null || echo "unknown")
+        local info="$line_count messages, $file_size, modified: $last_modified"
+        
+        if [[ "$show_last_message" == "true" ]]; then
+            local last_msg=$(get_last_message "$file")
+            echo "$info"
+            echo "       Last: $last_msg"
+        else
+            echo "$info"
+        fi
+    else
+        echo "File not found"
+    fi
+}
+
+# Function to list all sessions
+list_sessions() {
+    local filter_project=$1
+    local show_messages=${2:-true}  # Default to showing last messages
+    
+    if [[ -n "$filter_project" ]]; then
+        print_color $BLUE "Claude Code Sessions for: $filter_project"
+    else
+        print_color $BLUE "Claude Code Sessions:"
+    fi
+    print_color $BLUE "===================="
+    echo
+    
+    if [[ ! -d "$PROJECTS_DIR" ]]; then
+        print_color $RED "No projects directory found at $PROJECTS_DIR"
+        return 1
+    fi
+    
+    local total_sessions=0
+    local matched_projects=0
+    
+    for project_dir in "$PROJECTS_DIR"/*; do
+        if [[ -d "$project_dir" ]]; then
+            local project_name=$(get_project_name "$(basename "$project_dir")")
+            local dir_name=$(basename "$project_dir")
+            local session_count=$(find "$project_dir" -name "*.jsonl" | wc -l)
+            
+            # Filter by project if specified
+            local should_show=true
+            if [[ -n "$filter_project" ]]; then
+                if [[ "$project_name" != *"$filter_project"* ]] && [[ "$dir_name" != *"$filter_project"* ]]; then
+                    should_show=false
+                fi
+            fi
+            
+            if [[ $session_count -gt 0 ]] && [[ "$should_show" == "true" ]]; then
+                print_color $GREEN "📁 $project_name"
+                echo "   Path: $(basename "$project_dir")"
+                echo "   Sessions: $session_count"
+                
+                # Sort sessions by modification time (newest first)
+                while IFS= read -r -d '' session_file; do
+                    local session_id=$(basename "$session_file" .jsonl)
+                    local session_info=$(get_session_info "$session_file" "$show_messages")
+                    echo "   💬 $session_id - $session_info"
+                    total_sessions=$((total_sessions + 1))
+                done < <(find "$project_dir" -name "*.jsonl" -print0 | xargs -0 ls -lt | awk '{print $9}' | grep -v "^$" | xargs -I {} printf '%s\0' {})
+                
+                echo
+                matched_projects=$((matched_projects + 1))
+            fi
+        fi
+    done
+    
+    if [[ -n "$filter_project" ]] && [[ $matched_projects -eq 0 ]]; then
+        print_color $RED "No projects found matching: $filter_project"
+        return 1
+    fi
+    
+    print_color $YELLOW "Total sessions: $total_sessions"
+    if [[ $matched_projects -gt 0 ]] && [[ -n "$filter_project" ]]; then
+        print_color $YELLOW "Projects matched: $matched_projects"
+    fi
+}
+
+# Function to list unique projects
+list_projects() {
+    print_color $BLUE "Claude Code Projects:"
+    print_color $BLUE "===================="
+    echo
+    
+    if [[ ! -d "$PROJECTS_DIR" ]]; then
+        print_color $RED "No projects directory found at $PROJECTS_DIR"
+        return 1
+    fi
+    
+    local project_count=0
+    
+    for project_dir in "$PROJECTS_DIR"/*; do
+        if [[ -d "$project_dir" ]]; then
+            local project_name=$(get_project_name "$(basename "$project_dir")")
+            local session_count=$(find "$project_dir" -name "*.jsonl" | wc -l)
+            local dir_name=$(basename "$project_dir")
+            
+            if [[ $session_count -gt 0 ]]; then
+                print_color $GREEN "📁 $project_name"
+                echo "   Directory: $dir_name"
+                echo "   Sessions: $session_count"
+                echo
+                project_count=$((project_count + 1))
+            fi
+        fi
+    done
+    
+    print_color $YELLOW "Total projects: $project_count"
+}
+
+# Function to export project sessions
+export_project() {
+    local search_term=$1
+    if [[ -z "$search_term" ]]; then
+        print_color $RED "Please specify a project name or pattern"
+        echo "Use 'list-projects' to see available projects"
+        return 1
+    fi
+    
+    print_color $BLUE "Searching for projects matching: $search_term"
+    
+    local matched_dirs=()
+    for project_dir in "$PROJECTS_DIR"/*; do
+        if [[ -d "$project_dir" ]]; then
+            local project_name=$(get_project_name "$(basename "$project_dir")")
+            local dir_name=$(basename "$project_dir")
+            
+            # Check if search term matches project name or directory name
+            if [[ "$project_name" == *"$search_term"* ]] || [[ "$dir_name" == *"$search_term"* ]]; then
+                local session_count=$(find "$project_dir" -name "*.jsonl" | wc -l)
+                if [[ $session_count -gt 0 ]]; then
+                    matched_dirs+=("$project_dir")
+                    echo "  ✓ Found: $project_name ($session_count sessions)"
+                fi
+            fi
+        fi
+    done
+    
+    if [[ ${#matched_dirs[@]} -eq 0 ]]; then
+        print_color $RED "No projects found matching: $search_term"
+        return 1
+    fi
+    
+    local export_file="claude-sessions-$(echo "$search_term" | tr ' ' '-')-$(date +%Y%m%d-%H%M%S).tar.gz"
+    
+    print_color $BLUE "Creating export: $export_file"
+    
+    # Create temporary directory for export
+    local temp_dir=$(mktemp -d)
+    local export_base="$temp_dir/claude-sessions"
+    mkdir -p "$export_base/projects"
+    
+    # Copy matched project directories
+    for project_dir in "${matched_dirs[@]}"; do
+        cp -r "$project_dir" "$export_base/projects/"
+    done
+    
+    # Copy other relevant files
+    [[ -f "$CLAUDE_DIR/CLAUDE.md" ]] && cp "$CLAUDE_DIR/CLAUDE.md" "$export_base/"
+    [[ -f "$CLAUDE_DIR/settings.json" ]] && cp "$CLAUDE_DIR/settings.json" "$export_base/"
+    
+    # Create the archive
+    (cd "$temp_dir" && tar czf "$PWD/$export_file" claude-sessions)
+    
+    # Cleanup
+    rm -rf "$temp_dir"
+    
+    print_color $GREEN "✓ Export created: $export_file"
+    print_color $YELLOW "Size: $(ls -lh "$export_file" | awk '{print $5}')"
+}
+
+# Function to import sessions
+import_sessions() {
+    local import_file=$1
+    if [[ -z "$import_file" ]]; then
+        print_color $RED "Please specify an import file"
+        return 1
+    fi
+    
+    if [[ ! -f "$import_file" ]]; then
+        print_color $RED "Import file not found: $import_file"
+        return 1
+    fi
+    
+    print_color $BLUE "Importing sessions from: $import_file"
+    
+    # Create backup of existing sessions
+    local backup_file="claude-sessions-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+    if [[ -d "$PROJECTS_DIR" ]]; then
+        print_color $YELLOW "Creating backup of existing sessions: $backup_file"
+        tar czf "$backup_file" -C "$CLAUDE_DIR" projects
+    fi
+    
+    # Extract import file to temporary directory
+    local temp_dir=$(mktemp -d)
+    tar xzf "$import_file" -C "$temp_dir"
+    
+    # Copy sessions to Claude directory
+    if [[ -d "$temp_dir/claude-sessions/projects" ]]; then
+        mkdir -p "$PROJECTS_DIR"
+        cp -r "$temp_dir/claude-sessions/projects"/* "$PROJECTS_DIR/"
+        
+        # Copy other files if they exist
+        [[ -f "$temp_dir/claude-sessions/CLAUDE.md" ]] && cp "$temp_dir/claude-sessions/CLAUDE.md" "$CLAUDE_DIR/"
+        [[ -f "$temp_dir/claude-sessions/settings.json" ]] && cp "$temp_dir/claude-sessions/settings.json" "$CLAUDE_DIR/"
+        
+        print_color $GREEN "✓ Sessions imported successfully"
+    else
+        print_color $RED "Invalid import file format"
+        rm -rf "$temp_dir"
+        return 1
+    fi
+    
+    # Cleanup
+    rm -rf "$temp_dir"
+}
+
+# Function to copy sessions to remote machine
+copy_to_remote() {
+    local host=$1
+    local user=$2
+    
+    if [[ -z "$host" ]] || [[ -z "$user" ]]; then
+        print_color $RED "Please specify both host and user"
+        echo "Usage: $0 copy-to [HOST] [USER]"
+        return 1
+    fi
+    
+    print_color $BLUE "Copying sessions to $user@$host"
+    
+    # Create full export
+    local export_file="claude-sessions-full-$(date +%Y%m%d-%H%M%S).tar.gz"
+    
+    print_color $YELLOW "Creating full export..."
+    tar czf "$export_file" -C "$HOME" .claude
+    
+    print_color $YELLOW "Uploading to remote machine..."
+    scp "$export_file" "$user@$host:/tmp/"
+    
+    print_color $YELLOW "Extracting on remote machine..."
+    ssh "$user@$host" "cd /tmp && tar xzf $export_file && cp -r .claude \$HOME/ && rm -f $export_file"
+    
+    # Cleanup local export
+    rm -f "$export_file"
+    
+    print_color $GREEN "✓ Sessions copied successfully to $user@$host"
+}
+
+# Main script logic
+case "${1:-help}" in
+    "list")
+        list_sessions "$2"
+        ;;
+    "list-projects")
+        list_projects
+        ;;
+    "export")
+        export_project "$2"
+        ;;
+    "import")
+        import_sessions "$2"
+        ;;
+    "copy-to")
+        copy_to_remote "$2" "$3"
+        ;;
+    "help"|*)
+        show_usage
+        ;;
+esac
