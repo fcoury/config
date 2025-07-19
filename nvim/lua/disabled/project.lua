@@ -4,6 +4,7 @@ return {
 	opts = {
 		projects = { -- define project roots
 			"~/code/*",
+			"~/code-external/*",
 			"~/.config/*",
 		},
 	},
