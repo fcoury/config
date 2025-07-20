@@ -104,6 +104,7 @@ function wd --description "Delete a git worktree with format <current_dir>-<bran
     end
     
     set force_flag false
+    set delete_branch false
     set branch_name ""
     
     # Parse arguments
@@ -111,6 +112,8 @@ function wd --description "Delete a git worktree with format <current_dir>-<bran
         switch $arg
             case '--force' '-f'
                 set force_flag true
+            case '--delete-branch' '-d'
+                set delete_branch true
             case '*'
                 if test -z "$branch_name"
                     set branch_name $arg
@@ -123,8 +126,12 @@ function wd --description "Delete a git worktree with format <current_dir>-<bran
     
     # Check if branch name is provided
     if test -z "$branch_name"
-        echo "Usage: wd [--force|-f] <branch_name>"
+        echo "Usage: wd [--force|-f] [--delete-branch|-d] <branch_name>"
         echo "Deletes worktree: <current_dir>-<branch_name>"
+        echo ""
+        echo "Options:"
+        echo "  --force, -f           Force deletion of worktree"
+        echo "  --delete-branch, -d   Also delete the associated branch"
         return 1
     end
     
@@ -158,6 +165,32 @@ function wd --description "Delete a git worktree with format <current_dir>-<bran
     
     if eval $git_cmd
         echo "✅ Worktree '$worktree_name' deleted successfully"
+        
+        # Delete the branch if requested
+        if test $delete_branch = true
+            echo "🗑️  Deleting branch '$branch_name'..."
+            
+            # Check if branch exists locally
+            if git show-ref --verify --quiet "refs/heads/$branch_name"
+                set branch_cmd git branch -d "$branch_name"
+                if test $force_flag = true
+                    set branch_cmd git branch -D "$branch_name"
+                    echo "🔥 Force deleting branch..."
+                end
+                
+                if eval $branch_cmd
+                    echo "✅ Branch '$branch_name' deleted successfully"
+                else
+                    echo "❌ Failed to delete branch '$branch_name'"
+                    if test $force_flag = false
+                        echo "💡 Try with --force flag to force delete the branch"
+                    end
+                    return 1
+                end
+            else
+                echo "⚠️  Branch '$branch_name' not found locally (may be remote-only)"
+            end
+        end
     else
         echo "❌ Failed to delete worktree"
         if test $force_flag = false
@@ -193,3 +226,4 @@ complete -c wk -f -a "(git branch -a | string replace -r '^\s*\*?\s*' '' | strin
 complete -c wk -l existing -s e -d "Only use existing branches (local or remote)"
 complete -c wd -f -a "(git branch -a | string replace -r '^\s*\*?\s*' '' | string replace -r '^remotes/[^/]+/' '')"
 complete -c wd -l force -s f -d "Force deletion of worktree"
+complete -c wd -l delete-branch -s d -d "Also delete the associated branch"
