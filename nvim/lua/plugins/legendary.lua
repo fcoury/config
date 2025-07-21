@@ -99,6 +99,13 @@ return {
 			},
 			{
 				"<leader>cf",
+				"<cmd>CopyRelativePathAndLineForLLM<cr>",
+				mode = "n",
+				opts = { noremap = true, silent = true },
+				description = "Copy current relative path, file name and line number",
+			},
+			{
+				"<leader>ccf",
 				"<cmd>CopyRelativePathAndLine<cr>",
 				mode = "n",
 				opts = { noremap = true, silent = true },
