@@ -1,16 +1,16 @@
 # Look and feel
 
-font-family = "Iosevka Nerd Font Mono"
-adjust-cell-height = 3
-font-size = 18
+# font-family = "Iosevka Nerd Font Mono"
+# adjust-cell-height = 3
+# font-size = 18
 
-# font-family = "FantasqueSansM Nerd Font"
-# adjust-cell-height = 10
-# font-size = 23
+font-family = "FantasqueSansM Nerd Font"
+adjust-cell-height = 10
+font-size = 23
 
 # font-family = "JetBrains Mono"
 # adjust-cell-height = 2
-# font-size = 18
+# font-size = 15
 
 # font-family = "Opus One"
 # font-family = "FantasqueSansM Nerd Font"
@@ -37,8 +37,8 @@ shell-integration-features = no-cursor,no-sudo
 # Theme
 config-file = lackluster-theme.conf
 
-# Sends Ctrl+K when the user presses Cmd+K
-keybind = cmd+k=text:\x0b
+# Sends Meta+K to tmux to intercept it
+keybind = cmd+k=text:\x1bk
 
 # Keybindings
 # keybind = cmd+h=goto_split:left
