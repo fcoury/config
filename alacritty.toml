@@ -9,7 +9,7 @@ family = "IosevkaTerm Nerd Font"
 
 [font.offset]
 x = 0
-y = 0
+y = 2
 
 [font.bold]
 family = "IosevkaTerm Nerd Font"
