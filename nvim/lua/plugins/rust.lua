@@ -63,6 +63,13 @@ return {
 							enable = true,
 							rebuildOnSave = false,
 						},
+						check = {
+							command = "check",
+						},
+						checkOnSave = {
+							enable = true,
+							command = "check",
+						},
 					},
 				},
 			},
