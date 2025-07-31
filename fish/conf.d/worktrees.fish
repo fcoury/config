@@ -69,6 +69,7 @@ function wk --description "Create a git worktree with format <current_dir>-<bran
             echo "✅ Worktree '$worktree_name' created successfully"
             echo "📁 Location: $worktree_path"
             echo "🌿 Branch: $branch_name"
+            cd "$worktree_path"
         else
             echo "❌ Failed to create worktree"
             return 1
@@ -87,6 +88,7 @@ function wk --description "Create a git worktree with format <current_dir>-<bran
                 echo "✅ Worktree '$worktree_name' created successfully"
                 echo "📁 Location: $worktree_path"
                 echo "🌿 New branch: $branch_name"
+                cd "$worktree_path"
             else
                 echo "❌ Failed to create worktree with new branch"
                 return 1
