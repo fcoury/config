@@ -108,4 +108,78 @@ end
 -- keymap.set("n", "j", "v:lua.conditional_move_j()", { expr = true, noremap = true })
 -- keymap.set("n", "k", "v:lua.conditional_move_k()", { expr = true, noremap = true })
 
+-- Quote toggle function - cycles through ', ", and `
+_G.toggle_quotes = function()
+	local line = vim.api.nvim_get_current_line()
+	local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+	
+	-- Find the quote character at or around cursor position
+	local quote_chars = { "'", '"', "`" }
+	local quote_found = nil
+	local start_pos = nil
+	local end_pos = nil
+	
+	-- Check character at cursor first
+	if col <= #line then
+		local char_at_cursor = line:sub(col + 1, col + 1)
+		for _, q in ipairs(quote_chars) do
+			if char_at_cursor == q then
+				-- Find matching quote
+				local before = line:sub(1, col)
+				local after = line:sub(col + 2)
+				local start_quote = before:reverse():find(q)
+				local end_quote = after:find(q)
+				
+				if start_quote and end_quote then
+					quote_found = q
+					start_pos = col + 1 - start_quote
+					end_pos = col + 1 + end_quote
+					break
+				end
+			end
+		end
+	end
+	
+	-- If not found at cursor, search around cursor position
+	if not quote_found then
+		for _, q in ipairs(quote_chars) do
+			local before = line:sub(1, col + 1)
+			local after = line:sub(col + 1)
+			
+			local last_quote_before = before:reverse():find(q)
+			local first_quote_after = after:find(q)
+			
+			if last_quote_before and first_quote_after then
+				quote_found = q
+				start_pos = col + 2 - last_quote_before
+				end_pos = col + first_quote_after
+				break
+			end
+		end
+	end
+	
+	if quote_found and start_pos and end_pos then
+		-- Determine next quote type
+		local next_quote
+		if quote_found == "'" then
+			next_quote = '"'
+		elseif quote_found == '"' then
+			next_quote = "`"
+		else
+			next_quote = "'"
+		end
+		
+		-- Replace the quotes
+		local new_line = line:sub(1, start_pos - 1) .. next_quote .. line:sub(start_pos + 1, end_pos - 1) .. next_quote .. line:sub(end_pos + 1)
+		vim.api.nvim_set_current_line(new_line)
+	end
+end
+
+-- Keybinding for quote toggle (Cmd+' on macOS, Ctrl+' on other systems)
+if vim.fn.has('mac') == 1 then
+	keymap.set({ "n", "i" }, "<D-'>", function() _G.toggle_quotes() end, { desc = "Toggle quotes", silent = true })
+else
+	keymap.set({ "n", "i" }, "<C-'>", function() _G.toggle_quotes() end, { desc = "Toggle quotes", silent = true })
+end
+
 _G_disable_arrows()
