@@ -2,6 +2,7 @@
 return {
 	"utilyre/barbecue.nvim",
 	name = "barbecue",
+	cond = not_vscode,
 	version = "*",
 	dependencies = {
 		"SmiteshP/nvim-navic",

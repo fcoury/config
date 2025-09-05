@@ -1,6 +1,7 @@
 return {
 	{
 		"nvim-lualine/lualine.nvim",
+		cond = not_vscode,
 		config = function()
 			local function truncated_git_branch()
 				local handle = io.popen("git symbolic-ref --short HEAD 2>/dev/null")
