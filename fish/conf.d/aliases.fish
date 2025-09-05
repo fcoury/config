@@ -24,8 +24,9 @@ alias bi 'HOMEBREW_NO_AUTO_UPDATE=1 brew install'
 alias tn 'tmux new-session -s'
 
 # ai and vibecoding
-alias yolo 'claude --dangerously-skip-permissions'
+alias yolo 'ENABLE_BACKGROUND_TASKS=1 FORCE_AUTO_BACKGROUND_TASKS=1 claude --dangerously-skip-permissions'
 alias yolovt 'vt claude --dangerously-skip-permissions'
+alias yologlm 'ccr code --dangerously-skip-permissions'
 
 function ca
   cargo add $argv; and cargo sort
