@@ -6,6 +6,10 @@ vim.cmd("set shiftwidth=2")
 vim.cmd("set backupcopy=yes")
 vim.cmd("set splitbelow")
 
+-- grep with ripgrep
+vim.opt.grepprg = "rg --vimgrep --smart-case --follow"
+vim.opt.grepformat = "%f:%l:%c:%m"
+
 -- enables highlight for current line
 vim.opt.cursorline = true
 
@@ -42,7 +46,7 @@ vim.opt.scrolloff = 3
 -- vim.opt.colorcolumn = "80"
 
 -- line numbering
-vim.wo.relativenumber = true -- show relative line numbers
+-- vim.wo.relativenumber = true -- show relative line numbers
 vim.wo.number = true -- show line numbers
 
 -- leader
@@ -81,6 +85,11 @@ vim.diagnostic.config({
 		},
 	},
 })
+
+-- Utility functions
+_G.not_vscode = function()
+	return vim.g.vscode == nil
+end
 
 -- attempt to highlight text/babel within html
 -- vim.filetype.add({
