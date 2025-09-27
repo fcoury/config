@@ -13,6 +13,7 @@ return {
 			})
 			require("mason-tool-installer").setup({
 				ensure_installed = {
+					"deno",
 					"biome",
 					"codelldb",
 					"css-lsp",
@@ -45,28 +46,58 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		depends = { "nvim-lua/lsp-status.nvim" },
+		init_options = {
+			userLanguages = {
+				rust = "html",
+			},
+		},
 		config = function()
-			local lspconfig = require("lspconfig")
-			lspconfig.lua_ls.setup({})
-			lspconfig.ts_ls.setup({})
-			lspconfig.zls.setup({})
-			lspconfig.html.setup({})
-			lspconfig.cssls.setup({})
-			-- lspconfig.emmet_ls.setup({})
-			lspconfig.htmx.setup({})
-			lspconfig.pyright.setup({})
-			lspconfig.ruff.setup({})
-			lspconfig.yamlls.setup({})
+			local lsp = vim.lsp
+			if not (lsp and lsp.config) then
+				vim.notify("Neovim 0.11+ with vim.lsp.config is required for this configuration", vim.log.levels.ERROR)
+				return
+			end
 
-			-- cpp setup
-			lspconfig.clangd.setup({
+			-- Unify positionEncodings across all LSP clients to avoid mixed encodings
+			local capabilities = vim.lsp.protocol.make_client_capabilities()
+			capabilities.general = capabilities.general or {}
+			capabilities.general.positionEncodings = { "utf-16" }
+
+			local server_list = {
+				"lua_ls",
+				"zls",
+				"html",
+				"cssls",
+				-- "emmet_ls",
+				"htmx",
+				"pyright",
+				"ruff",
+				"yamlls",
+				"ts_ls",
+				"clangd",
+			}
+
+			lsp.config("ts_ls", {
+				single_file_support = false,
+				capabilities = capabilities,
+			})
+
+			lsp.config("clangd", {
 				cmd = { "clangd", "--background-index" },
 				filetypes = { "c", "cpp", "objc", "objcpp" },
-				root_dir = function()
-					return vim.loop.cwd()
+				root_dir = function(_)
+					local uv = vim.uv or vim.loop
+					return uv.cwd()
 				end,
 				settings = {},
+				capabilities = capabilities,
 			})
+
+			for _, server in ipairs(server_list) do
+				-- Ensure capabilities are set for all servers
+				lsp.config(server, { capabilities = capabilities })
+				lsp.enable(server)
+			end
 
 			local keymap = vim.keymap
 			keymap.set("n", "[d", vim.diagnostic.goto_prev)
@@ -160,38 +191,39 @@ return {
 
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
-					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = ev.bum, desc = "Go to declaration" })
-					vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.bum, desc = "Go to definition" })
-					vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = ev.bum, desc = "Show hover information" })
+				local buffer = ev.buf
+				vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = buffer, desc = "Go to declaration" })
+				vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buffer, desc = "Go to definition" })
+				vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buffer, desc = "Show hover information" })
 					vim.keymap.set(
 						"n",
 						"D",
-						vim.diagnostic.open_float,
-						{ buffer = ev.bum, desc = "Open diagnostic window" }
+					vim.diagnostic.open_float,
+					{ buffer = buffer, desc = "Open diagnostic window" }
 					)
 					vim.keymap.set(
 						"n",
 						"gi",
-						vim.lsp.buf.implementation,
-						{ buffer = ev.bum, desc = "Go to implementation" }
+					vim.lsp.buf.implementation,
+					{ buffer = buffer, desc = "Go to implementation" }
 					)
 					vim.keymap.set(
 						"n",
 						"<C-A-k>",
-						vim.lsp.buf.signature_help,
-						{ buffer = ev.bum, desc = "Show signature help" }
+					vim.lsp.buf.signature_help,
+					{ buffer = buffer, desc = "Show signature help" }
 					)
-					vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = ev.bum, desc = "Rename symbol" })
+				vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = buffer, desc = "Rename symbol" })
 					vim.keymap.set(
 						{ "n", "v" },
 						"<leader>ca",
-						vim.lsp.buf.code_action,
-						{ buffer = ev.bum, desc = "Open code actions" }
+					vim.lsp.buf.code_action,
+					{ buffer = buffer, desc = "Open code actions" }
 					)
-					-- vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = ev.bum, desc = "Show references" })
-					vim.keymap.set("n", "<leader>f", function()
-						vim.lsp.buf.format({ async = true })
-					end, { buffer = ev.bum, desc = "Format document" })
+					-- vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = buffer, desc = "Show references" })
+				vim.keymap.set("n", "<leader>f", function()
+					vim.lsp.buf.format({ async = true })
+				end, { buffer = buffer, desc = "Format document" })
 				end,
 			})
 		end,

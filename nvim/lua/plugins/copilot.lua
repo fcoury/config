@@ -18,6 +18,17 @@ return {
 					markdown = true, -- Explicitly enable for markdown
 					["*"] = true, -- Enable for all other filetypes
 				},
+				-- Align with current copilot.lua docs:
+				-- Use server_opts_overrides and set a single offset_encoding.
+				server_opts_overrides = {
+					offset_encoding = "utf-16",
+				},
+				-- Optional: turn on file logging at WARN to help debug
+				logger = {
+					file = vim.fn.stdpath("log") .. "/copilot-lua.log",
+					file_log_level = vim.log.levels.WARN,
+					print_log_level = vim.log.levels.WARN,
+				},
 			})
 		end,
 	},

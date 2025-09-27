@@ -72,6 +72,7 @@ return {
 	{ "gbprod/nord.nvim" },
 	{ "sam4llis/nvim-tundra" },
 	{ "ramojus/mellifluous.nvim" },
+	{ "wtfox/jellybeans.nvim" },
 	{
 		"zaldih/themery.nvim",
 		lazy = false,
@@ -125,6 +126,9 @@ return {
 					"catppuccin-latte",
 					"tundra",
 					"mellifluous",
+					"jellybeans",
+					"jellybeans-muted",
+					"jellybeans-mono",
 				},
 				livePreview = true,
 			})

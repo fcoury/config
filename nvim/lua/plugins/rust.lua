@@ -25,8 +25,8 @@ return {
 					end, { desc = "Reload current cargo workspace" })
 				end,
 				capabilities = {
-					offsetEncoding = { "utf-8", "utf-16" },
-					positionEncodings = { "utf-8", "utf-16" },
+					-- Ensure consistent position encoding with Copilot
+					general = { positionEncodings = { "utf-16" } },
 					experimental = {
 						serverStatusNotification = true,
 					},
