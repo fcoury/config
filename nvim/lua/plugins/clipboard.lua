@@ -1,6 +1,6 @@
 return {
 	"ojroques/nvim-osc52",
-	opts = { silent = true, trim = true },
+	opts = { silent = true, trim = false },
 	config = function(_, opts)
 		require("osc52").setup(opts)
 		-- Send normal/visual yanks to local clipboard via OSC52
