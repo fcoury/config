@@ -73,6 +73,7 @@ return {
 	{ "sam4llis/nvim-tundra" },
 	{ "ramojus/mellifluous.nvim" },
 	{ "wtfox/jellybeans.nvim" },
+	{ "folke/tokyonight.nvim", lazy = false, priority = 1000, opts = {} },
 	{
 		"zaldih/themery.nvim",
 		lazy = false,
@@ -116,6 +117,10 @@ return {
 					"kanagawa-lotus",
 					"nightfox",
 					"terafox",
+					"tokyonight",
+					"tokyonight-night",
+					"tokyonight-storm",
+					"tokyonight-moon",
 					"rose-pine-main",
 					"rose-pine-dawn",
 					"rose-pine-moon",
