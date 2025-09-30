@@ -92,10 +92,10 @@ return {
 			-- special commands
 			{
 				"<leader>cl",
-				"<cmd>CopyFileNameAndLine<cr>",
+				"<cmd>CopyRelativePath<cr>",
 				mode = "n",
 				opts = { noremap = true, silent = true },
-				description = "Copy current file name and line number",
+				description = "copy current file name and line number",
 			},
 			{
 				"<leader>cf",
@@ -106,7 +106,7 @@ return {
 			},
 			{
 				"<leader>ccf",
-				"<cmd>CopyRelativePathAndLine<cr>",
+				"<cmd>CopyRelativePath<cr>",
 				mode = "n",
 				opts = { noremap = true, silent = true },
 				description = "Copy current relative path, file name and line number",
