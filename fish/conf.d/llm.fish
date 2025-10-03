@@ -1,19 +1,10 @@
-alias codex='command codex -m gpt-5 -c model_reasoning_effort="high" --yolo'
-
-function codex_continue
-    # Find the most recently modified JSONL file in ~/.codex/sessions (recursively)
-    set latest (find ~/.codex/sessions -type f -name '*.jsonl' -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | head -n 1)
-
-    if test -z "$latest"
-        echo "No session files found in ~/.codex/sessions"
-        return 1
-    end
-
-    echo "Resuming from: $latest"
-    codex --config experimental_resume="$latest" $argv
-end
+alias cdx='command codex -m gpt-5 -c model_reasoning_effort="high" --search --yolo'
+alias codex='command codex -m gpt-5-codex --full-auto -c model_reasoning_effort="medium" -c model_reasoning_summary_format=experimental --search'
 
 function zai
+  ANTHROPIC_DEFAULT_OPUS_MODEL=GLM-4.6 \
+  ANTHROPIC_DEFAULT_SONNET_MODEL=GLM-4.6 \
+  ANTHROPIC_DEFAULT_HAIKU_MODEL=GLM-4.5-Air \
   ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic \
   ANTHROPIC_AUTH_TOKEN="$ZAI_API_KEY" \
   claude "$argv" # --dangerously-skip-permissions
@@ -31,10 +22,6 @@ function k2
     ANTHROPIC_SMALL_FAST_MODEL="kimi-k2-turbo-preview" \
     ANTHROPIC_MODEL="kimi-k2-turbo-preview" \
     claude "$argv" # --dangerously-skip-permissions
-end
-
-function cdx
-    OPENAI_API_KEY="" codex
 end
 
 function of
