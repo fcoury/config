@@ -191,39 +191,39 @@ return {
 
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
-				local buffer = ev.buf
-				vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = buffer, desc = "Go to declaration" })
-				vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buffer, desc = "Go to definition" })
-				vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buffer, desc = "Show hover information" })
+					local buffer = ev.buf
+					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = buffer, desc = "Go to declaration" })
+					vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buffer, desc = "Go to definition" })
+					-- vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buffer, desc = "Show hover information" })
 					vim.keymap.set(
 						"n",
 						"D",
-					vim.diagnostic.open_float,
-					{ buffer = buffer, desc = "Open diagnostic window" }
+						vim.diagnostic.open_float,
+						{ buffer = buffer, desc = "Open diagnostic window" }
 					)
 					vim.keymap.set(
 						"n",
 						"gi",
-					vim.lsp.buf.implementation,
-					{ buffer = buffer, desc = "Go to implementation" }
+						vim.lsp.buf.implementation,
+						{ buffer = buffer, desc = "Go to implementation" }
 					)
 					vim.keymap.set(
 						"n",
 						"<C-A-k>",
-					vim.lsp.buf.signature_help,
-					{ buffer = buffer, desc = "Show signature help" }
+						vim.lsp.buf.signature_help,
+						{ buffer = buffer, desc = "Show signature help" }
 					)
-				vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = buffer, desc = "Rename symbol" })
+					vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = buffer, desc = "Rename symbol" })
 					vim.keymap.set(
 						{ "n", "v" },
 						"<leader>ca",
-					vim.lsp.buf.code_action,
-					{ buffer = buffer, desc = "Open code actions" }
+						vim.lsp.buf.code_action,
+						{ buffer = buffer, desc = "Open code actions" }
 					)
 					-- vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = buffer, desc = "Show references" })
-				vim.keymap.set("n", "<leader>f", function()
-					vim.lsp.buf.format({ async = true })
-				end, { buffer = buffer, desc = "Format document" })
+					vim.keymap.set("n", "<leader>f", function()
+						vim.lsp.buf.format({ async = true })
+					end, { buffer = buffer, desc = "Format document" })
 				end,
 			})
 		end,

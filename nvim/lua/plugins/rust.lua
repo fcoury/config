@@ -73,6 +73,12 @@ return {
 					},
 				},
 			},
+			tools = {
+				hover_actions = {
+					auto_focus = true,
+					ui_select_fallback = true,
+				},
+			},
 		},
 		config = function(_, opts)
 			vim.g.rustaceanvim = opts
