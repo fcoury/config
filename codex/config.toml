@@ -1,0 +1,35 @@
+model = "gpt-5.1"
+model_reasoning_effort = "high"
+rmcp_client = true
+notify = ["~/.codex/notify.py"]
+
+[projects."/Users/fcoury/code/pipeline"]
+trust_level = "trusted"
+
+[projects."/Users/fcoury/code/pipeline/backend"]
+trust_level = "trusted"
+
+[projects."/Users/fcoury/code/MoneyPrinterV2"]
+trust_level = "trusted"
+
+[projects."/Users/fcoury/code/config"]
+trust_level = "trusted"
+
+[notice]
+hide_full_access_warning = true
+# hide_gpt5_1_migration_prompt = true
+"hide_gpt-5.1-codex-max_migration_prompt" = true
+
+# [mcp_servers.kluster-verify]
+# startup_timeout_sec = 30
+# command = "npx"
+# args = ["-y", "@klusterai/kluster-verify-code-mcp@latest"]
+#
+# [mcp_servers.kluster-verify.env]
+# KLUSTER_API_KEY = "f52eb873-ac36-4cb5-a9cd-68539719cea0"
+# KLUSTER_IDE_NAME = "codex"
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest"]
+

@@ -1,0 +1,7 @@
+# Generic link map: one "source target" pair per line.
+# - source: path inside this repo (relative to repo root)
+# - target: full path or starting with ~ for $HOME
+
+codex/AGENTS.md ~/.codex/AGENTS.md
+codex/config.toml ~/.codex/config.toml
+
