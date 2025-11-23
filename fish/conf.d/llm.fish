@@ -1,5 +1,11 @@
-alias cdx='command codex -m gpt-5 -c model_reasoning_effort="high" --search --yolo'
-alias codex='command codex -m gpt-5-codex --full-auto -c model_reasoning_effort="medium" -c model_reasoning_summary_format=experimental --search'
+alias cdx='command codex -m gpt-5.1 -c model_reasoning_effort="high" --search --yolo'
+alias codex='command codex -m gpt-5.1-codex --full-auto -c model_reasoning_effort="medium" -c model_reasoning_summary_format=experimental --search'
+
+function localai
+  ANTHROPIC_API_KEY="test-key" \
+  ANTHROPIC_BASE_URL=http://localhost:3456 \
+  claude "$argv"
+end
 
 function zai
   ANTHROPIC_DEFAULT_OPUS_MODEL=GLM-4.6 \
