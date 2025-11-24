@@ -55,10 +55,16 @@ local keymap = vim.keymap
 --
 -- -- delete text (as opposed to saving it on the default register)
 -- vim.api.nvim_set_keymap("n", "m", '"_x', { noremap = true, silent = true, desc = "delete text" })
--- vim.api.nvim_set_keymap("n", "mm", '"_dd', { noremap = true, silent = true, desc = "delete line" })
 -- vim.api.nvim_set_keymap("v", "m", '"_x', { noremap = true, silent = true, desc = "delete text" })
 -- vim.api.nvim_set_keymap("n", "mw", '"_dw', { noremap = true, silent = true, desc = "delete word" })
 -- vim.api.nvim_set_keymap("n", "miw", '"_diw', { noremap = true, silent = true, desc = "delete inner word" })
+
+keymap.set(
+	"n",
+	"<leader>cx",
+	"<cmd>StripFirstTwoColumns<cr>",
+	{ desc = "Strip first two columns and trailing empty line" }
+)
 
 --== Helper Functions ==--
 

@@ -75,6 +75,13 @@ return {
 
 			-- lsp and rust
 			{ "<leader>x", "<cmd>RustRunnables<cr>", mode = "n", description = "Run Rust runnables" },
+			{
+				"<leader>cx",
+				"<cmd>StripFirstTwoColumns<cr>",
+				mode = "n",
+				opts = { noremap = true, silent = true },
+				description = "Strip first two columns and trailing empty line",
+			},
 
 			-- buffers
 			{ "]b", "<cmd>bnext<cr>", mode = "n", description = "Next buffer" },
