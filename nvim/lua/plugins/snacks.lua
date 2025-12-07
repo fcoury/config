@@ -1,5 +1,6 @@
 return {
 	"folke/snacks.nvim",
+	version = "*", -- Use the latest stable release
 	keys = {
 		{
 			"<C-p>",
@@ -9,6 +10,18 @@ return {
 					format = "file",
 					show_empty = true,
 					supports_live = true,
+					exclude = {
+						"node_modules",
+						".git",
+						"target",
+						".next",
+						"dist",
+						"build",
+						"vendor",
+						"__pycache__",
+						".venv",
+						"*.lock",
+					},
 					-- In case you want to override the layout for this keymap
 					-- layout = "vscode",
 				})
@@ -120,6 +133,15 @@ return {
 	},
 	opts = {
 		picker = {
+			actions = {
+				toggle_all = function(picker)
+					-- Toggle hidden and ignored together, exclusions stay active
+					local show_all = not (picker.opts.hidden and picker.opts.ignored)
+					picker.opts.hidden = show_all
+					picker.opts.ignored = show_all
+					picker:find()
+				end,
+			},
 			win = {
 				input = {
 					keys = {
@@ -128,6 +150,7 @@ return {
 						["<Esc>"] = { "close", mode = { "n", "i" } },
 						["<C-h>"] = { "history_back", mode = { "i", "n" } },
 						["<C-l>"] = { "history_forward", mode = { "i", "n" } },
+						["<C-e>"] = { "toggle_all", mode = { "i", "n" }, desc = "Toggle Hidden & Ignored" },
 						-- I'm used to scrolling like this in LazyGit
 						-- conflicts with actually typing J, K, H, L
 						-- ["J"] = { "preview_scroll_down", mode = { "i", "n" } },
