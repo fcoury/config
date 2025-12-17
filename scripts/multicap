@@ -1,0 +1,44 @@
+#!/bin/bash
+
+usage() {
+    echo "Usage: $(basename "$0") [-q] <total_seconds> <interval_seconds>"
+    echo "Options:"
+    echo "  -q  Quiet mode (no screenshot sound)"
+    echo "Example: $(basename "$0") 60 5     # Run for 60 seconds, capture every 5 seconds"
+    echo "         $(basename "$0") -q 10 1  # Same but silent"
+    exit 1
+}
+
+quiet=""
+while getopts "qh" opt; do
+    case $opt in
+        q) quiet="-x" ;;
+        h) usage ;;
+        *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -ne 2 ]]; then
+    usage
+fi
+
+total_seconds=$1
+interval=$2
+
+if ! [[ "$total_seconds" =~ ^[0-9]+$ ]] || ! [[ "$interval" =~ ^[0-9]+$ ]]; then
+    echo "Error: Both arguments must be positive integers"
+    usage
+fi
+
+if [[ "$interval" -le 0 ]]; then
+    echo "Error: Interval must be greater than 0"
+    exit 1
+fi
+
+end_time=$((SECONDS + total_seconds))
+
+while [[ $SECONDS -lt $end_time ]]; do
+    screencapture -C $quiet ~/Desktop/screenshot_$(date +%Y%m%d_%H%M%S).png
+    sleep "$interval"
+done
