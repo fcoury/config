@@ -29,6 +29,15 @@ alias yolo 'claude --dangerously-skip-permissions'
 alias yolovt 'vt claude --dangerously-skip-permissions'
 alias yologlm 'ccr code --dangerously-skip-permissions'
 
+# uses bat for cat if available
+function cat
+    if command -v bat >/dev/null 2>&1
+        bat --no-pager $argv
+    else
+        command cat $argv
+    end
+end
+
 function ca
   cargo add $argv; and cargo sort
 end
@@ -157,3 +166,7 @@ function tv
     end
   end
 end
+
+# --- fd and rg aliases ---
+alias fdh 'fd --color=always --hidden --no-ignore'
+alias rgh 'rg --color=always --hidden --no-ignore'
