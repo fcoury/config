@@ -130,6 +130,14 @@ return {
 			end,
 			desc = "Show references",
 		},
+
+		{
+			"<leader>.",
+			function()
+				Snacks.picker.files({ cwd = vim.fn.expand("%:p:h") })
+			end,
+			desc = "Files in current directory",
+		},
 	},
 	opts = {
 		picker = {
