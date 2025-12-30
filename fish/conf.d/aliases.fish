@@ -86,6 +86,7 @@ end
 
 function tm
   set session_name (basename (pwd) | string replace '.' '_')
+  printf '\033]0;💻 %s\007' "$session_name"
 
   if tmux has-session -t "$session_name"
     tmux attach-session -t "$session_name"
