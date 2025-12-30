@@ -1,3 +1,11 @@
+-- Configuration toggle for rust-analyzer behavior
+local rust_config = {
+	-- Toggle between proactive (true) and manual (false) proc-macro rebuilding
+	-- Proactive: auto-rebuilds on save, more CPU but seamless external edits
+	-- Manual: you control rebuilds via <leader>Rr, less resource usage
+	proactive_rebuild = true,
+}
+
 return {
 	{
 		"mrcjkb/rustaceanvim",
@@ -46,6 +54,7 @@ return {
 								"node_modules",
 								"gistia-design-system/node_modules",
 							},
+							watcher = "client", -- detect external file changes via Neovim
 						},
 						diagnostics = {
 							enable = true,
@@ -61,7 +70,7 @@ return {
 						workspace = { refreshTime = 150 },
 						buildScripts = {
 							enable = true,
-							rebuildOnSave = false,
+							rebuildOnSave = rust_config.proactive_rebuild,
 						},
 						check = {
 							command = "check",

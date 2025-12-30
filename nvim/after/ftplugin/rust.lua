@@ -24,9 +24,26 @@ vim.keymap.set("n", "<leader>Rs", function()
 	print("Rebuilt proc macros")
 end, { silent = true, buffer = bufnr, desc = "Rebuild Rust proc macros" })
 
--- Command to force restart RustAnalyzer
+-- Command to force restart RustAnalyzer (handles both naming conventions)
 vim.keymap.set("n", "<leader>Rr", function()
-	vim.lsp.stop_client(vim.lsp.get_active_clients({ name = "rust-analyzer" }))
-	vim.cmd.e()
-	print("Restarted RustAnalyzer")
-end, { silent = true, buffer = bufnr, desc = "Restart RustAnalyzer" })
+	-- Stop all rust-analyzer clients (rustaceanvim uses rust_analyzer, some configs use rust-analyzer)
+	local clients = vim.lsp.get_clients({ name = "rust_analyzer" })
+	if #clients == 0 then
+		clients = vim.lsp.get_clients({ name = "rust-analyzer" })
+	end
+
+	if #clients == 0 then
+		vim.notify("No rust-analyzer client found", vim.log.levels.WARN)
+		return
+	end
+
+	for _, client in ipairs(clients) do
+		client:stop(true) -- force stop
+	end
+
+	-- Small delay to ensure clean shutdown, then reload
+	vim.defer_fn(function()
+		vim.cmd.edit()
+		vim.notify("RustAnalyzer restarted", vim.log.levels.INFO)
+	end, 100)
+end, { silent = true, buffer = bufnr, desc = "Restart RustAnalyzer (full)" })
