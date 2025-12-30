@@ -105,19 +105,28 @@ return {
 			"<C-j>",
 			function()
 				Snacks.picker.buffers({
-					-- buffers picker start in normal mode
-					on_show = function()
-						vim.cmd.stopinsert()
-					end,
+					-- buffers picker USED TO start in normal mode
+					-- on_show = function()
+					-- 	vim.cmd.stopinsert()
+					-- end,
 					sort_lastused = true,
 					win = {
 						input = {
 							keys = {
-								["d"] = "bufdelete",
+								["<c-d>"] = { "bufdelete", mode = { "n", "i" }, desc = "Delete buffer" },
+							},
+							footer = {
+								{ " <C-d> ", "SnacksPickerInputKey" },
+								{ " Delete buffer ", "SnacksPickerInputBorder" },
 							},
 						},
-						list = { keys = { ["d"] = "bufdelete" } },
+						list = {
+							keys = {
+								["<c-d>"] = { "bufdelete", mode = { "n" }, desc = "Delete buffer" },
+							},
+						},
 					},
+					-- title = "Buffers  <C-d> Delete",
 				})
 			end,
 			desc = "Open Buffers",
@@ -134,7 +143,19 @@ return {
 		{
 			"<leader>.",
 			function()
-				Snacks.picker.files({ cwd = vim.fn.expand("%:p:h") })
+				local current_file = vim.fn.expand("%:t")
+				Snacks.picker.files({
+					cwd = vim.fn.expand("%:p:h"),
+					on_show = function(picker)
+						-- Find and select the current file
+						for i, item in ipairs(picker.list.items) do
+							if item.file and vim.fn.fnamemodify(item.file, ":t") == current_file then
+								picker.list:view(i)
+								break
+							end
+						end
+					end,
+				})
 			end,
 			desc = "Files in current directory",
 		},
