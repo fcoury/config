@@ -145,6 +145,7 @@ return {
 			function()
 				Snacks.picker.explorer({
 					cwd = vim.fn.expand("%:p:h"),
+					auto_close = true,
 				})
 			end,
 			desc = "Browse current directory",
