@@ -143,22 +143,31 @@ return {
 		{
 			"<leader>.",
 			function()
-				local current_file = vim.fn.expand("%:t")
-				Snacks.picker.files({
+				Snacks.picker.explorer({
 					cwd = vim.fn.expand("%:p:h"),
-					on_show = function(picker)
-						-- Find and select the current file
-						for i, item in ipairs(picker.list.items) do
-							if item.file and vim.fn.fnamemodify(item.file, ":t") == current_file then
-								picker.list:view(i)
-								break
-							end
-						end
-					end,
 				})
 			end,
-			desc = "Files in current directory",
+			desc = "Browse current directory",
 		},
+		-- {
+		-- 	"<leader>.",
+		-- 	function()
+		-- 		local current_file = vim.fn.expand("%:t")
+		-- 		Snacks.picker.files({
+		-- 			cwd = vim.fn.expand("%:p:h"),
+		-- 			on_show = function(picker)
+		-- 				-- Find and select the current file
+		-- 				for i, item in ipairs(picker.list.items) do
+		-- 					if item.file and vim.fn.fnamemodify(item.file, ":t") == current_file then
+		-- 						picker.list:view(i)
+		-- 						break
+		-- 					end
+		-- 				end
+		-- 			end,
+		-- 		})
+		-- 	end,
+		-- 	desc = "Files in current directory",
+		-- },
 	},
 	opts = {
 		picker = {
