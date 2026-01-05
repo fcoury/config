@@ -12,7 +12,7 @@ vim.api.nvim_create_user_command("CopyFileNameAndLine", function()
 	local clipboard_content = string.format("%s:%d", file_name, current_line)
 
 	vim.fn.setreg("+", clipboard_content)
-	print("Copied to clipboard: " .. clipboard_content)
+	print(clipboard_content)
 end, {})
 
 vim.api.nvim_create_user_command("CopyRelativePath", function()
@@ -59,7 +59,7 @@ vim.api.nvim_create_user_command("CopyRelativePathAndLineForLLM", function()
 
 	-- Copy to clipboard
 	vim.fn.setreg("+", clipboard_content)
-	print("Copied to clipboard: " .. clipboard_content)
+	print(clipboard_content)
 end, {})
 
 vim.api.nvim_create_user_command("CopyRelativePathAndLine", function()
