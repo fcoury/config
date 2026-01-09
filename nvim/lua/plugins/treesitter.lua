@@ -1,35 +1,39 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		event = { "BufReadPre", "BufNewFile" },
+		lazy = false, -- nvim-treesitter doesn't support lazy loading
 		build = ":TSUpdate",
 		dependencies = {
 			"axelvc/template-string.nvim",
 		},
 		config = function()
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = {
-					"lua",
-					"tsx",
-					"typescript",
-					"javascript",
-					"html",
-					"css",
-					"json",
-					"yaml",
-					"regex",
-					"rust",
-					"markdown",
-					"markdown_inline",
-				},
-				sync_install = false,
-				auto_install = true,
-				highlight = {
-					enable = true,
-					additional_vim_regex_highlighting = false,
-					disable = { "husk" },
-				},
-				indent = { enable = true },
+			-- New nvim-treesitter API - just handles parser installation
+			-- Highlighting, indentation, and folds are now built into Neovim
+			local ts = require("nvim-treesitter")
+
+			-- Install parsers (async, will run in background)
+			ts.install({
+				"lua",
+				"tsx",
+				"typescript",
+				"javascript",
+				"html",
+				"css",
+				"json",
+				"yaml",
+				"regex",
+				"rust",
+				"markdown",
+				"markdown_inline",
+			})
+
+			-- Enable treesitter highlighting for all supported filetypes
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(args)
+					-- Check if treesitter parser exists for this filetype
+					local ok = pcall(vim.treesitter.start, args.buf)
+					if not ok then return end
+				end,
 			})
 
 			require("template-string").setup({})
