@@ -1,6 +1,7 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
 		lazy = false, -- nvim-treesitter doesn't support lazy loading
 		build = ":TSUpdate",
 		dependencies = {
