@@ -14,3 +14,5 @@ set -g PATH $HOME/.codeium/windsurf/bin $PATH
 set -gx PATH $PATH /Users/fcoury/.cache/lm-studio/bin
 # End of LM Studio CLI section
 
+/home/fcoury/.local/bin/mise activate fish | source
+source $HOME/.cargo/env.fish
