@@ -1,7 +1,7 @@
 # alias cdx='command codex -m gpt-5.1 -c model_reasoning_effort="high" --search --yolo'
 # alias cdx='command codex -m gpt-5.1-codex-max -c model_reasoning_effort="high" --search --yolo'
+# alias codex='command codex -m gpt-5.2 --full-auto -c model_reasoning_effort="medium" -c model_reasoning_summary_format=experimental --search'
 alias cdx='command codex -m gpt-5.2-codex -c model_reasoning_effort="high" --search --yolo'
-alias codex='command codex -m gpt-5.2 --full-auto -c model_reasoning_effort="medium" -c model_reasoning_summary_format=experimental --search'
 
 function localai
   ANTHROPIC_API_KEY="test-key" \
