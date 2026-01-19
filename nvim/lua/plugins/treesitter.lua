@@ -10,12 +10,15 @@ return {
 			local ts = require("nvim-treesitter")
 
 			-- Setup nvim-treesitter with highlighting enabled
+			-- install_dir must match where lazy.nvim stores the plugin
+			local install_dir = vim.fn.stdpath("data") .. "/lazy/nvim-treesitter"
 			ts.setup({
+				install_dir = install_dir,
 				highlight = { enable = true },
 				indent = { enable = true },
 			})
 
-			-- Install parsers
+			-- Install parsers (skips already-installed ones)
 			ts.install({
 				"lua",
 				"tsx",
