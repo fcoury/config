@@ -1,1 +1,1 @@
-set -g CDPATH . $HOME $HOME/code
+set -g CDPATH . $HOME $HOME/code $HOME/code-external

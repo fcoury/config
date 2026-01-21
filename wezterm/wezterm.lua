@@ -24,6 +24,13 @@ local config = {
 	-- front_end = "WebGpu",
 	-- webgpu_power_preference = "HighPerformance",
 
+	-- Multiplexer
+	-- unix_domains = { {
+	-- 	name = "unix",
+	-- } },
+	--
+	-- default_gui_startup_args = { "connect", "unix" },
+
 	-- Set unlimited scrollback
 	scrollback_lines = 35000,
 

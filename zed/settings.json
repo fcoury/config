@@ -8,22 +8,36 @@
 // from the command palette or from `Zed` application menu.
 {
   "agent": {
+    "always_allow_tool_actions": true,
     "default_model": {
       "provider": "zed.dev",
-      "model": "claude-3-7-sonnet-latest"
-    },
-    "version": "2"
+      "model": "claude-sonnet-4"
+    }
   },
   "cursor_blink": false,
-  "theme": "Ayu Mirage",
+  "theme": "Nordfox - opaque",
   "buffer_font_family": "FantasqueSansM Nerd Font",
-  "buffer_line_height": "standard",
+  "buffer_line_height": "comfortable",
   "ui_font_size": 16,
   "buffer_font_size": 20,
   "terminal": {
     "font_size": 18,
-    "line_height": "standard"
+    "line_height": "standard",
+    // "line_height": { "custom": 1.1 },
+    "toolbar": {
+      "breadcrumbs": false
+    }
   },
   "vim_mode": true,
-  "relative_line_numbers": true
+  "relative_line_numbers": true,
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "check": {
+          "command": "clippy",
+          "features": "all"
+        }
+      }
+    }
+  }
 }

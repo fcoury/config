@@ -46,6 +46,13 @@ keymap.set(
 	{ noremap = true, silent = true, desc = "Copy current file name and line number" }
 )
 
+keymap.set(
+	"n",
+	"<leader>cx",
+	"<cmd>StripFirstTwoColumns<cr>",
+	{ noremap = true, silent = true, desc = "Strip first two columns and trailing empty line" }
+)
+
 -- delete text (as opposed to saving it on the default register)
 vim.api.nvim_set_keymap("n", "m", '"_x', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "mm", '"_dd', { noremap = true, silent = true })

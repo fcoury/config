@@ -1,0 +1,153 @@
+#!/bin/bash
+
+# Pushover credentials
+PUSHOVER_USER_KEY="u7c1ue43gzj74nryfiv16rtmz6r49t"
+PUSHOVER_API_TOKEN="ao1ix43nsoks614yjibw56okm6x9gz"
+PUSHOVER_API_URL="https://api.pushover.net/1/messages.json"
+
+# Default values
+TITLE="Terminal"
+MESSAGE=""
+PRIORITY=0
+SOUND=""
+URL=""
+
+# Version
+VERSION="1.0.0"
+
+# Function to display help
+show_help() {
+    cat << EOF
+pushover-notifier ($VERSION) is a command-line tool to send iOS Push Notifications via Pushover.
+
+Usage: pushover-notifier -[message|help|version] [VALUE] [options]
+
+   Either of these is required (unless message data is piped to the tool):
+
+       -help              Display this help banner.
+       -version           Display pushover-notifier version.
+       -message VALUE     The notification message.
+
+   Optional:
+
+       -title VALUE       The notification title. Defaults to 'Terminal'.
+       -subtitle VALUE    The notification subtitle (mapped to Pushover message).
+       -sound NAME        The name of a sound to play. Use 'default' for default sound.
+                          Available: pushover, bike, bugle, cashregister, classical, cosmic,
+                          falling, gamelan, incoming, intermission, magic, mechanical,
+                          pianobar, siren, spacealarm, tugboat, alien, climb, persistent,
+                          echo, updown, vibrate, none
+       -open URL          The URL to open when the user taps the notification.
+       -priority VALUE    Priority level: -2 (lowest), -1 (low), 0 (normal), 1 (high), 2 (emergency)
+
+   Note: Some terminal-notifier options are not supported by Pushover:
+         -remove, -list, -group, -activate, -sender, -appIcon, -contentImage, -execute, -ignoreDnD
+
+EOF
+}
+
+# Function to send pushover notification
+send_notification() {
+    local curl_args=(
+        -s
+        --form-string "token=$PUSHOVER_API_TOKEN"
+        --form-string "user=$PUSHOVER_USER_KEY"
+        --form-string "message=$MESSAGE"
+        --form-string "title=$TITLE"
+        --form-string "priority=$PRIORITY"
+    )
+    
+    # Add optional parameters if they're set
+    if [[ -n "$SOUND" ]]; then
+        curl_args+=(--form-string "sound=$SOUND")
+    fi
+    
+    if [[ -n "$URL" ]]; then
+        curl_args+=(--form-string "url=$URL")
+    fi
+    
+    # Send the notification
+    response=$(curl "${curl_args[@]}" "$PUSHOVER_API_URL")
+    
+    # Check if successful
+    if echo "$response" | grep -q '"status":1'; then
+        echo "Notification sent successfully"
+        return 0
+    else
+        echo "Error sending notification: $response" >&2
+        return 1
+    fi
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -help|--help)
+            show_help
+            exit 0
+            ;;
+        -version|--version)
+            echo "pushover-notifier $VERSION"
+            exit 0
+            ;;
+        -message)
+            MESSAGE="$2"
+            shift 2
+            ;;
+        -title)
+            TITLE="$2"
+            shift 2
+            ;;
+        -subtitle)
+            # In Pushover, subtitle becomes part of the message
+            if [[ -n "$MESSAGE" ]]; then
+                MESSAGE="$2: $MESSAGE"
+            else
+                MESSAGE="$2"
+            fi
+            shift 2
+            ;;
+        -sound)
+            SOUND="$2"
+            shift 2
+            ;;
+        -open)
+            URL="$2"
+            shift 2
+            ;;
+        -priority)
+            PRIORITY="$2"
+            shift 2
+            ;;
+        # Unsupported options - show warning but don't fail
+        -remove|-list|-group|-activate|-sender|-appIcon|-contentImage|-execute|-ignoreDnD)
+            echo "Warning: Option $1 is not supported by Pushover" >&2
+            if [[ $1 == -remove || $1 == -list || $1 == -group || $1 == -activate || $1 == -sender || $1 == -appIcon || $1 == -contentImage || $1 == -execute ]]; then
+                shift 2  # These options take a parameter
+            else
+                shift 1  # -ignoreDnD doesn't take a parameter
+            fi
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            echo "Use -help for usage information." >&2
+            exit 1
+            ;;
+    esac
+done
+
+# Check if message is provided via pipe
+if [[ -z "$MESSAGE" ]] && [[ ! -t 0 ]]; then
+    MESSAGE=$(cat)
+fi
+
+# Validate that we have a message
+if [[ -z "$MESSAGE" ]]; then
+    echo "Error: No message provided. Use -message or pipe message to the command." >&2
+    echo "Use -help for usage information." >&2
+    exit 1
+fi
+
+# Send the notification
+send_notification
+

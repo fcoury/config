@@ -68,11 +68,6 @@ link-path() {
       SOURCE=$(to-abs-path "$f")
       TARGET="${LINK_TARGET}/${FOLDER_NAME}"
       
-      if [ -f "${f}/.link" ]; then
-        LINK_NAME=$(cat "${f}/.link")
-        TARGET="${LINK_TARGET}/${LINK_NAME}"
-      fi
-      
       if [ -e "$TARGET" ]; then
         echo "Skipping (already exists): $SOURCE"
       else
@@ -84,4 +79,38 @@ link-path() {
   done
 }
 
+link-extra() {
+  local map_file="$SCRIPT_PATH/links.map"
+  if [ ! -f "$map_file" ]; then
+    return
+  fi
+
+  while read -r src tgt; do
+    # Skip empty lines and comments
+    if [ -z "$src" ] || [[ "$src" =~ ^# ]]; then
+      continue
+    fi
+
+    # Allow machine-specific overrides for sources
+    src=$(get-override-path "$src")
+    local src_abs
+    src_abs=$(to-abs-path "$src")
+
+    # Expand a leading ~ in target
+    local tgt_expanded="$tgt"
+    if [[ "$tgt_expanded" == ~* ]]; then
+      tgt_expanded="${tgt_expanded/#\~/$HOME}"
+    fi
+
+    if [ -e "$tgt_expanded" ]; then
+      echo "Skipping (already exists): $src_abs"
+    else
+      echo "Linking: $src_abs -> $tgt_expanded"
+      mkdir -p "$(dirname "$tgt_expanded")"
+      ln -s "$src_abs" "$tgt_expanded"
+    fi
+  done < "$map_file"
+}
+
 link-path "."
+link-extra

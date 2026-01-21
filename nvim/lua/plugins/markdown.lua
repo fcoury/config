@@ -1,6 +1,17 @@
-return {
-	"iamcco/markdown-preview.nvim",
-	cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-	ft = { "markdown" },
-	build = "cd app && npm install",
-}
+return {}
+-- return {
+-- 	"iamcco/markdown-preview.nvim",
+-- 	cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+-- 	ft = { "markdown" },
+-- 	build = "cd app && npm install",
+-- }
+-- return {
+-- 	"OXY2DEV/markview.nvim",
+-- 	lazy = false,
+--
+-- 	-- For blink.cmp's completion
+-- 	-- source
+-- 	-- dependencies = {
+-- 	--     "saghen/blink.cmp"
+-- 	-- },
+-- }

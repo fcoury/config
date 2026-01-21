@@ -6,7 +6,7 @@ alias cmt="yolo --model sonnet 'Let\'s commit all our pending changes. Check if 
 
 function cop
     set -lx GITHUB_TOKEN ""
-    command copilot
+    command copilot --allow-all-tools --allow-all-urls
 end
 
 function localai

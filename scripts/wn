@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Maximize the current wezterm window on macOS
+osascript -e '
+tell application "System Events"
+    set frontApp to name of first application process whose frontmost is true
+    tell process frontApp
+        click button 1 of window 1
+    end tell
+end tell
+'
+
+# Wait a moment for the window to maximize
+sleep 0.5
+
+# Open nvim in the current window and capture the pane ID
+PANE_ID=$(wezterm cli spawn -- nvim)
+
+# Wait a moment for nvim to initialize
+sleep 0.5
+
+# Create a vertical split with the new pane on the right side (40% of the width)
+RIGHT_PANE=$(wezterm cli split-pane --pane-id "$PANE_ID" --right --percent 30)
+
+# Split the right pane horizontally with a new pane below it
+wezterm cli split-pane --pane-id "$RIGHT_PANE" --bottom --percent 50
+
+# Activate the original nvim pane
+wezterm cli activate-pane --pane-id "$PANE_ID"

@@ -1,0 +1,2 @@
+-- Husk-specific buffer settings
+-- (filetype detection is in ftdetect/husk.lua)

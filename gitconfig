@@ -1,0 +1,93 @@
+[user]
+	name = Felipe Coury
+	email = felipe.coury@gmail.com
+	signingKey = 29AFDC56A8469F3AF21A89A5F577F79FA4872E03
+
+[github]
+	user = fcoury
+
+[column]
+  ui = auto
+
+[branch]
+  sort = -committerdate
+
+[tag]
+  sort = version:refname
+
+[init]
+  defaultBranch = master
+
+[diff]
+  algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
+
+[core]
+	; editor = code --wait
+  excludesfile = ~/.gitignore
+	editor = /opt/homebrew/bin/nvim
+	pager = delta
+  fsmonitor = true
+  untrackedCache = true
+
+[merge]
+  conflictstyle = zdiff3
+
+[color]
+	ui = true
+
+[push]
+	default = simple
+	autoSetupRemote = true
+  followTags = true
+
+[fetch]
+  prune = true
+  pruneTags = true
+  all = true
+
+[pull]
+	rebase = true
+
+[alias]
+	st = status -sb
+	co = checkout
+	hist = log --graph --abbrev-commit --decorate --date=short --format=format:'%C(bold cyan)%h%C(reset) %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)%an%C(reset) %C(bold yellow)%d%C(reset)' --branches --remotes --tags
+
+[credential]
+	helper = /usr/local/share/gcm-core/git-credential-manager
+
+[credential "https://dev.azure.com"]
+	useHttpPath = true
+
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+
+[commit]
+	gpgSign = true
+  verbose = true
+
+[rerere]
+  enabled = true
+  autoupdate = true
+
+[rebase]
+  autoSquash = true
+  autoStash = true
+  updateRefs = true
+
+[tag]
+	forceSignAnnotated = true
+
+[help]
+  autocorrect = prompt
+
+[gpg]
+	format = openpgp
+	program = /opt/homebrew/bin/gpg
+

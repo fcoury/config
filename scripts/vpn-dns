@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# VPN DNS servers
+VPN_DNS1="54.66.128.66"
+VPN_DNS2="118.127.62.179"
+
+# File to store original DNS settings
+DNS_BACKUP_FILE="${HOME}/.cache/vpn-dns-backup"
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WIFI_DNS_SCRIPT="${SCRIPT_DIR}/wifi-dns"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  vpn-dns --enable
+      Save current DNS settings and switch to VPN DNS servers.
+
+  vpn-dns --disable
+      Restore previously saved DNS settings.
+
+  vpn-dns --status
+      Show current DNS status and whether VPN DNS is active.
+
+Notes:
+- Uses wifi-dns script to manage DNS settings.
+- DNS backup is stored in ~/.cache/vpn-dns-backup
+EOF
+}
+
+# Check if wifi-dns script exists
+if [[ ! -x "$WIFI_DNS_SCRIPT" ]]; then
+  echo "Error: wifi-dns script not found or not executable at: $WIFI_DNS_SCRIPT" >&2
+  exit 1
+fi
+
+cmd="${1:-}"
+case "$cmd" in
+  --enable)
+    # Get current DNS settings
+    echo "Saving current DNS settings..."
+    current_dns=$("$WIFI_DNS_SCRIPT" --check 2>&1 | grep -A 100 "Current DNS servers:" | tail -n +2)
+
+    # Create cache directory if it doesn't exist
+    mkdir -p "$(dirname "$DNS_BACKUP_FILE")"
+
+    # Save current DNS to backup file
+    echo "$current_dns" > "$DNS_BACKUP_FILE"
+    echo "Saved DNS settings to $DNS_BACKUP_FILE"
+
+    # Set VPN DNS
+    echo ""
+    echo "Enabling VPN DNS ($VPN_DNS1, $VPN_DNS2)..."
+    "$WIFI_DNS_SCRIPT" --set "$VPN_DNS1" "$VPN_DNS2"
+    echo ""
+    echo "VPN DNS enabled successfully."
+    ;;
+
+  --disable)
+    # Check if backup file exists
+    if [[ ! -f "$DNS_BACKUP_FILE" ]]; then
+      echo "Error: No saved DNS settings found." >&2
+      echo "Cannot restore DNS without a previous backup." >&2
+      echo "Backup file expected at: $DNS_BACKUP_FILE" >&2
+      exit 1
+    fi
+
+    # Read saved DNS settings (portable way for bash 3.2+)
+    echo "Restoring DNS settings from backup..."
+    saved_dns=()
+    while IFS= read -r line; do
+      saved_dns+=("$line")
+    done < "$DNS_BACKUP_FILE"
+
+    # Check if backup is empty or contains "Empty"
+    if [[ ${#saved_dns[@]} -eq 0 ]] || [[ "${saved_dns[0]}" == *"Empty"* ]] || [[ "${saved_dns[0]}" == *"aren't any"* ]]; then
+      echo "Backup indicates DHCP DNS (empty). Clearing DNS settings..."
+      "$WIFI_DNS_SCRIPT" --clear
+    else
+      # Filter out any empty lines
+      dns_servers=()
+      for dns in "${saved_dns[@]}"; do
+        dns=$(echo "$dns" | xargs)  # trim whitespace
+        if [[ -n "$dns" ]]; then
+          dns_servers+=("$dns")
+        fi
+      done
+
+      if [[ ${#dns_servers[@]} -eq 0 ]]; then
+        echo "No valid DNS servers in backup. Clearing DNS settings..."
+        "$WIFI_DNS_SCRIPT" --clear
+      else
+        echo "Restoring DNS servers: ${dns_servers[*]}"
+        "$WIFI_DNS_SCRIPT" --set "${dns_servers[@]}"
+      fi
+    fi
+
+    echo ""
+    echo "DNS settings restored successfully."
+    echo "Removing backup file..."
+    rm "$DNS_BACKUP_FILE"
+    ;;
+
+  --status)
+    echo "Current DNS configuration:"
+    "$WIFI_DNS_SCRIPT" --check
+    echo ""
+
+    # Check if VPN DNS is currently active
+    current_dns=$("$WIFI_DNS_SCRIPT" --check 2>&1 | grep -A 100 "Current DNS servers:" | tail -n +2)
+    if echo "$current_dns" | grep -q "$VPN_DNS1"; then
+      echo "Status: VPN DNS is ACTIVE"
+    else
+      echo "Status: VPN DNS is INACTIVE"
+    fi
+
+    # Check if backup exists
+    if [[ -f "$DNS_BACKUP_FILE" ]]; then
+      echo ""
+      echo "Saved DNS backup exists at: $DNS_BACKUP_FILE"
+      echo "Backup contains:"
+      cat "$DNS_BACKUP_FILE" | sed 's/^/  /'
+    else
+      echo ""
+      echo "No DNS backup found."
+    fi
+    ;;
+
+  -h|--help|"")
+    usage
+    ;;
+
+  *)
+    echo "Unknown option: $cmd" >&2
+    usage
+    exit 2
+    ;;
+esac

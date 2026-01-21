@@ -44,9 +44,6 @@ shell-integration-features = no-cursor,no-sudo
 # Theme
 config-file = lackluster-theme.conf
 
-# Opens new tab as the last one
-window-new-tab-position = end
-
 # Sends Meta+K to tmux to intercept it
 keybind = cmd+k=text:\x1bk
 
@@ -87,4 +84,3 @@ keybind = cmd+k=text:\x1bk
 # Clear screen
 # keybind = super+k=clear_screen
 
-keybind = shift+enter=text:\x1b\r

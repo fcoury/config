@@ -75,6 +75,24 @@ return {
 	{ "wtfox/jellybeans.nvim" },
 	{ "folke/tokyonight.nvim", lazy = false, priority = 1000, opts = {} },
 	{
+		"tahayvr/matteblack.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			vim.cmd.colorscheme("matteblack")
+		end,
+	},
+	{ "datsfilipe/vesper.nvim" },
+	{
+		"oskarnurm/koda.nvim",
+		lazy = false, -- make sure we load this during startup if it is your main colorscheme
+		priority = 1000, -- make sure to load this before all the other start plugins
+		config = function()
+			-- require("koda").setup({ transparent = true })
+			vim.cmd("colorscheme koda")
+		end,
+	},
+	{
 		"zaldih/themery.nvim",
 		lazy = false,
 		config = function()
@@ -85,6 +103,7 @@ return {
 					"lackluster-hack",
 					"lackluster-mint",
 					"lackluster-night",
+					"vesper",
 					"nord",
 					"nordic",
 					"nordern",
@@ -134,6 +153,8 @@ return {
 					"jellybeans",
 					"jellybeans-muted",
 					"jellybeans-mono",
+					"matteblack",
+					"koda",
 				},
 				livePreview = true,
 			})

@@ -1,0 +1,197 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+NETWORKSETUP_BIN="${NETWORKSETUP_BIN:-$(command -v networksetup 2>/dev/null || true)}"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  wifi-dns.sh --check
+      Show current DNS servers for the active Wi-Fi service.
+
+  wifi-dns.sh --set <DNS1> [DNS2 DNS3 ...]
+      Set custom DNS servers for the active Wi-Fi service (requires sudo).
+
+  wifi-dns.sh --clear
+      Reset DNS to "Empty" (use DHCP-provided DNS) for the active Wi-Fi service (requires sudo).
+
+Notes:
+- Works by detecting the interface used for the current default route, mapping it to the Wi-Fi service name,
+  then reading/setting DNS for that service.
+- You may be prompted for your password for operations that change settings.
+EOF
+}
+
+networksetup_safe() {
+  local out status
+  if [[ -z "${NETWORKSETUP_BIN:-}" ]]; then
+    echo "networksetup command not found. This script only works on macOS." >&2
+    return 1
+  fi
+  out="$("$NETWORKSETUP_BIN" "$@" 2>&1)" || status=$?
+  status="${status:-0}"
+  if grep -q "AuthorizationCreate() failed" <<<"$out"; then
+    if command -v sudo >/dev/null 2>&1; then
+      out="$(sudo "$NETWORKSETUP_BIN" "$@" 2>&1)" || status=$?
+      status="${status:-0}"
+    else
+      echo "$out" >&2
+      return 1
+    fi
+  fi
+  if (( status != 0 )); then
+    echo "$out" >&2
+    return "$status"
+  fi
+  printf "%s\n" "$out"
+  return 0
+}
+
+# Find the device used for the current default route, e.g., en0
+default_iface() {
+  route -n get default 2>/dev/null | awk '/interface:/{print $2; exit}'
+}
+
+# Map a device (e.g., en0) to a Service Name (e.g., "Wi-Fi")
+service_for_device() {
+  local dev="$1" order
+  order="$(networksetup_safe -listnetworkserviceorder)" || return 1
+  awk -v d="$dev" '
+      BEGIN { RS=""; FS="\n" }
+      {
+        svc=""
+        for (i=1; i<=NF; i++) {
+          # Lines like: "(1) Wi-Fi"
+          if ($i ~ /^\([0-9]+\) /) {
+            svc=$i
+            sub(/^\([0-9]+\) /, "", svc)
+          }
+          # Lines like: "    Hardware Port: Wi-Fi, Device: en0"
+          if ($i ~ /Device:[[:space:]]*[A-Za-z0-9]+/) {
+            line=$i
+            sub(/.*Device:[[:space:]]*/, "", line)
+            # strip trailing comma or anything after the dev name
+            sub(/[^A-Za-z0-9].*$/, "", line)
+            if (line == d) { print svc; exit }
+          }
+        }
+      }' <<<"$order"
+}
+
+# Confirm the service is actually a Wi-Fi service
+is_wifi_service() {
+  local svc="$1" order match
+  # Match common names like "Wi-Fi" or localized/renamed ones that still report as Wi-Fi hardware port
+  order="$(networksetup_safe -listnetworkserviceorder)" || return 1
+  match="$(awk -v s="$svc" '
+      BEGIN{RS=""; FS="\n"}
+      {
+        name=""
+        port=""
+        for (i=1;i<=NF;i++){
+          if ($i ~ /^\([0-9]+\) /) { name=$i; sub(/^\([0-9]+\) /,"",name) }
+          if ($i ~ /^ *Hardware Port:/) {
+            port=$i
+            sub(/^[[:space:]]*Hardware Port:[[:space:]]*/, "", port)
+            sub(/,.*/, "", port)
+          }
+          if (name==s && port ~ /Wi-?Fi/i) { print "yes"; exit }
+        }
+      }' <<<"$order")"
+  [[ -n "$match" ]]
+}
+
+first_wifi_service() {
+  local order
+  order="$(networksetup_safe -listnetworkserviceorder)" || return 1
+  awk '
+      BEGIN { RS=""; FS="\n" }
+      {
+        svc=""
+        port=""
+        for (i=1; i<=NF; i++) {
+          if ($i ~ /^\([0-9]+\) /) {
+            svc=$i
+            sub(/^\([0-9]+\) /, "", svc)
+          }
+          if ($i ~ /^[[:space:]]*Hardware Port:/) {
+            port=$i
+            sub(/^[[:space:]]*Hardware Port:[[:space:]]*/, "", port)
+            sub(/,.*/, "", port)
+            if (svc != "" && port ~ /Wi-?Fi/i) {
+              print svc
+              exit
+            }
+          }
+        }
+      }' <<<"$order"
+}
+
+require_service() {
+  local dev svc fallback
+  dev="$(default_iface || true)"
+  if [[ -n "${dev:-}" ]]; then
+    svc="$(service_for_device "$dev" || true)"
+    if [[ -n "${svc:-}" ]] && is_wifi_service "$svc"; then
+      echo "$svc"
+      return
+    fi
+    if [[ -n "${svc:-}" ]]; then
+      echo "Active default interface '$dev' does not appear to be a Wi-Fi service ('$svc')." >&2
+    else
+      echo "Could not map interface '$dev' to a Network Service." >&2
+    fi
+  else
+    echo "Could not determine default interface (no default route detected)." >&2
+  fi
+
+  fallback="$(first_wifi_service || true)"
+  if [[ -n "${fallback:-}" ]]; then
+    echo "Falling back to Wi-Fi service '$fallback'." >&2
+    echo "$fallback"
+    return
+  fi
+
+  echo "No Wi-Fi services were detected. Connect via Wi-Fi and try again." >&2
+  exit 2
+}
+
+cmd="${1:-}"
+case "$cmd" in
+  --check)
+    svc="$(require_service)"
+    echo "Active Wi-Fi service: $svc"
+    echo "Current DNS servers:"
+    networksetup_safe -getdnsservers "$svc"
+    ;;
+
+  --set)
+    shift
+    if [[ $# -lt 1 ]]; then
+      echo "Please provide at least one DNS server." >&2
+      usage; exit 2
+    fi
+    svc="$(require_service)"
+    echo "Setting DNS for Wi-Fi service '$svc' to: $*"
+    sudo networksetup -setdnsservers "$svc" "$@"
+    echo "Done. New DNS servers:"
+    networksetup -getdnsservers "$svc"
+    ;;
+
+  --clear)
+    svc="$(require_service)"
+    echo "Clearing custom DNS for Wi-Fi service '$svc' (back to DHCP)."
+    sudo networksetup -setdnsservers "$svc" "Empty"
+    echo "Done. DNS servers now:"
+    networksetup -getdnsservers "$svc"
+    ;;
+
+  -h|--help|"")
+    usage
+    ;;
+  *)
+    echo "Unknown option: $cmd" >&2
+    usage
+    exit 2
+    ;;
+esac

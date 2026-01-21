@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Find Wi-Fi service name (varies by Mac and language)
+# Common names include: "Wi-Fi", "WiFi", "AirPort"
+WIFI_SERVICE="$(networksetup -listallhardwareports | awk '
+  /Hardware Port: (Wi-Fi|WiFi|AirPort)$/ {show=1}
+  show && /Device:/ {dev=$2}
+  show && /^$/ {print dev; show=0}
+')"
+
+if [[ -z "${WIFI_SERVICE:-}" ]]; then
+    echo "Could not detect Wi‑Fi device. Is Wi‑Fi present?"
+    exit 1
+fi
+
+# Map device (e.g., en0) to service name (human-readable)
+SERVICE_NAME="$(networksetup -listnetworkserviceorder | awk -v dev="$WIFI_SERVICE" '
+  $0 ~ /Hardware Port: .* Device: .*'${WIFI_SERVICE}'/ {p=1}
+  p && $0 ~ /^\(/ { 
+    # line looks like "(1) Wi-Fi"
+    sub(/^\([0-9]+\) /, "", $0); print $0; exit
+  }
+')"
+
+if [[ -z "${SERVICE_NAME:-}" ]]; then
+    # Fallback: many systems use "Wi-Fi"
+    SERVICE_NAME="Wi-Fi"
+fi
+
+echo "Detected Wi‑Fi service: ${SERVICE_NAME}"
+
+echo "Current DNS servers:"
+networksetup -getdnsservers "${SERVICE_NAME}" || true
+
+if [[ $# -gt 0 ]]; then
+    echo "Setting DNS servers to: $*"
+    # Use sudo if not root
+    if [[ $EUID -ne 0 ]]; then
+        echo "Elevated privileges required. Prompting for sudo..."
+        sudo -v
+        sudo networksetup -setdnsservers "${SERVICE_NAME}" "$@"
+    else
+        networksetup -setdnsservers "${SERVICE_NAME}" "$@"
+    fi
+
+    echo "New DNS servers:"
+    networksetup -getdnsservers "${SERVICE_NAME}"
+else
+    echo "No DNS provided; not changing settings."
+    echo "To set DNS, run: sudo $0 1.1.1.1 1.0.0.1"
+fi
+

@@ -75,6 +75,7 @@ return {
 				"yamlls",
 				"ts_ls",
 				"clangd",
+				"husk_lsp",
 			}
 
 			lsp.config("ts_ls", {

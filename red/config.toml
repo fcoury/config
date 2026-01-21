@@ -33,8 +33,8 @@ Esc = { EnterMode = "Normal" }
 [keys.normal]
 "w" = [ "MoveToNextWord" ]
 "b" = [ "MoveToPreviousWord" ]
-"o" = [ { EnterMode = "Insert" }, "InsertLineBelowCursor" ]
-"O" = [ { EnterMode = "Insert" }, "InsertLineAtCursor" ]
+"o" = "InsertLineBelowCursor"
+"O" = "InsertLineAtCursor"
 "G" = "MoveToBottom"
 "g" = { "g" = "MoveToTop", "d" = "GoToDefinition" }
 "u" = "Undo"
@@ -61,15 +61,12 @@ Esc = { EnterMode = "Normal" }
 "n" = [ "FindNext" ]
 "N" = [ "FindPrevious" ]
 "a" = [ { EnterMode = "Insert" }, "MoveRight" ]
-"A" = [ { EnterMode = "Insert" }, "MoveToLineEnd" ]
+"A" = [ "MoveToLineEnd", { EnterMode = "Insert" } ]
 "i" = { EnterMode = "Insert" }
 "I" = [ { EnterMode = "Insert" }, "MoveToFirstLineChar" ]
 ";" = { EnterMode = "Command" }
 ":" = { EnterMode = "Command" }
 "/" = { EnterMode = "Search" }
-# "|" = "Split" 
-# "_" = "SplitVertical"
-# "Ctrl-w" = { "w" = "NextWindow", "Ctrl-w" = "NextWindow" }
 "Ctrl-p" = "FilePicker"
 "Ctrl-z" = "Suspend"
 "K" = "Hover"
@@ -81,6 +78,25 @@ Esc = { EnterMode = "Normal" }
 "Ctrl-v" = { EnterMode = "VisualBlock" }
 "p" = "Paste"
 "P" = "PasteBefore"
+
+# Window management
+[keys.normal."Ctrl-w"]
+"s" = "SplitHorizontal"
+"v" = "SplitVertical"
+"c" = "CloseWindow"
+"w" = "NextWindow"
+"Ctrl-w" = "NextWindow"
+"h" = "MoveWindowLeft"
+"j" = "MoveWindowDown"
+"k" = "MoveWindowUp"
+"l" = "MoveWindowRight"
+# Window resizing (not fully implemented yet)
+"+" = { ResizeWindowDown = 1 }
+"-" = { ResizeWindowUp = 1 }
+"<" = { ResizeWindowLeft = 1 }
+">" = { ResizeWindowRight = 1 }
+"=" = "BalanceWindows"
+"_" = "MaximizeWindow"
 
 [keys.normal.">"]
 ">" = "IndentLine"

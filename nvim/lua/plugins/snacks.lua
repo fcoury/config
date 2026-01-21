@@ -150,6 +150,22 @@ return {
 			end,
 			desc = "Browse current directory",
 		},
+
+		{
+			"<leader>s",
+			function()
+				Snacks.scratch()
+			end,
+			desc = "Toggle Scratch Buffer",
+		},
+
+		{
+			"<leader>S",
+			function()
+				Snacks.scratch.select()
+			end,
+			desc = "Select Scratch Buffer",
+		},
 		-- {
 		-- 	"<leader>.",
 		-- 	function()
@@ -171,6 +187,15 @@ return {
 		-- },
 	},
 	opts = {
+		scratch = {
+			enabled = true,
+			ft = "markdown",
+			win = {
+				keys = {
+					["<c-x>"] = { "delete", desc = "Delete scratch" },
+				},
+			},
+		},
 		picker = {
 			actions = {
 				toggle_all = function(picker)

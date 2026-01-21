@@ -8,3 +8,4 @@ zed/embeddings/*
 zed/prompts/*
 .DS_Store
 .claude/settings.local.json
+opencode/antigravity-accounts.json
