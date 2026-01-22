@@ -25,7 +25,7 @@ alias tn 'tmux new-session -s'
 
 # ai and vibecoding
 #alias yolo 'ENABLE_BACKGROUND_TASKS=1 FORCE_AUTO_BACKGROUND_TASKS=1 claude --dangerously-skip-permissions'
-alias yolo 'claude-chill -- claude --dangerously-skip-permissions --chrome'
+alias yolo 'claude --dangerously-skip-permissions --chrome'
 alias yologlm 'ccr code --dangerously-skip-permissions'
 
 # uses bat for cat if available
