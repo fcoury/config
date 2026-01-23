@@ -215,6 +215,8 @@ return {
 					"night-owl",
 					-- sequoia-moonlight
 					"sequoia",
+					-- custom poimandres based on ghostty theme
+					"poimandres-ghostty",
 				},
 				livePreview = true,
 			})
