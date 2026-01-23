@@ -131,6 +131,22 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
+-- Fix cursorline not extending full width in fish files
+-- Fish syntax has highlights linking to Normal which breaks CursorLine priority
+-- See: https://github.com/neovim/neovim/issues/9019
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "fish",
+	callback = function()
+		vim.schedule(function()
+			-- Set explicit fg color to break the link to Normal
+			local fg = vim.api.nvim_get_hl(0, { name = "Normal" }).fg
+			vim.api.nvim_set_hl(0, "fish_color_param", { fg = fg })
+			vim.api.nvim_set_hl(0, "fish_color_normal", { fg = fg })
+			vim.api.nvim_set_hl(0, "fish_color_option", { fg = fg })
+		end)
+	end,
+})
+
 -- Temporary hack to avoid double borders with Telescope
 -- vim.api.nvim_create_autocmd("User", {
 -- 	pattern = "TelescopeFindPre",
