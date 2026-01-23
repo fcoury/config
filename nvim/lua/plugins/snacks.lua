@@ -166,6 +166,22 @@ return {
 			end,
 			desc = "Select Scratch Buffer",
 		},
+
+		{
+			"<leader>T",
+			function()
+				require("config.theme_picker")()
+			end,
+			desc = "Theme Picker",
+		},
+
+		{
+			"<leader>th",
+			function()
+				require("config.theme_picker")()
+			end,
+			desc = "Theme Picker",
+		},
 		-- {
 		-- 	"<leader>.",
 		-- 	function()

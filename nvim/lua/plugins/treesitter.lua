@@ -33,6 +33,7 @@ return {
 				"rust",
 				"markdown",
 				"markdown_inline",
+				"fish",
 			})
 
 			require("template-string").setup({})

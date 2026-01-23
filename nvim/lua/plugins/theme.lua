@@ -93,6 +93,27 @@ return {
 		end,
 	},
 	{
+		"webhooked/kanso.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("kanso").setup({})
+		end,
+	},
+	-- Popular themes
+	{ "navarasu/onedark.nvim" },
+	{ "Mofiqul/dracula.nvim" },
+	{ "craftzdog/solarized-osaka.nvim" },
+	{ "projekt0n/github-nvim-theme" },
+	{ "scottmckendry/cyberdream.nvim" },
+	{ "olivercederborg/poimandres.nvim" },
+	{ "maxmx03/fluoromachine.nvim" },
+	{ "Mofiqul/vscode.nvim" },
+	{ "sainnhe/sonokai" },
+	{ "sainnhe/edge" },
+	{ "oxfist/night-owl.nvim" },
+	{ "Hiroya-W/sequoia-moonlight.nvim" },
+	{
 		"zaldih/themery.nvim",
 		lazy = false,
 		config = function()
@@ -108,6 +129,7 @@ return {
 					"nordic",
 					"nordern",
 					"onenord",
+					"zenbones",
 					"zenwritten",
 					"neobones",
 					"rosebones",
@@ -155,6 +177,44 @@ return {
 					"jellybeans-mono",
 					"matteblack",
 					"koda",
+					{
+						name = "kanso",
+						colorscheme = "kanso",
+						before = [[
+							require("kanso").setup({})
+						]],
+					},
+					-- onedark
+					"onedark",
+					-- dracula
+					"dracula",
+					"dracula-soft",
+					-- solarized-osaka
+					"solarized-osaka",
+					"solarized-osaka-day",
+					-- github
+					"github_dark",
+					"github_dark_default",
+					"github_dark_dimmed",
+					"github_dark_high_contrast",
+					"github_light",
+					"github_light_default",
+					-- cyberdream
+					"cyberdream",
+					-- poimandres
+					"poimandres",
+					-- fluoromachine
+					"fluoromachine",
+					-- vscode
+					"vscode",
+					-- sonokai
+					"sonokai",
+					-- edge
+					"edge",
+					-- night-owl
+					"night-owl",
+					-- sequoia-moonlight
+					"sequoia",
 				},
 				livePreview = true,
 			})

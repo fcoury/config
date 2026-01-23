@@ -133,16 +133,43 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Fix cursorline not extending full width in fish files
 -- Fish syntax has highlights linking to Normal which breaks CursorLine priority
+-- Some themes also set backgrounds on syntax groups that override CursorLine
 -- See: https://github.com/neovim/neovim/issues/9019
+local function fix_fish_cursorline()
+	local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+	local fg = normal.fg
+
+	-- Fix fish highlights that link to Normal
+	vim.api.nvim_set_hl(0, "fish_color_param", { fg = fg })
+	vim.api.nvim_set_hl(0, "fish_color_normal", { fg = fg })
+	vim.api.nvim_set_hl(0, "fish_color_option", { fg = fg })
+
+	-- Fix fish_color_quote -> String which some themes give a background
+	local string_hl = vim.api.nvim_get_hl(0, { name = "String" })
+	if string_hl.bg then
+		vim.api.nvim_set_hl(0, "fish_color_quote", { fg = string_hl.fg })
+	end
+end
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "fish",
 	callback = function()
+		vim.schedule(fix_fish_cursorline)
+	end,
+})
+
+-- Reapply fix when colorscheme changes (for open fish buffers)
+vim.api.nvim_create_autocmd("ColorScheme", {
+	pattern = "*",
+	callback = function()
 		vim.schedule(function()
-			-- Set explicit fg color to break the link to Normal
-			local fg = vim.api.nvim_get_hl(0, { name = "Normal" }).fg
-			vim.api.nvim_set_hl(0, "fish_color_param", { fg = fg })
-			vim.api.nvim_set_hl(0, "fish_color_normal", { fg = fg })
-			vim.api.nvim_set_hl(0, "fish_color_option", { fg = fg })
+			-- Check if any buffer is a fish file
+			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+				if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype == "fish" then
+					fix_fish_cursorline()
+					return
+				end
+			end
 		end)
 	end,
 })
