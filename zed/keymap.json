@@ -3,7 +3,9 @@
     "bindings": {
       "ctrl-x": "terminal_panel::ToggleFocus",
       "ctrl-e": "workspace::ToggleLeftDock",
-      "ctrl-p": "file_finder::Toggle"
+      "ctrl-p": "file_finder::Toggle",
+      "ctrl-j": "tab_switcher::Toggle",
+      "ctrl-t": "outline::Toggle"
     }
   },
   {
@@ -22,12 +24,51 @@
     }
   },
   {
-    "context": "Editor && vim_mode == normal && !menu",
+    "context": "Editor",
     "bindings": {
-      // put key-bindings here if you want them to work in insert mode
-      // e.g.
-      // "j j": "vim::NormalBefore" // remap jj in insert mode to escape.
-      ";": ["workspace::SendKeystrokes", ":"]
+      "ctrl-alt-k": "editor::ShowSignatureHelp",
+      "shift-alt-up": "editor::DuplicateLineUp",
+      "shift-alt-down": "editor::DuplicateLineDown"
+    }
+  },
+  {
+    "context": "vim_mode == normal && !menu",
+    "bindings": {
+      ";": ["workspace::SendKeystrokes", ":"],
+      "space r": "editor::Rename",
+      "space f": "editor::Format",
+      "g r": "editor::FindAllReferences",
+      "g i": "editor::GoToImplementation",
+      "shift-d": "editor::Hover",
+      "space g": "pane::DeploySearch",
+      "space w": "project_symbols::Toggle",
+      "space d": "diagnostics::Deploy",
+      "space e": "diagnostics::Deploy",
+      "space k": "editor::FindAllReferences",
+      "space .": "project_panel::ToggleFocus",
+      "space shift-t": "theme_selector::Toggle",
+      "space t h": "theme_selector::Toggle",
+      "space t b": "editor::ToggleGitBlame",
+      "space x x": "diagnostics::Deploy",
+      "space c s": "outline::Toggle",
+      "|": "pane::SplitRight",
+      "_": "pane::SplitDown",
+      "] b": "pane::ActivateNextItem",
+      "[ b": "pane::ActivatePrevItem",
+      "space space": "pane::AlternateFile",
+      "shift-u": "editor::Redo",
+      "space a": "editor::SelectAll",
+      "space c l": "editor::CopyPath",
+      "space v t": "workspace::ToggleRightDock",
+      "space v f": "assistant::ToggleFocus"
+    }
+  },
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
+      "space c a": "editor::ToggleCodeActions",
+      "space v a": "assistant::InlineAssist",
+      "space v e": "assistant::InlineAssist"
     }
   }
 ]
