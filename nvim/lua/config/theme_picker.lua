@@ -19,6 +19,13 @@ return function()
 		})
 	end
 
+	-- Function to restore original theme
+	local function restore_original()
+		if original_theme then
+			themery.setThemeByName(original_theme)
+		end
+	end
+
 	Snacks.picker({
 		title = "Themes",
 		items = items,
@@ -38,11 +45,19 @@ return function()
 				persistence.saveTheme(item.theme, item.idx)
 			end
 		end,
-		cancel = function(picker)
-			picker:close()
-			if original_theme then
-				themery.setThemeByName(original_theme)
-			end
-		end,
+		win = {
+			input = {
+				keys = {
+					["<Esc>"] = {
+						function(self)
+							restore_original()
+							self:close()
+						end,
+						mode = { "n", "i" },
+						desc = "Cancel and restore theme",
+					},
+				},
+			},
+		},
 	})
 end
