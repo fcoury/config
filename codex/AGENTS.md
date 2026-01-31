@@ -39,10 +39,6 @@ Normally you can use `psql <project-name>` to connect to the local Postgres DB.
 
 - GitHub CLI for PRs, CI logs, releases, and repo queries; run `gh help`. When someone shares a GitHub issue/PR URL (full or relative like `/pull/5`), use `gh` to read it—do not web-search. Examples: `gh issue view <url> --comments -R owner/repo` and `gh pr view <url> --comments --files -R owner/repo`. If only a number is given, derive the repo from the URL or current checkout and still fetch details via `gh`.
 
-### coderabbit
-
-- CodeRabbit CLI for reviewing code; run `coderabbit --prompt-only` to get a list of files, lines, type and a "Prompt for AI Agent". Evaluate each issue and present the list to the user ordered by severity. Also show a number for each issue to allow the user to request more details, ask to execute some of the issues, or all issues from given categories.
-
 ### timeout
 
 - Use `timeout <seconds> <command>` to limit execution time of commands that may hang.
