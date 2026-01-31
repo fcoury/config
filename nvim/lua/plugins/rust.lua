@@ -66,6 +66,7 @@ return {
 								leptos_macro = { "server" },
 							},
 						},
+						lru = { capacity = 128 },
 						cache = { warmup = true },
 						workspace = { refreshTime = 150 },
 						buildScripts = {
