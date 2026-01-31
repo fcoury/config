@@ -27,7 +27,6 @@ return {
 				"html",
 				"css",
 				"json",
-				"jsonc",
 				"yaml",
 				"regex",
 				"rust",
