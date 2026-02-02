@@ -1,0 +1,774 @@
+[general]
+default_profile = "C65E1154-9116-4D56-A7B0-C4BD01208CDD"
+focus_follows_mouse = false
+
+[appearance]
+tab_position = "top"
+hide_scrollbar = true
+dim_inactive_split_panes = false
+
+[[profiles]]
+name = "Coolnight"
+guid = "C65E1154-9116-4D56-A7B0-C4BD01208CDD"
+
+[profiles.text]
+font = "FantasqueSansMNF-Regular 22"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.1
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#cdd6f4"
+background = "#101010"
+bold = "#cdd6f4"
+cursor = "#f5e0dc"
+cursor_text = "#cdd6f4"
+cursor_guide = "#cdd6f4"
+selection = "#585b70"
+selected_text = "#cdd6f4"
+badge = "#ed4124"
+link = "#89dceb"
+ansi = [
+    "#45475a",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#bac2de",
+    "#585b70",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#a6adc8",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 120
+rows = 40
+transparency = 0.0
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = "/bin/zsh"
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "Coolnight Small"
+guid = "B03C60AB-1A9B-4D22-9398-D46C7C67B3B6"
+
+[profiles.text]
+font = "IosevkaNFM 18"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.1
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#cdd6f4"
+background = "#1e1e2e"
+bold = "#cdd6f4"
+cursor = "#f5e0dc"
+cursor_text = "#cdd6f4"
+cursor_guide = "#cdd6f4"
+selection = "#585b70"
+selected_text = "#cdd6f4"
+badge = "#ed4124"
+link = "#89dceb"
+ansi = [
+    "#45475a",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#bac2de",
+    "#585b70",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#a6adc8",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 120
+rows = 40
+transparency = 0.029999999999999992
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = ""
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "Streaming"
+guid = "8457ADDA-01E6-4E4A-8C22-4C8C80F5AF8B"
+
+[profiles.text]
+font = "JetBrainsMonoNFM-Regular 15"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.05
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#cad3f5"
+background = "#24273a"
+bold = "#cad3f5"
+cursor = "#f4dbd6"
+cursor_text = "#24273a"
+cursor_guide = "#cad3f5"
+selection = "#5b6078"
+selected_text = "#cad3f5"
+badge = "#ff2600"
+link = "#91d7e3"
+ansi = [
+    "#494d64",
+    "#ed8796",
+    "#a6da95",
+    "#eed49f",
+    "#8aadf4",
+    "#f5bde6",
+    "#8bd5ca",
+    "#b8c0e0",
+    "#5b6078",
+    "#ed8796",
+    "#a6da95",
+    "#eed49f",
+    "#8aadf4",
+    "#f5bde6",
+    "#8bd5ca",
+    "#a5adcb",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 120
+rows = 40
+transparency = 0.029999999999999992
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = ""
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "JetBrains"
+guid = "49911F70-F760-484E-B552-04B462346E56"
+
+[profiles.text]
+font = "JetBrainsMonoNerdFontCompleteM-ExtraLight 18"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.08
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#c5c8c6"
+background = "#1d1f21"
+bold = "#c5c8c6"
+cursor = "#c5c8c6"
+cursor_text = "#1d1f21"
+cursor_guide = "#b3ecff"
+selection = "#373b41"
+selected_text = "#c5c8c6"
+badge = "#ff2600"
+link = "#005cbb"
+ansi = [
+    "#000000",
+    "#cc6666",
+    "#b5bd68",
+    "#f0c674",
+    "#81a2be",
+    "#b294bb",
+    "#8abeb7",
+    "#ffffff",
+    "#000000",
+    "#cc6666",
+    "#b5bd68",
+    "#f0c674",
+    "#81a2be",
+    "#b294bb",
+    "#8abeb7",
+    "#ffffff",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 80
+rows = 25
+transparency = 0.019999999999999993
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = ""
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "Coolnight Before"
+guid = "2DD39C4A-92AF-4087-B1A8-1A77279DA73A"
+
+[profiles.text]
+font = "JetBrainsMonoNerdFontCompleteM-ExtraLight 18"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.08
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#ecdef4"
+background = "#010c18"
+bold = "#eeeeee"
+cursor = "#38ff9d"
+cursor_text = "#000000"
+cursor_guide = "#b3ecff"
+selection = "#38ff9c"
+selected_text = "#000000"
+badge = "#ff2600"
+link = "#8ca8fc"
+tab = "#011627"
+ansi = [
+    "#0b3b61",
+    "#ff3a3a",
+    "#52ffd0",
+    "#fff383",
+    "#1376f9",
+    "#c792ea",
+    "#ff5ed4",
+    "#16fda2",
+    "#63686d",
+    "#ff54b0",
+    "#74ffd8",
+    "#fcf5ae",
+    "#388eff",
+    "#ae81ff",
+    "#ff6ad7",
+    "#60fbbf",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 80
+rows = 25
+transparency = 0.019999999999999993
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = ""
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "Default"
+guid = "B758A9F7-5795-4489-9E55-EF58DC969AC1"
+
+[profiles.text]
+font = "Monaco 12"
+non_ascii_font = "Monaco 12"
+use_bold = true
+use_italic = true
+vertical_spacing = 1.0
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+blinking = false
+
+[profiles.colors]
+foreground = "#bbbbbb"
+background = "#000000"
+bold = "#ffffff"
+cursor = "#bbbbbb"
+cursor_text = "#ffffff"
+selection = "#b5d5ff"
+selected_text = "#000000"
+ansi = [
+    "#000000",
+    "#bb0000",
+    "#00bb00",
+    "#bbbb00",
+    "#0000bb",
+    "#bb00bb",
+    "#00bbbb",
+    "#bbbbbb",
+    "#555555",
+    "#ff5555",
+    "#55ff55",
+    "#ffff55",
+    "#5555ff",
+    "#ff55ff",
+    "#55ffff",
+    "#ffffff",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 80
+rows = 25
+transparency = 0.0
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "normal"
+right_option = "normal"
+
+[profiles.session]
+command = ""
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "Light Small"
+guid = "9FBF3B33-EF6A-4216-9D79-DC49A8F507C5"
+
+[profiles.text]
+font = "IosevkaNFM 18"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.1
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#657b83"
+background = "#fdf6e3"
+bold = "#586e75"
+cursor = "#657b83"
+cursor_text = "#eee8d5"
+cursor_guide = "#bfebfd"
+selection = "#eee8d5"
+selected_text = "#586e75"
+badge = "#ed4124"
+link = "#255ab5"
+ansi = [
+    "#073642",
+    "#dc322f",
+    "#859900",
+    "#b58900",
+    "#268bd2",
+    "#d33682",
+    "#2aa198",
+    "#eee8d5",
+    "#002b36",
+    "#cb4b16",
+    "#586e75",
+    "#657b83",
+    "#839496",
+    "#6c71c4",
+    "#93a1a1",
+    "#fdf6e3",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 120
+rows = 40
+transparency = 0.029999999999999992
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = ""
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "tmux"
+guid = "42E2C468-43A8-42FF-9D3C-FAA03F6C4DC4"
+
+[profiles.text]
+font = "JetBrainsMonoNFM-Regular 20"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.1
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#cad3f5"
+background = "#24273a"
+bold = "#cad3f5"
+cursor = "#f4dbd6"
+cursor_text = "#24273a"
+cursor_guide = "#cad3f5"
+selection = "#5b6078"
+selected_text = "#cad3f5"
+badge = "#ff2600"
+link = "#91d7e3"
+ansi = [
+    "#494d64",
+    "#ed8796",
+    "#a6da95",
+    "#eed49f",
+    "#8aadf4",
+    "#f5bde6",
+    "#8bd5ca",
+    "#b8c0e0",
+    "#5b6078",
+    "#ed8796",
+    "#a6da95",
+    "#eed49f",
+    "#8aadf4",
+    "#f5bde6",
+    "#8bd5ca",
+    "#a5adcb",
+]
+
+[profiles.terminal]
+scrollback_lines = 1000
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 120
+rows = 40
+transparency = 0.029999999999999992
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = ""
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "Coolnight OG"
+guid = "6EB8D80F-86A7-41C8-AFDF-2F39C9EDCF3D"
+
+[profiles.text]
+font = "JetBrainsMonoNFM-Regular 20"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.1
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#cdd6f4"
+background = "#1e1e2e"
+bold = "#cdd6f4"
+cursor = "#f5e0dc"
+cursor_text = "#cdd6f4"
+cursor_guide = "#cdd6f4"
+selection = "#585b70"
+selected_text = "#cdd6f4"
+badge = "#ed4124"
+link = "#89dceb"
+ansi = [
+    "#45475a",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#bac2de",
+    "#585b70",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#a6adc8",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 120
+rows = 40
+transparency = 0.029999999999999992
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = ""
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "Browser Default"
+guid = "9F2C0271-178D-4DA0-89B9-EF593A041598"
+
+[profiles.text]
+font = "FantasqueSansMNF-Regular 22"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.1
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#cdd6f4"
+background = "#101010"
+bold = "#cdd6f4"
+cursor = "#f5e0dc"
+cursor_text = "#cdd6f4"
+cursor_guide = "#cdd6f4"
+selection = "#585b70"
+selected_text = "#cdd6f4"
+badge = "#ed4124"
+link = "#89dceb"
+ansi = [
+    "#45475a",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#bac2de",
+    "#585b70",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#a6adc8",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 120
+rows = 40
+transparency = 0.0
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = "/bin/zsh"
+working_directory = "/Users/fcoury"
+custom_command = false
+
+[[profiles]]
+name = "Paper Mono"
+guid = "EDAD5527-0991-4DB1-A9EF-298D5F53EBEB"
+
+[profiles.text]
+font = "D2CodingLigatureNFM 17"
+non_ascii_font = "Monaco 12"
+ligatures = true
+use_bold = true
+use_italic = true
+vertical_spacing = 1.1
+horizontal_spacing = 1.0
+
+[profiles.cursor]
+type = "block"
+blinking = false
+
+[profiles.colors]
+foreground = "#cdd6f4"
+background = "#101010"
+bold = "#cdd6f4"
+cursor = "#f5e0dc"
+cursor_text = "#cdd6f4"
+cursor_guide = "#cdd6f4"
+selection = "#585b70"
+selected_text = "#cdd6f4"
+badge = "#ed4124"
+link = "#89dceb"
+ansi = [
+    "#45475a",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#bac2de",
+    "#585b70",
+    "#f38ba8",
+    "#a6e3a1",
+    "#f9e2af",
+    "#89b4fa",
+    "#f5c2e7",
+    "#94e2d5",
+    "#a6adc8",
+]
+
+[profiles.terminal]
+scrollback_lines = 0
+type = "xterm-256color"
+encoding = "UTF-8"
+mouse_reporting = true
+unlimited_scrollback = true
+
+[profiles.window]
+columns = 120
+rows = 40
+transparency = 0.0
+style = "normal"
+background_image = ""
+
+[profiles.keyboard]
+left_option = "esc+"
+right_option = "normal"
+
+[profiles.session]
+command = "/bin/zsh"
+working_directory = "/Users/fcoury"
+custom_command = false
