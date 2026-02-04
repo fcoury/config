@@ -1,0 +1,161 @@
+#!/bin/bash
+
+# Find processes matching a regex pattern
+# Usage: psfind [-m] [-n NUM] [-f] [regex]
+#   -m      Sort by memory instead of CPU
+#   -n NUM  Limit to NUM results (default: 20 when no regex, unlimited with regex)
+#   -f      Use footprint for accurate memory (slower, matches Activity Monitor)
+
+sort_by_mem=false
+use_footprint=false
+limit=""
+
+# Parse options
+while getopts "mfn:" opt; do
+    case $opt in
+        m) sort_by_mem=true ;;
+        f) use_footprint=true ;;
+        n) limit="$OPTARG" ;;
+        *) ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+# Show usage with -h or --help
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "Usage: psfind [-m] [-n NUM] [-f] [regex]"
+    echo "  -m      Sort by memory instead of CPU"
+    echo "  -n NUM  Limit to NUM results"
+    echo "  -f      Use footprint for accurate memory (slower, matches Activity Monitor)"
+    echo ""
+    echo "Examples:"
+    echo "  psfind              # Top 20 processes by CPU"
+    echo "  psfind -m           # Top 20 processes by memory"
+    echo "  psfind -m -n 10     # Top 10 processes by memory"
+    echo "  psfind 'node|ruby'  # All node/ruby processes (with accurate mem + cwd)"
+    echo "  psfind -m '^nvim$'  # All nvim processes by memory"
+    echo "  psfind -f -m        # Top 20 by memory with Activity Monitor accuracy"
+    exit 0
+fi
+
+# Regex is optional - if not provided, match all processes
+regex="$1"
+has_regex=false
+if [ -n "$regex" ]; then
+    has_regex=true
+else
+    regex="."
+fi
+
+# Default limit to 20 when no regex provided
+if [ "$has_regex" = false ] && [ -z "$limit" ]; then
+    limit=20
+fi
+
+# When a specific regex is provided, use footprint by default for accuracy
+if [ "$has_regex" = true ]; then
+    use_footprint=true
+fi
+
+# Truncate from beginning if too long, keeping the end (the important part)
+truncate_name() {
+    local name=$1
+    local max_len=40
+    if [ ${#name} -gt $max_len ]; then
+        echo "…${name: -$((max_len - 1))}"
+    else
+        echo "$name"
+    fi
+}
+
+# Function to format bytes to human readable
+format_mem() {
+    local kb=$1
+    if [ "$kb" -ge 1048576 ]; then
+        printf "%.1f GB" "$(echo "scale=1; $kb / 1048576" | bc)"
+    elif [ "$kb" -ge 1024 ]; then
+        printf "%.1f MB" "$(echo "scale=1; $kb / 1024" | bc)"
+    else
+        printf "%d KB" "$kb"
+    fi
+}
+
+# Get memory footprint using macOS footprint command (matches Activity Monitor)
+# Returns value in KB
+get_footprint() {
+    local pid=$1
+    local output
+    output=$(footprint -p "$pid" 2>/dev/null | grep "Footprint:")
+
+    # Extract number and unit from "Footprint: X MB" or "Footprint: X KB" or "Footprint: X GB"
+    local value unit
+    value=$(echo "$output" | sed -E 's/.*Footprint: ([0-9.]+).*/\1/')
+    unit=$(echo "$output" | sed -E 's/.*Footprint: [0-9.]+ (KB|MB|GB).*/\1/')
+
+    # Convert to KB
+    case "$unit" in
+        GB) echo "$value * 1048576" | bc | cut -d. -f1 ;;
+        MB) echo "$value * 1024" | bc | cut -d. -f1 ;;
+        KB) echo "$value" | cut -d. -f1 ;;
+        *)  echo "" ;;
+    esac
+}
+
+# Determine sort column (3=cpu, 4=mem in raw kb)
+if [ "$sort_by_mem" = true ]; then
+    sort_key=4
+else
+    sort_key=3
+fi
+
+# Print header
+if [ "$has_regex" = true ]; then
+    printf "%-40s %8s %6s %10s  %s\n" "PROCESS" "PID" "CPU%" "MEM" "CWD"
+    printf "%-40s %8s %6s %10s  %s\n" "-------" "---" "----" "---" "---"
+else
+    printf "%-40s %8s %6s %10s\n" "PROCESS" "PID" "CPU%" "MEM"
+    printf "%-40s %8s %6s %10s\n" "-------" "---" "----" "---"
+fi
+
+# Get all processes with PID, CPU, RSS, and command name
+ps -eo pid,%cpu,rss,comm | tail -n +2 | while read -r pid cpu rss name; do
+    # Skip empty names
+    [ -z "$name" ] && continue
+
+    # Match regex against the process name only
+    if echo "$name" | grep -qE "$regex"; then
+        # Get memory
+        if [ "$use_footprint" = true ]; then
+            mem_kb=$(get_footprint "$pid")
+            # Fallback to RSS if footprint fails
+            [ -z "$mem_kb" ] && mem_kb="$rss"
+        else
+            mem_kb="$rss"
+        fi
+
+        [ -z "$mem_kb" ] && mem_kb=0
+
+        # Get cwd only when regex is provided (slow operation)
+        if [ "$has_regex" = true ]; then
+            cwd=$(lsof -p "$pid" 2>/dev/null | awk '$4=="cwd" {print $9; exit}')
+            [ -z "$cwd" ] && cwd="(unknown)"
+            printf "%s\t%s\t%s\t%s\t%s\n" "$name" "$pid" "$cpu" "$mem_kb" "$cwd"
+        else
+            printf "%s\t%s\t%s\t%s\n" "$name" "$pid" "$cpu" "$mem_kb"
+        fi
+    fi
+done | sort -t$'\t' -k${sort_key} -rn | {
+    if [ -n "$limit" ]; then
+        head -n "$limit"
+    else
+        cat
+    fi
+} | while IFS=$'\t' read -r name pid cpu mem_kb cwd; do
+    mem_formatted=$(format_mem "$mem_kb")
+    name_truncated=$(truncate_name "$name")
+    if [ "$has_regex" = true ]; then
+        printf "%-40s %8s %6s %10s  %s\n" "$name_truncated" "$pid" "$cpu" "$mem_formatted" "$cwd"
+    else
+        printf "%-40s %8s %6s %10s\n" "$name_truncated" "$pid" "$cpu" "$mem_formatted"
+    fi
+done
