@@ -41,9 +41,9 @@ vim.keymap.set("n", "<leader>Rr", function()
 		client:stop(true) -- force stop
 	end
 
-	-- Small delay to ensure clean shutdown, then reload
+	-- Small delay to ensure clean shutdown, then start LSP again
 	vim.defer_fn(function()
-		vim.cmd.edit()
+		vim.cmd("LspStart rust_analyzer")
 		vim.notify("RustAnalyzer restarted", vim.log.levels.INFO)
 	end, 100)
 end, { silent = true, buffer = bufnr, desc = "Restart RustAnalyzer (full)" })
