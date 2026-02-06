@@ -55,6 +55,9 @@ return {
 								leptos_macro = { "server" },
 							},
 						},
+						inlayHints = {
+							parameterHints = { enable = false },
+						},
 						lru = { capacity = 128 },
 						cache = { warmup = true },
 						workspace = { refreshTime = 150 },
