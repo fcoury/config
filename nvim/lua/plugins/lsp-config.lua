@@ -25,7 +25,7 @@ return {
 					"prettierd",
 					"pyright",
 					"ruff",
-					"rust_analyzer",
+					-- rust_analyzer managed by rustup, not Mason (avoid binary conflicts)
 					"stylua",
 					"debugpy",
 					"yamlls",
@@ -38,11 +38,7 @@ return {
 		"j-hui/fidget.nvim",
 		opts = {},
 	},
-	{
-		"felpafel/inlay-hint.nvim",
-		event = "LspAttach",
-		config = true,
-	},
+	-- inlay-hint.nvim removed: rustaceanvim's on_attach already enables inlay hints
 	{
 		"neovim/nvim-lspconfig",
 		depends = { "nvim-lua/lsp-status.nvim" },
