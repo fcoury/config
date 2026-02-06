@@ -5,8 +5,8 @@ return function()
 	local themery = require("themery")
 	local persistence = require("themery.persistence")
 	local themes = themery.getAvailableThemes()
-	local current = themery.getCurrentTheme()
-	local original_theme = current and current.name or nil
+	-- Use vim.g.colors_name for the actual current colorscheme (more reliable than themery.getCurrentTheme())
+	local original_theme = vim.g.colors_name
 
 	-- Build items for the picker
 	local items = {}
@@ -26,11 +26,27 @@ return function()
 		end
 	end
 
+	-- Find the index of the current theme for pre-selection
+	local current_idx = nil
+	if original_theme then
+		for i, item in ipairs(items) do
+			if item.text == original_theme then
+				current_idx = i
+				break
+			end
+		end
+	end
+
 	Snacks.picker({
 		title = "Themes",
 		items = items,
 		format = function(item)
 			return { { item.text } }
+		end,
+		on_show = function(picker)
+			if current_idx then
+				picker.list:view(current_idx)
+			end
 		end,
 		on_change = function(_, item)
 			if item then
