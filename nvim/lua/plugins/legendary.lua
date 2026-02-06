@@ -118,6 +118,13 @@ return {
 				opts = { noremap = true, silent = true },
 				description = "Copy symbol and location for LLM",
 			},
+			{
+				"<leader>cd",
+				"<cmd>CopyLineDiagnostics<cr>",
+				mode = "n",
+				opts = { noremap = true, silent = true },
+				description = "Copy LSP diagnostics for current line",
+			},
 			-- conflict with cog
 			-- {
 			-- 	"<leader>ccf",
