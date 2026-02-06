@@ -37,6 +37,9 @@ vim.keymap.set("n", "<leader>Rr", function()
 		return
 	end
 
+	-- Clear inlay hints before stopping to avoid stale col positions
+	vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
+
 	for _, client in ipairs(clients) do
 		client:stop(true) -- force stop
 	end
@@ -44,6 +47,7 @@ vim.keymap.set("n", "<leader>Rr", function()
 	-- Small delay to ensure clean shutdown, then start LSP again
 	vim.defer_fn(function()
 		vim.cmd("LspStart rust_analyzer")
+		vim.lsp.inlay_hint.enable(true, { bufnr = 0 })
 		vim.notify("RustAnalyzer restarted", vim.log.levels.INFO)
 	end, 100)
 end, { silent = true, buffer = bufnr, desc = "Restart RustAnalyzer (full)" })
