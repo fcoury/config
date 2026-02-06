@@ -112,12 +112,20 @@ return {
 				description = "Copy current relative path, file name and line number",
 			},
 			{
-				"<leader>ccf",
-				"<cmd>CopyRelativePath<cr>",
+				"<leader>cw",
+				"<cmd>CopySymbolAndLocationForLLM<cr>",
 				mode = "n",
 				opts = { noremap = true, silent = true },
-				description = "Copy current relative path, file name and line number",
+				description = "Copy symbol and location for LLM",
 			},
+			-- conflict with cog
+			-- {
+			-- 	"<leader>ccf",
+			-- 	"<cmd>CopyRelativePath<cr>",
+			-- 	mode = "n",
+			-- 	opts = { noremap = true, silent = true },
+			-- 	description = "Copy current relative path, file name and line number",
+			-- },
 
 			-- delete text
 			{ "m", '"_x', mode = "n", opts = { noremap = true, silent = true }, description = "Delete text" },
