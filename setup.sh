@@ -112,5 +112,23 @@ link-extra() {
   done < "$map_file"
 }
 
+link-codex-skills() {
+  local skills_dir="$SCRIPT_PATH/ai/skills"
+  local codex_skills="$HOME/.codex/skills"
+  if [ ! -d "$skills_dir" ]; then return; fi
+  mkdir -p "$codex_skills"
+  for skill in "$skills_dir"/*/; do
+    local name=$(basename "$skill")
+    local target="$codex_skills/$name"
+    if [ -e "$target" ]; then
+      echo "Skipping (already exists): $target"
+    else
+      echo "Linking: $skill -> $target"
+      ln -s "$(to-abs-path "$skill")" "$target"
+    fi
+  done
+}
+
 link-path "."
 link-extra
+link-codex-skills
