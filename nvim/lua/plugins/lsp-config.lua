@@ -38,7 +38,10 @@ return {
 		"j-hui/fidget.nvim",
 		opts = {},
 	},
-	-- inlay-hint.nvim removed: rustaceanvim's on_attach already enables inlay hints
+	{
+		"felpafel/inlay-hint.nvim",
+		config = true,
+	},
 	{
 		"neovim/nvim-lspconfig",
 		depends = { "nvim-lua/lsp-status.nvim" },

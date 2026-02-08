@@ -3,10 +3,10 @@ return {
 		"mrcjkb/rustaceanvim",
 		version = "^7",
 		lazy = false,
+		dependencies = { "felpafel/inlay-hint.nvim" },
 		opts = {
 			server = {
 				on_attach = function(client, bufnr)
-					vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#575B6E", italic = true })
 					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 
 					vim.api.nvim_buf_create_user_command(bufnr, "LspCargoReload", function()
