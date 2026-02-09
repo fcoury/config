@@ -59,7 +59,7 @@ local config = {
 	hide_tab_bar_if_only_one_tab = true,
 
 	-- CTRL+S is our leader key
-	leader = { key = "s", mods = "CTRL", timeout_milliseconds = 1000 },
+	-- leader = { key = "s", mods = "CTRL", timeout_milliseconds = 1000 },
 
 	-- hyperlink_rules = {
 	-- 	-- Linkify URLs with fixed regex
@@ -118,13 +118,13 @@ local config = {
 
 	keys = {
 		-- Leader key then A sends the leader key
-		{ key = "a", mods = "LEADER", action = act.SendKey({ key = "s", mods = "CTRL" }) },
+		-- { key = "a", mods = "LEADER", action = act.SendKey({ key = "s", mods = "CTRL" }) },
 
 		-- Navigation between panes (equivalent to tmux hjkl navigation)
-		{ key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
-		{ key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
-		{ key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
-		{ key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
+		-- { key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
+		-- { key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
+		-- { key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
+		-- { key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
 
 		-- Control versions (equivalent to tmux C-hjkl navigation)
 		-- create_vim_aware_key("h", "Left"),
@@ -137,20 +137,20 @@ local config = {
 		{ key = "l", mods = "ALT", action = act.ActivatePaneDirection("Right") },
 
 		-- Resize pane (replacing your existing resize_pane function)
-		{ key = "H", mods = "LEADER", action = act.AdjustPaneSize({ "Left", 5 }) },
-		{ key = "J", mods = "LEADER", action = act.AdjustPaneSize({ "Down", 5 }) },
-		{ key = "K", mods = "LEADER", action = act.AdjustPaneSize({ "Up", 5 }) },
-		{ key = "L", mods = "LEADER", action = act.AdjustPaneSize({ "Right", 5 }) },
+		-- { key = "H", mods = "LEADER", action = act.AdjustPaneSize({ "Left", 5 }) },
+		-- { key = "J", mods = "LEADER", action = act.AdjustPaneSize({ "Down", 5 }) },
+		-- { key = "K", mods = "LEADER", action = act.AdjustPaneSize({ "Up", 5 }) },
+		-- { key = "L", mods = "LEADER", action = act.AdjustPaneSize({ "Right", 5 }) },
 
 		-- Clone pane
-		{ key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = false }) },
+		-- { key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = false }) },
 
 		-- Maximize pane (already in your config as CMD+SHIFT+Enter)
-		{ key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
+		-- { key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
 
 		-- Creating panes (already have similar with CMD+d and CMD+SHIFT+d)
-		{ key = "d", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-		{ key = "s", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
+		-- { key = "d", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+		-- { key = "s", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
 
 		{ key = "d", mods = "CMD", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 		{ key = "d", mods = "CMD|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
@@ -193,27 +193,27 @@ local config = {
 		},
 
 		-- Vimkeys resizing
-		{
-			-- When we push LEADER + R...
-			key = "r",
-			mods = "LEADER",
-			-- Activate the `resize_panes` keytable
-			action = wezterm.action.ActivateKeyTable({
-				name = "resize_panes",
-				-- Ensures the keytable stays active after it handles its
-				-- first keypress.
-				one_shot = false,
-				-- Deactivate the keytable after a timeout.
-				timeout_milliseconds = 1000,
-			}),
-		},
+		-- 	{
+		-- 		-- When we push LEADER + R...
+		-- 		key = "r",
+		-- 		mods = "LEADER",
+		-- 		-- Activate the `resize_panes` keytable
+		-- 		action = wezterm.action.ActivateKeyTable({
+		-- 			name = "resize_panes",
+		-- 			-- Ensures the keytable stays active after it handles its
+		-- 			-- first keypress.
+		-- 			one_shot = false,
+		-- 			-- Deactivate the keytable after a timeout.
+		-- 			timeout_milliseconds = 1000,
+		-- 		}),
+		-- 	},
 	},
 
 	-- Tabs
 	use_fancy_tab_bar = false,
 	tab_max_width = 24,
 	show_tab_index_in_tab_bar = false,
-	tab_bar_at_bottom = true,
+	tab_bar_at_bottom = false,
 	window_frame = {
 		font = wezterm.font({ family = "SF Pro", weight = "Medium" }),
 		font_size = 13.0,
