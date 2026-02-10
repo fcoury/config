@@ -1,0 +1,6 @@
+[submodule "ai/skills/superdesign"]
+	path = ai/skills/superdesign
+	url = git@github.com:superdesigndev/superdesign-skill.git
+[submodule "ai/skills/razor"]
+	path = ai/skills/razor
+	url = git@github.com:blader/razor.git
