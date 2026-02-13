@@ -9,6 +9,7 @@ set -e
 CONFIG_FILE="$HOME/.config/sync.conf"
 DEFAULT_SOURCE_HOST="mba"
 DEFAULT_BASE_PATH="~/code"
+FALLBACK_BASE_PATH="~/code-external"
 
 # Colors for output
 RED='\033[0;31m'
@@ -124,6 +125,22 @@ load_config() {
     BASE_PATH="${BASE_PATH:-$DEFAULT_BASE_PATH}"
 }
 
+# Function to resolve the remote base path for a repo
+# Checks BASE_PATH first, falls back to FALLBACK_BASE_PATH
+resolve_remote_path() {
+    local repo_name="$1"
+
+    if ssh "$SOURCE_HOST" "test -d ${BASE_PATH}/${repo_name}" 2>/dev/null; then
+        echo "$BASE_PATH"
+    elif ssh "$SOURCE_HOST" "test -d ${FALLBACK_BASE_PATH}/${repo_name}" 2>/dev/null; then
+        print_status "Found $repo_name in fallback path: $FALLBACK_BASE_PATH" >&2
+        echo "$FALLBACK_BASE_PATH"
+    else
+        print_error "Repository '$repo_name' not found at ${BASE_PATH}/${repo_name} or ${FALLBACK_BASE_PATH}/${repo_name} on $SOURCE_HOST" >&2
+        return 1
+    fi
+}
+
 # Function to read .gitignore patterns
 read_gitignore() {
     local gitignore_file="$1/.gitignore"
@@ -221,23 +238,27 @@ do_sync() {
     # Build excludes before printing status messages
     excludes=$(build_excludes "$repo_path")
     
+    # Resolve the remote base path (~/code or ~/code-external)
+    local remote_base
+    remote_base=$(resolve_remote_path "$repo_name") || exit 1
+
     local source_path dest_path
-    
+
     if [[ "$direction" == "pull" ]]; then
-        source_path="${SOURCE_HOST}:${BASE_PATH}/${repo_name}/"
+        source_path="${SOURCE_HOST}:${remote_base}/${repo_name}/"
         dest_path="../${repo_name}/"
         print_status "Pulling $repo_name from $SOURCE_HOST"
     else
         source_path="../${repo_name}/"
-        dest_path="${SOURCE_HOST}:${BASE_PATH}/${repo_name}/"
+        dest_path="${SOURCE_HOST}:${remote_base}/${repo_name}/"
         print_status "Pushing $repo_name to $SOURCE_HOST"
     fi
-    
+
     # Ensure destination directory exists
     if [[ "$direction" == "pull" ]]; then
         mkdir -p "../${repo_name}"
     else
-        ssh "$SOURCE_HOST" "mkdir -p ${BASE_PATH}/${repo_name}"
+        ssh "$SOURCE_HOST" "mkdir -p ${remote_base}/${repo_name}"
     fi
     
     print_status "Source: $source_path"
@@ -360,9 +381,12 @@ while [[ $# -gt 0 ]]; do
             
             print_status "Initializing $PROJECT_NAME from $SOURCE_HOST"
             print_status "Creating directory: $TARGET_DIR"
-            
+
+            # Resolve the remote base path (~/code or ~/code-external)
+            remote_base=$(resolve_remote_path "$PROJECT_NAME") || exit 1
+
             # Perform sync from remote to new local directory
-            source_path="${SOURCE_HOST}:${BASE_PATH}/${PROJECT_NAME}/"
+            source_path="${SOURCE_HOST}:${remote_base}/${PROJECT_NAME}/"
             dest_path="$TARGET_DIR/"
             
             # Build excludes but remove .git from the list since we want the full repo
