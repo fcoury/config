@@ -1,11 +1,31 @@
 #!/bin/bash
+#
+# tms - Remote tmux session manager
+#
+# Manages tmux sessions on the remote host "m3pro" over SSH.
+# Think of it as a remote version of the local `tp` function
+# (defined in fish/conf.d/tmux.fish).
+#
+# Usage:
+#   tms              - list remote sessions with fzf picker, attach or create
+#   tms <name>       - attach to (or create) a named session directly
+#
+# The terminal title is prefixed with 🔗 to indicate a remote connection.
+#
+# Prerequisites:
+#   - SSH access to "m3pro" (configured in ~/.ssh/config)
+#   - tmux installed on the remote host
+#   - fzf (optional, falls back to numbered menu)
+#
+# Fish completions are provided in fish/completions/tms.fish.
 
-# Function to set terminal title with remote connection emoji
+# Set the terminal title bar to show we're on a remote connection
 set_title() {
     printf '\033]0;🔗 %s\007' "$1"
 }
 
-# If session name provided as argument, use it directly
+# If a session name was passed as an argument, skip the picker
+# and go straight to attaching (or creating) that session
 if [ -n "$1" ]; then
     session_name="$1"
     set_title "m3pro:$session_name"
@@ -13,9 +33,10 @@ if [ -n "$1" ]; then
     exit 0
 fi
 
-# Get existing sessions
+# Fetch the list of existing tmux sessions from the remote host
 sessions=$(ssh m3pro "tmux list-sessions -F '#S' 2>/dev/null" | sort)
 
+# No sessions at all — prompt for a name and create one
 if [ -z "$sessions" ]; then
     echo "No tmux sessions found. Creating new session..."
     read -p "Session name: " session_name
@@ -24,12 +45,12 @@ if [ -z "$sessions" ]; then
     exit 0
 fi
 
-# Check if fzf is available
+# Sessions exist — let the user pick one
 if command -v fzf >/dev/null 2>&1; then
-    # Use fzf for selection
+    # fzf is available — use an interactive fuzzy picker
     echo "Select a session (or type new name):"
     choice=$(echo -e "── Create new session ──\n$sessions" | fzf --height=~50% --prompt="tmux> " --header="↑/↓ to navigate, Enter to select, Esc to cancel")
-    
+
     if [ -z "$choice" ]; then
         echo "Cancelled."
         exit 0
@@ -42,23 +63,25 @@ if command -v fzf >/dev/null 2>&1; then
         ssh -t m3pro "tmux attach -t '$choice'"
     fi
 else
-    # Fall back to numbered selection
+    # No fzf — fall back to a numbered menu
     echo "Available sessions:"
     echo "$sessions" | nl
     echo "0) Create new session"
     read -p "Choose session (or enter name): " choice
-    
+
     if [[ "$choice" =~ ^[0-9]+$ ]]; then
         if [ "$choice" -eq 0 ]; then
             read -p "New session name: " session_name
             set_title "m3pro:$session_name"
             ssh -t m3pro "tmux new -s '$session_name'"
         else
+            # Pick session by number from the list
             session_name=$(echo "$sessions" | sed -n "${choice}p")
             set_title "m3pro:$session_name"
             ssh -t m3pro "tmux attach -t '$session_name'"
         fi
     else
+        # Input wasn't a number — treat it as a session name
         set_title "m3pro:$choice"
         ssh -t m3pro "tmux attach -t '$choice' || tmux new -s '$choice'"
     fi

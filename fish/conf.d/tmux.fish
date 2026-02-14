@@ -1,6 +1,21 @@
-# tmux
+# Terminal multiplexer helpers (tmux & zellij)
+#
+# Session naming convention: all functions derive the session name from the
+# current directory's basename, replacing dots with underscores so tmux
+# doesn't choke on the name (e.g. "my.project" -> "my_project").
+#
+# Commands:
+#   tn <name>    - create a new named tmux session
+#   tm           - attach to (or create) a session for the current directory
+#   tp [name]    - fuzzy-pick an existing session, or attach/create by name
+#   tv [file]    - like tm, but starts nvim inside the session
+#   zm           - zellij equivalent of tm
+
+# tn: shorthand for creating a new named tmux session
 alias tn 'tmux new-session -s'
 
+# tm: attach to the session matching cwd, or create it if it doesn't exist
+# also sets the terminal title to the session name
 function tm
   set session_name (basename (pwd) | string replace '.' '_')
   printf '\033]0;💻 %s\007' "$session_name"
@@ -12,29 +27,31 @@ function tm
   end
 end
 
+# tp: tmux session picker
+#   no args  -> fzf over existing sessions; Esc falls back to cwd session
+#   with arg -> attach to that session name, creating it if needed
+#   no sessions at all -> create one for cwd
 function tp
-  # Check if tmux is running
   if not command -q tmux
     echo "tmux is not installed"
     return 1
   end
 
-  # If no tmux sessions exist, create one based on current directory
+  # no sessions exist yet — just create one for the current directory
   if test (tmux list-sessions 2>/dev/null | wc -l) -eq 0
     set session_name (basename (pwd) | string replace '.' '_')
     tmux new-session -s "$session_name"
     return
   end
 
-  # If no argument is given, use fzf to select a session
   if test (count $argv) -eq 0
+    # interactive pick via fzf
     set selected_session (tmux list-sessions -F "#{session_name}" | fzf --height 40% --reverse)
 
-    # If user selected a session, attach to it
     if test -n "$selected_session"
       tmux attach-session -t "$selected_session"
     else
-      # If no session was selected (user pressed Esc), create a new one
+      # fzf cancelled — fall back to cwd session
       set session_name (basename (pwd) | string replace '.' '_')
 
       if tmux has-session -t "$session_name" 2>/dev/null
@@ -44,7 +61,7 @@ function tp
       end
     end
   else
-    # If an argument is given, try to attach to that session or create it
+    # explicit session name provided
     set session_name $argv[1]
 
     if tmux has-session -t "$session_name" 2>/dev/null
@@ -55,6 +72,9 @@ function tp
   end
 end
 
+# tv: like tm but launches nvim as the initial command
+#   no args  -> opens nvim with no file
+#   with arg -> opens nvim on that file
 function tv
   set session_name (basename (pwd) | string replace '.' '_')
 
@@ -75,7 +95,7 @@ function tv
   end
 end
 
-# zellij
+# zm: zellij equivalent of tm — attach to cwd session or create it
 function zm
   set session_name (basename (pwd) | string replace '.' '_')
 
