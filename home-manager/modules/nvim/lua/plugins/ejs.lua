@@ -1,3 +1,0 @@
-return {
-	"nikvdp/ejs-syntax",
-}
