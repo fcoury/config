@@ -27,6 +27,7 @@ keybinds clear-defaults=true {
         bind "right" { MoveFocus "right"; }
         bind "[" { FocusPreviousPane; SwitchToMode "normal"; }
         bind "c" { SwitchToMode "renamepane"; PaneNameInput 0; }
+        bind "-" { Detach; }
         bind "d" { NewPane "right"; SwitchToMode "normal"; }
         bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "normal"; }
         bind "f" { TogglePaneFrames; SwitchToMode "normal"; }
@@ -275,6 +276,7 @@ plugins {
 web_client {
   font "FantasqueSansM Nerd Font"
 }
+
 
 // Plugins to load in the background when a new session starts
 // eg. "file:/path/to/my-plugin.wasm"
