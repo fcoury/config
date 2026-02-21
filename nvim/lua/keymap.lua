@@ -59,6 +59,15 @@ local keymap = vim.keymap
 -- vim.api.nvim_set_keymap("n", "mw", '"_dw', { noremap = true, silent = true, desc = "delete word" })
 -- vim.api.nvim_set_keymap("n", "miw", '"_diw', { noremap = true, silent = true, desc = "delete inner word" })
 
+-- toggle colorcolumn at 72
+keymap.set("n", "<leader>tc", function()
+	if vim.wo.colorcolumn == "" then
+		vim.wo.colorcolumn = "72"
+	else
+		vim.wo.colorcolumn = ""
+	end
+end, { desc = "Toggle colorcolumn" })
+
 keymap.set(
 	"n",
 	"<leader>cx",

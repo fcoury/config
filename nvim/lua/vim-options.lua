@@ -42,8 +42,8 @@ vim.opt.signcolumn = "yes"
 -- keep 8 lines above and below cursor
 vim.opt.scrolloff = 3
 
--- add a column line at 80 characters
--- vim.opt.colorcolumn = "80"
+-- text width for gq formatting
+vim.opt.textwidth = 72
 
 -- line numbering
 -- vim.wo.relativenumber = true -- show relative line numbers
