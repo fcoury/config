@@ -4,3 +4,9 @@
 [submodule "ai/skills/razor"]
 	path = ai/skills/razor
 	url = git@github.com:blader/razor.git
+[submodule "ai/skills/taste"]
+	path = ai/skills/taste
+	url = git@github.com:Leonxlnx/taste-skill.git
+[submodule "ai/skills/rust"]
+	path = ai/skills/rust
+	url = git@github.com:leonardomso/rust-skills

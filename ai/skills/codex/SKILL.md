@@ -1,128 +1,67 @@
 ---
 name: codex
-description: Invoke Codex CLI from Claude Code for second-opinion debugging and deep code analysis using a file-based input/output pattern.
+description: "Second opinion from Codex model. Use when reviewing plans, double-checking approaches, debugging hard problems, or finding edge cases."
 ---
 
-# How to Use Codex from Claude Code
+# Codex Subagent
 
-Codex is an AI-powered CLI tool that can help with complex debugging, code analysis, and technical questions. When you encounter difficult problems that would benefit from a second perspective or deep analysis, use Codex.
+Run the Codex CLI (gpt-5.3-codex) non-interactively from Claude Code. Extends Claude Code with a different model family as a tool.
 
-## When to Use Codex
+## Why
 
-- Debugging subtle bugs (e.g., bitstream alignment issues, off-by-one errors)
-- Analyzing complex algorithms against specifications
-- Getting a detailed code review with specific bug identification
-- Understanding obscure file formats or protocols
-- When you've tried multiple approaches and are stuck
+- **Spread token usage** across two services — avoids hitting Claude Code limits faster
+- **Different training = different blind spots** — increases chance of catching issues Claude misses
+- **Model comparison** — helps user track state-of-the-art and relative strengths across model families
+- **Source of randomness** — different perspectives on the same problem, not just confirmation
 
-## The File-Based Pattern
+## When to Use
 
-Codex works best with a file-based input/output pattern:
+- User explicitly asks for a second opinion or alternative approach
+- Architecture/design decisions where model diversity reduces blind spots
+- Code review from a different perspective (complement, not replace, own review)
+- Debugging when stuck after multiple attempts — different model may spot different patterns
+- User expresses uncertainty about an approach ("I'm not sure about this")
+  Do NOT use for: trivial tasks, tasks requiring file writes, or when the user hasn't indicated they want model diversity.
 
-### Step 1: Create a Question File
+## Command
 
-Write your question and all relevant context to `/tmp/question.txt`:
-
-```
-Write to /tmp/question.txt:
-- Clear problem statement
-- The specific error or symptom
-- The relevant code (full functions, not snippets)
-- What you've already tried
-- Specific questions you want answered
+```sh
+codex exec -s read-only -o "/tmp/codex-$$.md" "<prompt>" > "/tmp/codex-$$-log.md" 2>&1
 ```
 
-Example structure:
+- `exec` — non-interactive, no TUI
+- `-s read-only` — can read files but not write (avoids two agents fighting over the codebase)
+- `-o` — writes only the final answer to file. `$$` (shell PID) ensures unique filenames for concurrent runs
+- `-m <model>` — override model (default from config: `gpt-5.3-codex`)
+- `-c model_reasoning_effort="<level>"` — reasoning effort:
+- `medium` — simple questions, quick lookups
+- `high` — default, use most of the time (~80%)
+- `extra_high` — rare, complex architectural decisions (~5%)
+- `-C <dir>` — working directory (defaults to cwd, explicit when needed)
+- `> ... 2>&1` — redirects all CLI noise (headers, thinking, tool calls) to log file
 
-````
-I have a [component] that fails with [specific error].
+## Execution
 
-Here is the full function:
-```c
-[paste complete code]
-````
+1. Run via Bash with `run_in_background: true`
+2. Wait for completion via `TaskOutput`
+3. Read `/tmp/codex-<pid>.md` for the final answer
+4. Quiet mode means the user sees nothing — share or summarize the answer when relevant. Judgment call.
+5. `/tmp/codex-<pid>-log.md` available for debugging if needed
 
-Key observations:
+## Context
 
-1. [What works]
-2. [What fails]
-3. [When it fails]
+- AGENTS.md is auto-loaded by Codex from the project root — project rules apply
+- `.agents/ -> .claude/` symlink gives Codex access to skill files
+- The project is `trusted` in Codex config — it can read all project files
 
-Can you identify:
+## Prompt Tips
 
-1. [Specific question 1]
-2. [Specific question 2]
+- Be specific about what you want: "Review this approach and suggest alternatives" not "What do you think?"
+- Include relevant file paths so Codex reads the right code
+- State constraints and context upfront — Codex has no memory of our conversation
+- Ask for structured output (numbered list, pros/cons) for easier parsing
 
-Please write a detailed analysis to /tmp/reply.txt
+## Maintenance
 
-````
-
-### Step 2: Invoke Codex
-
-Use this command pattern:
-
-```bash
-cat /tmp/question.txt | codex exec -o /tmp/reply.txt --full-auto
-````
-
-Flags:
-
-- `exec`: Non-interactive execution mode (required for CLI use)
-- `-o /tmp/reply.txt`: Write output to this file
-- `--full-auto`: Run autonomously without prompts
-
-### Step 3: Read the Reply
-
-```bash
-Read /tmp/reply.txt
-```
-
-Codex will provide detailed analysis. Evaluate its suggestions critically - it may identify real bugs but can occasionally misinterpret specifications.
-
-## Example Session
-
-```
-# 1. Create the question
-Write /tmp/question.txt with:
-- Problem: "Progressive JPEG decoder fails at block 1477 with Huffman error"
-- Code: [full AC refinement function]
-- Questions: "Identify bugs in EOB handling, ZRL handling, run counting"
-
-# 2. Invoke Codex
-cat /tmp/question.txt | codex exec -o /tmp/reply.txt --full-auto
-
-# 3. Read and apply
-Read /tmp/reply.txt
-# Codex identified 12 potential bugs with detailed explanations
-# Evaluate each, verify against spec, apply fixes
-```
-
-## Tips
-
-1. **Provide complete code**: Don't truncate functions. Codex needs full context.
-
-2. **Be specific**: "Why does this fail?" is worse than "Why does Huffman decoding fail after processing 1477 blocks in AC refinement scan?"
-
-3. **Include the spec**: If debugging against a standard (JPEG, PNG, etc.), mention the relevant spec sections.
-
-4. **Verify suggestions**: Codex is helpful but not infallible. In one session, it incorrectly identified the EOB run formula as buggy when it was actually correct. Always verify against authoritative sources.
-
-5. **Iterate if needed**: If the first response doesn't solve the problem, create a new question.txt with additional context from what you learned.
-
-## Common Issues
-
-**"stdin is not a terminal"**: Use `codex exec` not bare `codex`
-
-**No output**: Check that `-o` flag has a valid path
-
-**Timeout**: For very complex questions, Codex may take time. The `--full-auto` flag helps avoid interactive prompts that would block.
-
-## Alternative: Direct Piping
-
-For shorter questions:
-
-```bash
-echo "Explain the JPEG progressive AC refinement algorithm" | codex exec --full-auto
-```
-
-But for debugging, the file-based pattern is better because you can refine the question and keep a record.
+- **Update CLI**: `bun install -g @openai/codex`
+- **Models last checked**: 2026-02-12. Default: `gpt-5.3-codex` (ChatGPT account). Auth is ChatGPT-based, not API key — some models (o3, o4-mini) are unavailable.
