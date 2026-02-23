@@ -16,10 +16,19 @@ function localai
   claude "$argv"
 end
 
+function openr
+  ANTHROPIC_DEFAULT_OPUS_MODEL="z-ai/glm-5" \
+  ANTHROPIC_DEFAULT_SONNET_MODEL="z-ai/glm-4.7" \
+  ANTHROPIC_DEFAULT_HAIKU_MODEL="z-ai/glm-4.7-flash" \
+  ANTHROPIC_BASE_URL=https://openrouter.ai/api \
+  ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" \
+  claude "$argv" --dangerously-skip-permissions
+end
+
 function zai
-  ANTHROPIC_DEFAULT_OPUS_MODEL=GLM-4.6 \
-  ANTHROPIC_DEFAULT_SONNET_MODEL=GLM-4.6 \
-  ANTHROPIC_DEFAULT_HAIKU_MODEL=GLM-4.5-Air \
+  ANTHROPIC_DEFAULT_OPUS_MODEL=GLM-5 \
+  ANTHROPIC_DEFAULT_SONNET_MODEL=GLM-4.7 \
+  ANTHROPIC_DEFAULT_HAIKU_MODEL=GLM-4.7-Flash \
   ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic \
   ANTHROPIC_AUTH_TOKEN="$ZAI_API_KEY" \
   claude "$argv" # --dangerously-skip-permissions
