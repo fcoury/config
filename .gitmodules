@@ -10,3 +10,6 @@
 [submodule "ai/skills/rust"]
 	path = ai/skills/rust
 	url = git@github.com:leonardomso/rust-skills
+[submodule "ai/ai/skills/turl"]
+	path = ai/ai/skills/turl
+	url = git@github.com:Xuanwo/turl
