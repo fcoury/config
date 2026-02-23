@@ -9,7 +9,10 @@
 	url = git@github.com:Leonxlnx/taste-skill.git
 [submodule "ai/skills/rust"]
 	path = ai/skills/rust
-	url = git@github.com:leonardomso/rust-skills
-[submodule "ai/ai/skills/turl"]
-	path = ai/ai/skills/turl
+	url = git@github.com:fcoury/rust-skills
+[submodule "ai/skills/turl"]
+	path = ai/skills/turl
 	url = git@github.com:Xuanwo/turl
+[submodule "ai/skills/visual-explainer"]
+	path = ai/skills/visual-explainer
+	url = https://github.com/nicobailon/visual-explainer.git
