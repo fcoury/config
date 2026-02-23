@@ -82,9 +82,10 @@ function wk --description "Create a git worktree with format <current_dir>-<bran
             git branch -a | head -10
             return 1
         else
-            # Branch doesn't exist, create new branch and worktree
-            echo "🆕 Creating new branch: $branch_name"
-            if git worktree add -b "$branch_name" "$worktree_path"
+            # Branch doesn't exist, create new branch from current branch
+            set current_branch (git branch --show-current)
+            echo "🆕 Creating new branch: $branch_name (from $current_branch)"
+            if git worktree add -b "$branch_name" "$worktree_path" "$current_branch"
                 echo "✅ Worktree '$worktree_name' created successfully"
                 echo "📁 Location: $worktree_path"
                 echo "🌿 New branch: $branch_name"
