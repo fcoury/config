@@ -1,3 +1,16 @@
+## Commit Messages
+
+- **Subject**: Use conventional commits format: `type(scope): lowercase imperative description`
+  - Types: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`
+  - Scopes: `tui`, `core`, etc.
+- **Body**:
+  - 1-2 short paragraphs
+  - explain _what_ the change does and _why_
+  - wrap at 72 characters or less
+  - use backticks for config keys, paths, and code references
+- **No `Testing:` section** — don't list test commands in commit messages.
+- **Shell safety hint**: when commit text includes backticks, avoid double-quoted inline `-m` flags; use single quotes, escaped backticks, or `git commit -F <file>` to prevent command substitution.
+
 ## Tools
 
 ## Browser Automation
