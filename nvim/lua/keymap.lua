@@ -68,6 +68,16 @@ keymap.set("n", "<leader>tc", function()
 	end
 end, { desc = "Toggle colorcolumn" })
 
+-- toggle textwidth at 72
+keymap.set("n", "<leader>tw", function()
+	if vim.bo.textwidth == 0 then
+		vim.bo.textwidth = 72
+	else
+		vim.bo.textwidth = 0
+	end
+	vim.notify("textwidth=" .. vim.bo.textwidth)
+end, { desc = "Toggle textwidth" })
+
 keymap.set(
 	"n",
 	"<leader>cx",
