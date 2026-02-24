@@ -5,6 +5,11 @@
 alias cdx='command codex --yolo'
 alias cmt="yolo --model sonnet 'Let\'s commit all our pending changes. Check if we need one or more commits and suggest them before committing.'"
 
+function unai
+  pbpaste | perl -e '$??s:;s:s;;$?::s;;:<).>|{]/?|<%>!<\${;;y;-/:-@[-`{-};`-{/" -;;s;;$_;see' | pbcopy
+end
+
+
 function cop
     set -lx GITHUB_TOKEN ""
     command copilot --allow-all-tools --allow-all-urls
