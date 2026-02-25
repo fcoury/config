@@ -7,6 +7,10 @@ alias gpr 'hub pull-request|xargs open'
 alias gtr 'git track'
 alias gap 'git add -p'
 
+function br --description "Open current repo in browser on current branch"
+    gh browse --branch (git rev-parse --abbrev-ref HEAD)
+end
+
 # best lsusb for macOS is cyme
 # https://github.com/tuna-f1sh/cyme
 alias lsusb 'cyme'
