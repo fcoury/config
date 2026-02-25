@@ -40,6 +40,7 @@ function tp
   # no sessions exist yet — just create one for the current directory
   if test (tmux list-sessions 2>/dev/null | wc -l) -eq 0
     set session_name (basename (pwd) | string replace '.' '_')
+    printf '\033]0;💻 %s\007' "$session_name"
     tmux new-session -s "$session_name"
     return
   end
@@ -49,10 +50,12 @@ function tp
     set selected_session (tmux list-sessions -F "#{session_attached} #{session_name}#{?session_attached, (attached),}" | sort -rn | string replace -r '^\d+ ' '' | fzf --height 40% --reverse | string replace -r ' \(attached\)$' '')
 
     if test -n "$selected_session"
+      printf '\033]0;💻 %s\007' "$selected_session"
       tmux attach-session -t "$selected_session"
     else
       # fzf cancelled — fall back to cwd session
       set session_name (basename (pwd) | string replace '.' '_')
+      printf '\033]0;💻 %s\007' "$session_name"
 
       if tmux has-session -t "$session_name" 2>/dev/null
         tmux attach-session -t "$session_name"
@@ -63,6 +66,7 @@ function tp
   else
     # explicit session name provided
     set session_name $argv[1]
+    printf '\033]0;💻 %s\007' "$session_name"
 
     if tmux has-session -t "$session_name" 2>/dev/null
       tmux attach-session -t "$session_name"
