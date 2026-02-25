@@ -42,20 +42,20 @@ return {
 				insert = { "<C-c>" },
 			},
 			-- NOTE: The following will be safely set by avante.nvim
-			ask = "<leader>va",
-			new_ask = "<leader>vn",
-			zen_mode = "<leader>vz",
-			edit = "<leader>ve",
-			refresh = "<leader>vr",
-			focus = "<leader>vf",
-			stop = "<leader>vS",
-			toggle = {
-				default = "<leader>vt",
-				debug = "<leader>vd",
-				selection = "<leader>vC",
-				suggestion = "<leader>vs",
-				repomap = "<leader>vR",
-			},
+			-- ask = "<leader>va",
+			-- new_ask = "<leader>vn",
+			-- zen_mode = "<leader>vz",
+			-- edit = "<leader>ve",
+			-- refresh = "<leader>vr",
+			-- focus = "<leader>vf",
+			-- stop = "<leader>vS",
+			-- toggle = {
+			-- 	default = "<leader>vt",
+			-- 	debug = "<leader>vd",
+			-- 	selection = "<leader>vC",
+			-- 	suggestion = "<leader>vs",
+			-- 	repomap = "<leader>vR",
+			-- },
 			sidebar = {
 				expand_tool_use = "<S-Tab>",
 				next_prompt = "]p",
@@ -78,11 +78,11 @@ return {
 				toggle_code_window_from_input = nil, -- e.g., { normal = "x", insert = "<C-;>" }
 			},
 			files = {
-				add_current = "<leader>vc", -- Add current buffer to selected files
-				add_all_buffers = "<leader>vB", -- Add all buffer files to selected files
+				-- add_current = "<leader>vc", -- Add current buffer to selected files
+				-- add_all_buffers = "<leader>vB", -- Add all buffer files to selected files
 			},
-			select_model = "<leader>v?", -- Select model command
-			select_history = "<leader>vh", -- Select history command
+			-- select_model = "<leader>v?", -- Select model command
+			-- select_history = "<leader>vh", -- Select history command
 			confirm = {
 				focus_window = "<C-w>f",
 				code = "c",

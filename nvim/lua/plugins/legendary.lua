@@ -36,6 +36,10 @@ return {
 			-- select all
 			{ "<leader>a", "ggVG", mode = "n", description = "Select all" },
 
+			-- paste without yanking
+			{ "<leader>p", '"_dP', mode = { "n", "x" }, description = "Paste without yanking" },
+			{ "<leader>x", '"_d', mode = { "n", "v" }, description = "Delete without yanking" },
+
 			-- paste not overwritten by delete
 			-- { "<leader>p", '"0p', mode = { "n", "x" }, description = "Paste and doesn't overwrite" },
 
@@ -74,7 +78,7 @@ return {
 			-- { "<C-t>", "<cmd>Telescope lsp_document_symbols<cr>", mode = "n", description = "Open document symbols" },
 
 			-- lsp and rust
-			{ "<leader>x", "<cmd>RustRunnables<cr>", mode = "n", description = "Run Rust runnables" },
+			-- { "<leader>x", "<cmd>RustRunnables<cr>", mode = "n", description = "Run Rust runnables" },
 			{
 				"<leader>cx",
 				"<cmd>StripFirstTwoColumns<cr>",

@@ -38,6 +38,12 @@ vim.opt.backup = false
 vim.opt.writebackup = false
 vim.opt.swapfile = false
 
+-- auto reload changes autside neovim
+vim.opt.autoread = true
+
+-- consider - part of a word
+vim.opt.iskeyword:append("-")
+
 -- 24-bit colors
 vim.opt.termguicolors = true
 

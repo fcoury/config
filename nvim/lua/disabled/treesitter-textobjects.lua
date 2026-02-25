@@ -32,8 +32,8 @@ return {
 						["<leader>nm"] = "@function.outer", -- swap function with next
 					},
 					swap_previous = {
-						["<leader>pa"] = "@parameter.inner", -- swap parameters/argument with prev
-						["<leader>pm"] = "@function.outer", -- swap function with previous
+						["<leader>va"] = "@parameter.inner", -- swap parameters/argument with prev
+						["<leader>vm"] = "@function.outer", -- swap function with previous
 					},
 				},
 				move = {
