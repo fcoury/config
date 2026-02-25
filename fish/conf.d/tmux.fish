@@ -46,7 +46,7 @@ function tp
 
   if test (count $argv) -eq 0
     # interactive pick via fzf
-    set selected_session (tmux list-sessions -F "#{session_name}" | fzf --height 40% --reverse)
+    set selected_session (tmux list-sessions -F "#{session_attached} #{session_name}#{?session_attached, (attached),}" | sort -rn | string replace -r '^\d+ ' '' | fzf --height 40% --reverse | string replace -r ' \(attached\)$' '')
 
     if test -n "$selected_session"
       tmux attach-session -t "$selected_session"
