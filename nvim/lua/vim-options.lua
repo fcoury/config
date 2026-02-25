@@ -33,6 +33,11 @@ vim.opt.smartcase = true
 -- persist undo history
 vim.opt.undofile = true
 
+-- no backup or swap files
+vim.opt.backup = false
+vim.opt.writebackup = false
+vim.opt.swapfile = false
+
 -- 24-bit colors
 vim.opt.termguicolors = true
 
