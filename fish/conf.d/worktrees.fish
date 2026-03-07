@@ -224,9 +224,104 @@ function wl --description "List all git worktrees with their corresponding branc
     end
 end
 
+# Git Worktree Remove (multi-select) Function
+function wr --description "Interactively select and remove git worktrees via fzf"
+    # Check if we're in a git repository
+    if not git rev-parse --git-dir >/dev/null 2>&1
+        echo "Error: Not in a git repository"
+        return 1
+    end
+
+    set force_flag false
+    set delete_branch false
+
+    # Parse arguments
+    for arg in $argv
+        switch $arg
+            case '--force' '-f'
+                set force_flag true
+            case '--delete-branch' '-d'
+                set delete_branch true
+            case '*'
+                echo "Usage: wr [--force|-f] [--delete-branch|-d]"
+                echo "Interactively select worktrees to remove via fzf"
+                echo ""
+                echo "Options:"
+                echo "  --force, -f           Force deletion of worktrees"
+                echo "  --delete-branch, -d   Also delete the associated branches"
+                return 1
+        end
+    end
+
+    # Get the main worktree path (first line of git worktree list is always the main one)
+    set main_worktree (git worktree list --porcelain | head -1 | string replace "worktree " "")
+
+    # Build the list of non-main worktrees for fzf
+    set worktree_lines (git worktree list | grep -v "^$main_worktree ")
+    if test -z "$worktree_lines"
+        echo "No extra worktrees to remove."
+        return 0
+    end
+
+    # Let the user pick with fzf multi-select
+    set selected (printf '%s\n' $worktree_lines | fzf -m --header "Tab to select, Enter to confirm removal")
+    if test -z "$selected"
+        echo "No worktrees selected."
+        return 0
+    end
+
+    # Process each selected worktree
+    for line in $selected
+        # Extract the path (first field of git worktree list output)
+        set wt_path (echo $line | awk '{print $1}')
+        set wt_name (basename $wt_path)
+
+        # Extract branch name from the bracketed portion, e.g. [branch-name]
+        set wt_branch (echo $line | string match -r '\[(.+)\]' | tail -1)
+
+        echo ""
+        echo "Removing worktree: $wt_name ($wt_path)"
+
+        set git_cmd git worktree remove "$wt_path"
+        if test $force_flag = true
+            set git_cmd $git_cmd --force
+        end
+
+        if eval $git_cmd
+            echo "✅ Worktree '$wt_name' removed"
+
+            # Delete the branch if requested
+            if test $delete_branch = true; and test -n "$wt_branch"
+                if git show-ref --verify --quiet "refs/heads/$wt_branch"
+                    set branch_cmd git branch -d "$wt_branch"
+                    if test $force_flag = true
+                        set branch_cmd git branch -D "$wt_branch"
+                    end
+
+                    if eval $branch_cmd
+                        echo "✅ Branch '$wt_branch' deleted"
+                    else
+                        echo "❌ Failed to delete branch '$wt_branch'"
+                    end
+                else
+                    echo "⚠️  Branch '$wt_branch' not found locally"
+                end
+            end
+        else
+            echo "❌ Failed to remove worktree '$wt_name'"
+            if test $force_flag = false
+                echo "💡 Try with --force flag"
+            end
+        end
+    end
+end
+
 # Optional: Add completions for branch names
 complete -c wk -f -a "(git branch -a | string replace -r '^\s*\*?\s*' '' | string replace -r '^remotes/[^/]+/' '')"
 complete -c wk -l existing -s e -d "Only use existing branches (local or remote)"
 complete -c wd -f -a "(git branch -a | string replace -r '^\s*\*?\s*' '' | string replace -r '^remotes/[^/]+/' '')"
 complete -c wd -l force -s f -d "Force deletion of worktree"
 complete -c wd -l delete-branch -s d -d "Also delete the associated branch"
+complete -c wr -f
+complete -c wr -l force -s f -d "Force deletion of worktrees"
+complete -c wr -l delete-branch -s d -d "Also delete the associated branches"
