@@ -36,10 +36,6 @@ Core workflow:
 - List sessions: `tmux list-sessions` or `./scripts/tmux/find-sessions.sh`.
 - Cleanup: `tmux kill-session -t codex-shell` (or `tmux kill-server` if you must nuke all).
 
-### oracle
-
-When stuck on a problem or question, or consultation is needed use `npx -y @steipete/oracle --engine api --model gemini-3-pro-preview --slug "<one liner about subject>" -p "<full context for oracle>" [--file "<path/to/file1>" --file "<path/to/file2>" ...]` to get help from an AI oracle.
-
 ### psql
 
 Normally you can use `psql <project-name>` to connect to the local Postgres DB.
