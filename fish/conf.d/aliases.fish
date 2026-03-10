@@ -84,6 +84,14 @@ function tt
   cd $prev_dir
 end
 
+function psc
+  ps -Ao pid,etime,%cpu,%mem,command | sort -k3 -rn | head -10
+end
+
+function psm
+  ps -Ao pid,etime,%cpu,%mem,command | sort -k4 -rn | head -10
+end
+
 # --- fd and rg aliases ---
 alias fdh 'fd --color=always --hidden --no-ignore'
 alias rgh 'rg --color=always --hidden --no-ignore'
