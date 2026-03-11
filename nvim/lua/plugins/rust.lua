@@ -7,35 +7,27 @@ return {
 		opts = {
 			server = {
 				on_attach = function(client, bufnr)
-					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+					if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+						vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+					end
 
 					vim.api.nvim_buf_create_user_command(bufnr, "LspCargoReload", function()
-						local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "rust_analyzer" })
-						for _, c in ipairs(clients) do
-							vim.notify("Reloading Cargo Workspace")
-							c.request("rust-analyzer/reloadWorkspace", nil, function(err)
-								if err then
-									error(tostring(err))
-								end
-								vim.notify("Cargo workspace reloaded")
-							end, 0)
-						end
+						vim.notify("Reloading Cargo workspace")
+						vim.cmd.RustLsp("reloadWorkspace")
 					end, { desc = "Reload current cargo workspace" })
 				end,
-				capabilities = {
-					general = { positionEncodings = { "utf-16" } },
-					experimental = {
-						serverStatusNotification = true,
-					},
-				},
 				default_settings = {
 					["rust-analyzer"] = {
 						cargo = {
-							allFeatures = true,
+							features = "all",
 							targetDir = "target/rust-analyzer",
+							buildScripts = {
+								enable = true,
+								rebuildOnSave = false,
+							},
 						},
 						files = {
-							excludeDirs = {
+							exclude = {
 								".git",
 								".venv",
 								".terraform",
@@ -43,12 +35,10 @@ return {
 								"node_modules",
 								"gistia-design-system/node_modules",
 							},
-							watcher = "client",
 						},
 						diagnostics = {
 							enable = true,
 							experimental = { enable = false },
-							refreshSupport = false,
 						},
 						procMacro = {
 							ignored = {
@@ -59,15 +49,10 @@ return {
 							parameterHints = { enable = false },
 						},
 						lru = { capacity = 128 },
-						cache = { warmup = true },
-						workspace = { refreshTime = 150 },
-						buildScripts = {
-							enable = true,
-							rebuildOnSave = false,
-						},
 						check = {
 							command = "clippy",
 							extraArgs = { "--no-deps" },
+							workspace = false,
 						},
 					},
 				},
