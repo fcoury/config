@@ -14,7 +14,7 @@ return {
 		require("nvim-navic").setup({
 			lsp = {
 				auto_attach = true,
-				preference = { "rust_analyzer" },
+				preference = { "rust-analyzer", "rust_analyzer" },
 			},
 			highlight = true,
 			safe_output = true, -- prevents errors from breaking the winbar

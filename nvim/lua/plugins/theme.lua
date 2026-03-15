@@ -113,6 +113,7 @@ return {
 	{ "sainnhe/edge" },
 	{ "oxfist/night-owl.nvim" },
 	{ "Hiroya-W/sequoia-moonlight.nvim" },
+	{ "fcoury/termy.nvim" },
 	{
 		"zaldih/themery.nvim",
 		lazy = false,
@@ -217,6 +218,8 @@ return {
 					"sequoia",
 					-- custom poimandres based on ghostty theme
 					"poimandres-ghostty",
+					-- termy dark (ported from zed theme by lassejlv)
+					"termy-dark",
 				},
 				livePreview = true,
 			})

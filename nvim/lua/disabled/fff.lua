@@ -1,17 +1,20 @@
+local local_path = vim.fn.expand("~/code-external/fff.nvim")
+local use_local = vim.fn.isdirectory(local_path) == 1
+
 return {
 	"dmtrKovalenko/fff.nvim",
-	build = "cargo build --release",
-	dependencies = { "MunifTanjim/nui.nvim" },
-	opts = {
-		-- pass here all the options
-	},
+	dir = use_local and local_path or nil,
+	build = not use_local and function()
+		require("fff.download").download_or_build_binary()
+	end or nil,
+	lazy = false,
 	keys = {
 		{
-			"<leader>ff", -- try it if you didn't it is a banger keybinding for a picker
+			"<leader>g",
 			function()
-				require("fff").find_files()
+				require("fff").live_grep()
 			end,
-			desc = "Toggle FFF",
+			desc = "Live grep (fff)",
 		},
 	},
 }

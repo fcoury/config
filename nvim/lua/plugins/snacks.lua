@@ -77,9 +77,8 @@ return {
 			desc = "Open document symbols",
 		},
 
-		-- NOTE: <leader>g temporarily remapped to fff.nvim for evaluation
 		{
-			"<leader>G",
+			"<leader>g",
 			function()
 				Snacks.picker.grep()
 			end,
