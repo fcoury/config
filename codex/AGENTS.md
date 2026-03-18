@@ -24,6 +24,26 @@ Core workflow:
 3. `agent-browser click @e1` / `fill @e2 "text"` - Interact using refs
 4. Re-snapshot after page changes
 
+### wt / Worktrunk
+
+- Prefer `wt` over raw `git worktree` when a task benefits from isolation: parallel agents, risky refactors, PR review, or keeping the main checkout clean.
+- `wt` is a git worktree manager optimized for agent workflows: branch-addressed worktrees, fast switching, cross-worktree status, merge/cleanup automation, hooks, and PR checkout via `gh`.
+- One-time shell setup: `wt config shell install`
+- Core workflow:
+  1. `wt switch --create feat-name` - create a branch + worktree from the default branch and switch into it
+  2. `wt switch feat-name` - jump back to an existing worktree
+  3. `wt list` - inspect all worktrees; use `wt list --full` for CI/status and `wt list --format=json` for scripts
+  4. `wt merge` - squash/rebase/fast-forward the current branch into the default branch and remove the worktree
+  5. `wt remove` - delete an abandoned or already-merged worktree
+- Useful patterns:
+  - `wt switch` with no branch opens the interactive picker
+  - `wt switch pr:123` checks out a GitHub PR branch via `gh`
+  - `wt switch --create fix --base=@` starts a branch from the current worktree `HEAD`
+  - `wt switch --create -x 'codex' feat-name -- 'implement X'` creates a worktree and immediately launches an agent there
+- Prefer `wt merge` over manual `git merge` plus `git worktree remove` when hooks or local validation should run.
+- Prefer `wt remove` over manual deletion so merged-branch detection and cleanup stay consistent.
+- If `wt` cannot be used in a repo, fall back to native git commands.
+
 ### tmux
 
 - When to use: long/hanging commands (servers, debuggers, long tests, interactive CLIs) should start in tmux; avoid `tmux wait-for` and `while tmux …` loops; if a run exceeds ~10 min, treat it as potentially hung and inspect via tmux.
