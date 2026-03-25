@@ -1,0 +1,23 @@
+{
+  "skill_name": "code-replay",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I want to understand the nvim keybinding remap changes from commit 2ef36bd. Can you break those down for me so I can replay them?",
+      "expected_output": "Should identify the commit, capture the diff (4 files, 31 insertions/21 deletions), create .aidocs/code-replay/ session with plan.md ordering the steps logically (vim-options first as foundation, then plugin changes), and present an overview with step-by-step plan.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Help me replay the last 3 commits on this branch so I can learn what was added.",
+      "expected_output": "Should detect current branch (master), get the diff for the last 3 commits (ebf9438, 874533f, c240a00), create a session, decompose into logical learning steps across the fish and ai config changes, and present the plan.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I've been away and want to catch up on the PR review triage skill that was added in commit 09a6790. Walk me through it step by step so I can rebuild it myself.",
+      "expected_output": "Should identify the single-file 155-line addition, create a session, break the SKILL.md content into meaningful conceptual steps (frontmatter/metadata, core workflow instructions, edge case handling, etc.), and present a plan that teaches the user the structure of a skill by having them build one piece at a time.",
+      "files": []
+    }
+  ]
+}
