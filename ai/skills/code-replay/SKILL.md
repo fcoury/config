@@ -40,6 +40,16 @@ Determine the diff source from the user's request. Support these inputs:
 
 Capture the full diff and save it to `target.diff`. Also read the commit messages — they often explain intent that the raw diff doesn't.
 
+### Replay Branch
+
+After capturing the diff, offer to create a dedicated branch for the replay so the user's current work stays untouched:
+
+> "Want me to create a replay branch (e.g. `replay/<session-name>`) so your current branch stays clean? You can merge or discard it when we're done."
+
+If the user agrees, create the branch from the base commit (the point *before* the changes being replayed) so the user starts from the same starting state the original author had. Record the branch name in `plan.md` under a `**Branch**:` field.
+
+If the user declines, note `**Branch**: (none — working in place)` in `plan.md` and proceed on the current branch. Warn them that the replay will modify files in their working tree.
+
 ## Phase 2: Build the Replay Plan
 
 Analyze the diff and decompose it into a learning-optimized sequence of steps. This is the most important part of the skill — the ordering and granularity determine how well the user learns.
@@ -65,6 +75,8 @@ Write `plan.md` with this structure:
 **Source**: <branch/PR/commits description>
 **Base**: <base branch or commit>
 **Created**: <date>
+**Branch**: <replay/session-name or (none — working in place)>
+**Mode**: <challenge|snippet>
 
 ## Overview
 
@@ -88,6 +100,21 @@ Also generate per-step diffs in `steps/01-<slug>.diff`, `02-<slug>.diff`, etc. T
 
 Show the user the overview and the full step list. Be educational — explain the reasoning behind the ordering ("We start with the data types because everything else depends on them"). This is a conversation, not a printout.
 
+### Snippet Mode Preference
+
+Before starting the replay, ask the user how they'd like each step presented:
+
+> "One more thing before we start — how would you like the instructions for each step?
+>
+> 1. **Challenge mode** — I describe what to write conceptually (function name, signature, behavior) but you write the code from scratch. Best for deep learning.
+> 2. **Snippet mode** — I show the full code snippet alongside the description, so you can read it, understand it, then type it out. Best for faster replay or unfamiliar codebases.
+>
+> You can switch between modes at any time during the session — just say 'switch to snippets' or 'switch to challenge'."
+
+Record the choice in `plan.md` under a `**Mode**:` field (either `challenge` or `snippet`). Default to `challenge` if the user doesn't express a preference.
+
+### Final Confirmation
+
 Ask: "Does this sequence make sense? Want to adjust anything before we start?"
 
 The user might reorder, merge, or split steps. Update `plan.md` and the step diffs accordingly.
@@ -98,14 +125,31 @@ For each step, follow this cycle:
 
 ### 4a: Instruct
 
-Present the step with enough context to implement it without seeing the answer:
+Present the step with enough context to implement it. Every step always includes:
 
 - **File path** (relative to repo root)
 - **Location**: Be precise. "Add this between the `Config` struct and the `impl Config` block" or "In the `handle_request` function, after the line that validates the token (around line 87)". Reference surrounding code landmarks, not just line numbers (which shift).
 - **What to write**: Describe the code conceptually. "Add a function called `validate_token` that takes a `&str` and returns a `Result<Claims, AuthError>`. It should decode the JWT, check expiration, and extract the claims." Give enough detail for the user to write it, but don't write it for them.
 - **Why**: Brief explanation of why this change exists in the larger picture.
 
+#### Challenge mode (default)
+
 Do NOT show the actual code. The user is here to write it themselves. If they need specific signatures or exact names, provide those — but the implementation body is theirs to write.
+
+#### Snippet mode
+
+After the conceptual description above, also show the full target code in a fenced code block labeled **Snippet** so the user can read it, understand it, then type it out themselves. Present it as:
+
+> **Snippet** (read, understand, then type it out):
+> ```<language>
+> <the exact code for this step>
+> ```
+
+The snippet should match what's in the step's diff file. The user still types it by hand — the snippet is a reference, not something to copy-paste. The conceptual description remains the primary instruction; the snippet is supplementary.
+
+#### Mode switching
+
+The user can say "switch to snippets" or "switch to challenge" at any time. Update the `**Mode**:` field in `plan.md` when they do.
 
 ### 4b: User Implements
 
