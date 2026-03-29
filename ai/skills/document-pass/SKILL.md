@@ -72,9 +72,11 @@ Produce a PR description that contains these sections with narrative prose:
 
 Produce all of the following:
 
-1. Updated PR description (ready to paste).
+1. Updated PR description persisted to .aidocs/pr-description.md (create the .aidocs/ folder in the root of the project if needed).
 2. Documentation-only patches (module/type/function docs, with minimal inline comments).
-3. A short, blunt list of design inconsistencies or risks discovered.
+3. A short, blunt list of design inconsistencies or risks discovered, persisted to .aidocs/risks.md.
+
+When creating new .md files, don't hard break lines; let them wrap naturally.
 
 ## Rust Documentation Rules (Apply When Editing Rust)
 
