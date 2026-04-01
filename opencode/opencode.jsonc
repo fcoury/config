@@ -453,49 +453,6 @@
         },
       },
     },
-    "cerebras": {
-      "api": "https://api.cerebras.ai/v1",
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Cerebras",
-      "env": [],
-      "options": {
-        "apiKey": "csk-cwcfpce9dhjhxnjvxr2jddkp6yp2294dcd99dv23m55hndyx",
-      },
-      "models": {
-        "qwen-3-coder-480b": {
-          "name": "Qwen 3 Coder 480B",
-          "attachment": false,
-          "reasoning": false,
-          "temperature": true,
-          "tool_call": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-          },
-          "limit": {
-            "context": 131072,
-            "output": 8192,
-          },
-          "options": {
-            "stream": true,
-          },
-          "models": {
-            "glm-4.6": {
-              "name": "glm-4.6",
-            },
-          },
-        },
-      },
-    },
-    "zai": {
-      "api": "https://api.z.ai/api/coding/paas/v4",
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Zai",
-      "env": [],
-      "options": {
-        "apiKey": "2d67de4a2266429db01d65b8148aa275.nAwSguNovE2hzkhp",
-      },
-    },
   },
   "mcp": {
     "playwright": {
