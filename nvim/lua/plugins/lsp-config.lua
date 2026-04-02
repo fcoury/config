@@ -39,7 +39,7 @@ return {
 		opts = {},
 	},
 	{
-		"felpafel/inlay-hint.nvim",
+		"fcoury/inlay-hint.nvim",
 		config = true,
 	},
 	{

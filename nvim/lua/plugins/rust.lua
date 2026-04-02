@@ -3,7 +3,7 @@ return {
 		"mrcjkb/rustaceanvim",
 		version = "^7",
 		lazy = false,
-		dependencies = { "felpafel/inlay-hint.nvim" },
+		dependencies = { "fcoury/inlay-hint.nvim" },
 		opts = {
 			server = {
 				on_attach = function(client, bufnr)
