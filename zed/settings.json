@@ -8,16 +8,17 @@
 // from the command palette or from `Zed` application menu.
 {
   "agent": {
+    "dock": "left",
     "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-sonnet-4"
-    }
+      "provider": "copilot_chat",
+      "model": "gpt-5.2-codex",
+    },
   },
   "cursor_blink": false,
-  "theme": "Nordfox - opaque",
+  "theme": "Termy Dark",
   "buffer_font_family": "FantasqueSansM Nerd Font",
-  "buffer_line_height": "comfortable",
+  "buffer_line_height": "standard",
   "ui_font_size": 16,
   "buffer_font_size": 20,
   "terminal": {
@@ -25,19 +26,19 @@
     "line_height": "standard",
     // "line_height": { "custom": 1.1 },
     "toolbar": {
-      "breadcrumbs": false
-    }
+      "breadcrumbs": false,
+    },
   },
   "vim_mode": true,
-  "relative_line_numbers": true,
+  "relative_line_numbers": "enabled",
   "lsp": {
     "rust-analyzer": {
       "initialization_options": {
         "check": {
           "command": "clippy",
-          "features": "all"
-        }
-      }
-    }
-  }
+          "features": "all",
+        },
+      },
+    },
+  },
 }
