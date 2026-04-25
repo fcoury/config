@@ -6,6 +6,11 @@ sessions_dir="$codex_home/sessions"
 target_cwd="${CODEX_TMUX_RESUME_CWD:-$PWD}"
 codex_bin="${CODEX_TMUX_RESUME_CODEX_BIN:-codex}"
 max_days="${CODEX_TMUX_RESUME_MAX_DAYS:-14}"
+codex_args=("--yolo")
+
+if [[ ${CODEX_TMUX_RESUME_CODEX_ARGS+x} ]]; then
+  read -r -a codex_args <<<"$CODEX_TMUX_RESUME_CODEX_ARGS"
+fi
 
 run_or_print() {
   if [[ -n "${CODEX_TMUX_RESUME_PRINT:-}" ]]; then
@@ -23,7 +28,7 @@ fi
 if [[ ! -d "$sessions_dir" ]]; then
   printf 'codex-tmux-resume: no Codex sessions directory at %s\n' "$sessions_dir" >&2
   if [[ -n "${CODEX_TMUX_RESUME_FALLBACK_LAST:-}" ]]; then
-    run_or_print "$codex_bin" resume --last
+    run_or_print "$codex_bin" "${codex_args[@]}" resume --last
     exit 0
   fi
   exit 1
@@ -58,14 +63,14 @@ best="$(sort -r "$candidates" | head -n 1 || true)"
 
 if [[ -n "$best" ]]; then
   session_id="${best#*$'\t'}"
-  run_or_print "$codex_bin" resume "$session_id"
+  run_or_print "$codex_bin" "${codex_args[@]}" resume "$session_id"
   exit 0
 fi
 
 printf 'codex-tmux-resume: no Codex TUI session found for cwd %s\n' "$target_cwd" >&2
 
 if [[ -n "${CODEX_TMUX_RESUME_FALLBACK_LAST:-}" ]]; then
-  run_or_print "$codex_bin" resume --last
+  run_or_print "$codex_bin" "${codex_args[@]}" resume --last
   exit 0
 fi
 

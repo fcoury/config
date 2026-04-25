@@ -50,7 +50,7 @@ output="$(
   "$script"
 )"
 
-assert_eq $'/opt/homebrew/bin/codex\nresume\n019dc000-0000-7000-8000-000000000002' "$output" "chooses newest exact cwd match"
+assert_eq $'/opt/homebrew/bin/codex\n--yolo\nresume\n019dc000-0000-7000-8000-000000000002' "$output" "chooses newest exact cwd match with cdx yolo mode"
 
 if CODEX_HOME="$codex_home" \
   CODEX_TMUX_RESUME_CWD="/repo missing" \
@@ -68,7 +68,7 @@ fallback_output="$(
   "$script"
 )"
 
-assert_eq $'codex\nresume\n--last' "$fallback_output" "fallback to --last is opt-in"
+assert_eq $'codex\n--yolo\nresume\n--last' "$fallback_output" "fallback to --last is opt-in"
 
 missing_home_output="$(
   CODEX_HOME="$tmp_dir/missing-codex-home" \
@@ -78,6 +78,6 @@ missing_home_output="$(
   "$script"
 )"
 
-assert_eq $'codex\nresume\n--last' "$missing_home_output" "fallback handles missing session directory"
+assert_eq $'codex\n--yolo\nresume\n--last' "$missing_home_output" "fallback handles missing session directory"
 
 printf 'ok - codex-tmux-resume\n'
