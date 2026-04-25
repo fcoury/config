@@ -1,1 +1,1 @@
-set -g CDPATH . $HOME $HOME/code $HOME/code-external
+set -g CDPATH . $HOME $HOME/code $HOME/code-external /Volumes/External

@@ -270,6 +270,16 @@ function wr --description "Interactively select and remove git worktrees via fzf
         return 0
     end
 
+    # Show all worktrees that will be deleted upfront
+    echo "Worktrees to remove:"
+    for line in $selected
+        set wt_path (echo $line | awk '{print $1}')
+        set wt_name (basename $wt_path)
+        set wt_branch (echo $line | string match -r '\[(.+)\]' | tail -1)
+        echo "  $wt_name ($wt_path) [branch: $wt_branch]"
+    end
+    echo ""
+
     # Process each selected worktree
     for line in $selected
         # Extract the path (first field of git worktree list output)
@@ -279,7 +289,6 @@ function wr --description "Interactively select and remove git worktrees via fzf
         # Extract branch name from the bracketed portion, e.g. [branch-name]
         set wt_branch (echo $line | string match -r '\[(.+)\]' | tail -1)
 
-        echo ""
         echo "Removing worktree: $wt_name ($wt_path)"
 
         set git_cmd git worktree remove "$wt_path"
@@ -316,6 +325,130 @@ function wr --description "Interactively select and remove git worktrees via fzf
     end
 end
 
+# Git Worktree Switch Function
+function ws --description "Interactively switch to a git worktree via fzf"
+    # Check if we're in a git repository
+    if not git rev-parse --git-common-dir >/dev/null 2>&1
+        echo "Error: Not in a git repository"
+        return 1
+    end
+
+    if not command -q fzf
+        echo "Error: fzf is not installed"
+        return 1
+    end
+
+    set current_root (git rev-parse --show-toplevel 2>/dev/null)
+    set current_dir (pwd)
+    set relative_dir ""
+
+    if command -q realpath
+        set current_root (realpath "$current_root")
+        set current_dir (realpath "$current_dir")
+    end
+
+    if test -n "$current_root"; and string match -q "$current_root*" "$current_dir"
+        set relative_dir (string replace "$current_root" "" "$current_dir" | string replace -r '^/' '')
+    end
+
+    set selected (git worktree list --porcelain | awk -v home="$HOME" -v branch_width=34 '
+        function abbrev_path(path, parts, count, i, out) {
+            if (home != "" && index(path, home) == 1) {
+                path = "~" substr(path, length(home) + 1)
+            }
+
+            count = split(path, parts, "/")
+            out = parts[1]
+
+            for (i = 2; i <= count; i++) {
+                if (parts[i] == "") {
+                    continue
+                }
+
+                if (i < count && parts[i] != "~") {
+                    out = out "/" substr(parts[i], 1, 1)
+                } else {
+                    out = out "/" parts[i]
+                }
+            }
+
+            return out
+        }
+
+        function truncate(value, width) {
+            if (length(value) <= width) {
+                return value
+            }
+
+            return substr(value, 1, width - 3) "..."
+        }
+
+        function print_worktree() {
+            if (path == "") {
+                return
+            }
+
+            branch_display = branch
+            if (branch_display == "") {
+                branch_display = "(unknown)"
+            }
+
+            printf "%-*s  %s  %s\t%s\n",
+                branch_width,
+                truncate(branch_display, branch_width),
+                abbrev_path(path),
+                head,
+                path
+        }
+
+        /^worktree / {
+            path = substr($0, 10)
+            branch = ""
+            head = ""
+            next
+        }
+        /^HEAD / {
+            head = substr($0, 6, 7)
+            next
+        }
+        /^branch / {
+            branch = substr($0, 8)
+            sub(/^refs\/heads\//, "", branch)
+            next
+        }
+        /^detached$/ {
+            branch = "detached"
+            next
+        }
+        /^bare$/ {
+            branch = "bare"
+            next
+        }
+        /^$/ {
+            print_worktree()
+            path = ""
+            branch = ""
+            head = ""
+        }
+        END {
+            print_worktree()
+        }
+    ' | fzf --delimiter='\t' --with-nth=1 --header "Pick a worktree")
+
+    if test -z "$selected"
+        return 0
+    end
+
+    set selected_root (string split -m 1 \t -- $selected)[2]
+    set target_dir "$selected_root"
+
+    if test -n "$relative_dir"; and test -d "$selected_root/$relative_dir"
+        set target_dir "$selected_root/$relative_dir"
+    end
+
+    cd "$target_dir"
+end
+
 # Optional: Add completions for branch names
 complete -c wk -f -a "(git branch -a | string replace -r '^\s*\*?\s*' '' | string replace -r '^remotes/[^/]+/' '')"
 complete -c wk -l existing -s e -d "Only use existing branches (local or remote)"
@@ -325,3 +458,4 @@ complete -c wd -l delete-branch -s d -d "Also delete the associated branch"
 complete -c wr -f
 complete -c wr -l force -s f -d "Force deletion of worktrees"
 complete -c wr -l delete-branch -s d -d "Also delete the associated branches"
+complete -c ws -f

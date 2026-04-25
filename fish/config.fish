@@ -13,3 +13,12 @@ set -g PATH $HOME/.codeium/windsurf/bin $PATH
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH /Users/fcoury/.cache/lm-studio/bin
 # End of LM Studio CLI section
+
+# increase maximum number of open files (for language servers, etc.)
+ulimit -n 65536
+
+# opencode
+fish_add_path /Users/fcoury/.opencode/bin
+
+# fabro
+fish_add_path $HOME/.fabro/bin
