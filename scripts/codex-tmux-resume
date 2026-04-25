@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+codex_home="${CODEX_HOME:-$HOME/.codex}"
+sessions_dir="$codex_home/sessions"
+target_cwd="${CODEX_TMUX_RESUME_CWD:-$PWD}"
+codex_bin="${CODEX_TMUX_RESUME_CODEX_BIN:-codex}"
+max_days="${CODEX_TMUX_RESUME_MAX_DAYS:-14}"
+
+run_or_print() {
+  if [[ -n "${CODEX_TMUX_RESUME_PRINT:-}" ]]; then
+    printf '%s\n' "$@"
+  else
+    exec "$@"
+  fi
+}
+
+if ! command -v jq >/dev/null 2>&1; then
+  printf 'codex-tmux-resume: jq is required to inspect Codex session metadata\n' >&2
+  exit 1
+fi
+
+if [[ ! -d "$sessions_dir" ]]; then
+  printf 'codex-tmux-resume: no Codex sessions directory at %s\n' "$sessions_dir" >&2
+  if [[ -n "${CODEX_TMUX_RESUME_FALLBACK_LAST:-}" ]]; then
+    run_or_print "$codex_bin" resume --last
+    exit 0
+  fi
+  exit 1
+fi
+
+if [[ ! "$max_days" =~ ^[0-9]+$ ]]; then
+  printf 'codex-tmux-resume: CODEX_TMUX_RESUME_MAX_DAYS must be numeric\n' >&2
+  exit 1
+fi
+
+candidates="$(mktemp)"
+trap 'rm -f "$candidates"' EXIT
+
+find_args=("$sessions_dir" -type f -name 'rollout-*.jsonl')
+if [[ "$max_days" != "0" ]]; then
+  find_args+=(-mtime "-$max_days")
+fi
+
+while IFS= read -r -d '' file; do
+  meta="$(grep -m 1 '"type":"session_meta"' "$file" 2>/dev/null || true)"
+  [[ -n "$meta" ]] || continue
+
+  jq -r --arg cwd "$target_cwd" '
+    select(.payload.cwd == $cwd)
+    | select((.payload.originator // "") == "codex-tui")
+    | [(.payload.timestamp // .timestamp // ""), .payload.id]
+    | @tsv
+  ' <<<"$meta" >>"$candidates" 2>/dev/null || true
+done < <(find "${find_args[@]}" -print0 2>/dev/null)
+
+best="$(sort -r "$candidates" | head -n 1 || true)"
+
+if [[ -n "$best" ]]; then
+  session_id="${best#*$'\t'}"
+  run_or_print "$codex_bin" resume "$session_id"
+  exit 0
+fi
+
+printf 'codex-tmux-resume: no Codex TUI session found for cwd %s\n' "$target_cwd" >&2
+
+if [[ -n "${CODEX_TMUX_RESUME_FALLBACK_LAST:-}" ]]; then
+  run_or_print "$codex_bin" resume --last
+  exit 0
+fi
+
+exit 1

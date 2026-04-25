@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+script="$root_dir/scripts/codex-tmux-resume"
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+codex_home="$tmp_dir/codex"
+sessions_dir="$codex_home/sessions/2026/04/24"
+mkdir -p "$sessions_dir"
+
+write_session() {
+  local file="$1"
+  local id="$2"
+  local cwd="$3"
+  local timestamp="$4"
+
+  cat >"$file" <<JSON
+{"timestamp":"$timestamp","type":"session_meta","payload":{"id":"$id","timestamp":"$timestamp","cwd":"$cwd","originator":"codex-tui","source":"cli"}}
+{"timestamp":"$timestamp","type":"event_msg","payload":{"type":"turn_context"}}
+JSON
+}
+
+assert_eq() {
+  local expected="$1"
+  local actual="$2"
+  local label="$3"
+
+  if [[ "$actual" != "$expected" ]]; then
+    printf 'not ok - %s\nexpected:\n%s\nactual:\n%s\n' "$label" "$expected" "$actual" >&2
+    exit 1
+  fi
+}
+
+old_id="019dc000-0000-7000-8000-000000000001"
+new_id="019dc000-0000-7000-8000-000000000002"
+other_id="019dc000-0000-7000-8000-000000000003"
+
+write_session "$sessions_dir/rollout-old.jsonl" "$old_id" "/repo target" "2026-04-24T10:00:00Z"
+write_session "$sessions_dir/rollout-new.jsonl" "$new_id" "/repo target" "2026-04-24T12:00:00Z"
+write_session "$sessions_dir/rollout-other.jsonl" "$other_id" "/repo other" "2026-04-24T13:00:00Z"
+
+output="$(
+  CODEX_HOME="$codex_home" \
+  CODEX_TMUX_RESUME_CWD="/repo target" \
+  CODEX_TMUX_RESUME_CODEX_BIN="/opt/homebrew/bin/codex" \
+  CODEX_TMUX_RESUME_PRINT=1 \
+  "$script"
+)"
+
+assert_eq $'/opt/homebrew/bin/codex\nresume\n019dc000-0000-7000-8000-000000000002' "$output" "chooses newest exact cwd match"
+
+if CODEX_HOME="$codex_home" \
+  CODEX_TMUX_RESUME_CWD="/repo missing" \
+  CODEX_TMUX_RESUME_PRINT=1 \
+  "$script" >/tmp/codex-tmux-resume-unmatched.out 2>/tmp/codex-tmux-resume-unmatched.err; then
+  printf 'not ok - unmatched cwd should fail without fallback\n' >&2
+  exit 1
+fi
+
+fallback_output="$(
+  CODEX_HOME="$codex_home" \
+  CODEX_TMUX_RESUME_CWD="/repo missing" \
+  CODEX_TMUX_RESUME_PRINT=1 \
+  CODEX_TMUX_RESUME_FALLBACK_LAST=1 \
+  "$script"
+)"
+
+assert_eq $'codex\nresume\n--last' "$fallback_output" "fallback to --last is opt-in"
+
+missing_home_output="$(
+  CODEX_HOME="$tmp_dir/missing-codex-home" \
+  CODEX_TMUX_RESUME_CWD="/repo target" \
+  CODEX_TMUX_RESUME_PRINT=1 \
+  CODEX_TMUX_RESUME_FALLBACK_LAST=1 \
+  "$script"
+)"
+
+assert_eq $'codex\nresume\n--last' "$missing_home_output" "fallback handles missing session directory"
+
+printf 'ok - codex-tmux-resume\n'
