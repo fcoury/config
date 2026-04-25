@@ -12,7 +12,7 @@ name = "Coolnight"
 guid = "C65E1154-9116-4D56-A7B0-C4BD01208CDD"
 
 [profiles.text]
-font = "FantasqueSansMNF-Regular 22"
+font = "FantasqueSansMNF-Regular 18"
 non_ascii_font = "Monaco 12"
 ligatures = true
 use_bold = true

@@ -1,5 +1,12 @@
 # Look and feel
 
+auto-update-channel = tip
+
+window-padding-color = extend
+# palette-generate = true
+background-opacity = 0.85
+background-blur = 20
+
 window-colorspace = display-p3
 font-thicken = true
 
@@ -8,7 +15,7 @@ font-thicken = true
 # font-size = 18
 
 font-family = "FantasqueSansM Nerd Font"
-adjust-cell-height = 2
+adjust-cell-height = 6
 font-size = 21
 
 # font-family = "AtkynsonMono NFM"
@@ -43,6 +50,8 @@ shell-integration-features = no-cursor,no-sudo
 
 # Theme
 config-file = lackluster-theme.conf
+# Light Theme
+# theme = "3024 Day"
 
 # Opens new tab as the last one
 window-new-tab-position = end
@@ -87,4 +96,4 @@ keybind = cmd+k=text:\x1bk
 # Clear screen
 # keybind = super+k=clear_screen
 
-keybind = shift+enter=text:\x1b\r
+# keybind = shift+enter=text:\x1b\r
