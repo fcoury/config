@@ -11,26 +11,34 @@ return {
 				automatic_enable = false,
 				ensure_installed = { "lua_ls", "biome", "ts_ls", "html" },
 			})
+
+			local tools = {
+				"deno",
+				"biome",
+				"codelldb",
+				"css-lsp",
+				-- "emmet-ls",
+				"eslint_d",
+				"html-lsp",
+				"lua-language-server",
+				"prettierd",
+				"pyright",
+				"ruff",
+				-- rust_analyzer managed by rustup, not Mason (avoid binary conflicts)
+				"stylua",
+				"debugpy",
+				"yamlls",
+				"zls",
+			}
+
+			-- htmx-lsp is distributed through Cargo, so Mason cannot install it
+			-- unless a Rust toolchain is already available.
+			if vim.fn.executable("cargo") == 1 then
+				table.insert(tools, "htmx-lsp")
+			end
+
 			require("mason-tool-installer").setup({
-				ensure_installed = {
-					"deno",
-					"biome",
-					"codelldb",
-					"css-lsp",
-					-- "emmet-ls",
-					"eslint_d",
-					"html-lsp",
-					"htmx-lsp",
-					"lua-language-server",
-					"prettierd",
-					"pyright",
-					"ruff",
-					-- rust_analyzer managed by rustup, not Mason (avoid binary conflicts)
-					"stylua",
-					"debugpy",
-					"yamlls",
-					"zls",
-				},
+				ensure_installed = tools,
 			})
 		end,
 	},
@@ -68,7 +76,6 @@ return {
 				"html",
 				"cssls",
 				-- "emmet_ls",
-				"htmx",
 				"pyright",
 				"ruff",
 				"yamlls",
@@ -76,6 +83,10 @@ return {
 				"clangd",
 				"husk_lsp",
 			}
+
+			if vim.fn.executable("htmx-lsp") == 1 then
+				table.insert(server_list, "htmx")
+			end
 
 			lsp.config("ts_ls", {
 				single_file_support = false,

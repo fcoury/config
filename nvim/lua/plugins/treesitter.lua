@@ -8,18 +8,7 @@ return {
 		},
 		config = function()
 			local ts = require("nvim-treesitter")
-
-			-- Setup nvim-treesitter with highlighting enabled
-			-- install_dir must match where lazy.nvim stores the plugin
-			local install_dir = vim.fn.stdpath("data") .. "/lazy/nvim-treesitter"
-			ts.setup({
-				install_dir = install_dir,
-				highlight = { enable = true },
-				indent = { enable = true },
-			})
-
-			-- Install parsers (skips already-installed ones)
-			ts.install({
+			local parsers = {
 				"lua",
 				"tsx",
 				"typescript",
@@ -33,7 +22,34 @@ return {
 				"markdown",
 				"markdown_inline",
 				"fish",
+			}
+
+			-- Setup nvim-treesitter with highlighting enabled
+			-- Keep generated parsers out of lazy.nvim's managed plugin checkout.
+			local install_dir = vim.fn.stdpath("data") .. "/site"
+			ts.setup({
+				install_dir = install_dir,
+				highlight = { enable = true },
+				indent = { enable = true },
 			})
+
+			local missing = require("nvim-treesitter.config").norm_languages(parsers, {
+				installed = true,
+				unsupported = true,
+			})
+
+			if #missing > 0 then
+				if vim.fn.executable("tree-sitter") == 1 then
+					ts.install(missing)
+				else
+					vim.schedule(function()
+						vim.notify(
+							"nvim-treesitter parser installs need `tree-sitter`; install it with `brew install tree-sitter-cli`.",
+							vim.log.levels.WARN
+						)
+					end)
+				end
+			end
 
 			require("template-string").setup({})
 		end,
