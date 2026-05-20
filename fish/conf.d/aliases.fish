@@ -6,6 +6,11 @@ alias gs 'git status'
 alias gpr 'hub pull-request|xargs open'
 alias gtr 'git track'
 alias gap 'git add -p'
+alias fgit git-fcoury
+
+function git-fcoury --description "Run git using the personal GitHub SSH key"
+    env GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_fcoury_github -o IdentitiesOnly=yes' git $argv
+end
 
 function br --description "Open current repo in browser on current branch"
     gh browse --branch (git rev-parse --abbrev-ref HEAD)
@@ -95,3 +100,48 @@ end
 # --- fd and rg aliases ---
 alias fdh 'fd --color=always --hidden --no-ignore'
 alias rgh 'rg --color=always --hidden --no-ignore'
+
+function trashpick --description "Interactively select files/folders in the current directory and move them to trash"
+    if not command -q fzf
+        echo "Error: fzf is not installed"
+        return 1
+    end
+
+    if not command -q trash
+        echo "Error: trash is not installed"
+        return 1
+    end
+
+    set -l selected (
+        find . -mindepth 1 -maxdepth 1 -exec sh -c '
+            for p do
+                if [ -L "$p" ]; then
+                    printf "LINK\t%s\t%s\n" "$p" "$(readlink "$p")"
+                elif [ -d "$p" ]; then
+                    printf "DIR \t%s\t\n" "$p"
+                else
+                    printf "FILE\t%s\t\n" "$p"
+                fi
+            done
+        ' sh {} + |
+        fzf -m \
+            --delimiter '\t' \
+            --with-nth 1,2,3 \
+            --prompt "trash> " \
+            --header "Tab to select, Enter to move selected files/folders to trash" \
+            --preview 'ls -la {2}'
+    )
+
+    if test -z "$selected"
+        echo "No files selected."
+        return 0
+    end
+
+    set -l targets
+    for line in $selected
+        set -l fields (string split \t -- $line)
+        set -a targets "$fields[2]"
+    end
+
+    trash -- $targets
+end
