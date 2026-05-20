@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+name="user-sshd"
+state_dir="${USER_SSHD_DIR:-$HOME/.ssh/user-sshd}"
+port="${USER_SSHD_PORT:-2222}"
+listen_address="${USER_SSHD_LISTEN_ADDRESS:-0.0.0.0}"
+sshd_bin="${USER_SSHD_SSHD_BIN:-/usr/sbin/sshd}"
+authorized_keys="${USER_SSHD_AUTHORIZED_KEYS:-$HOME/.ssh/authorized_keys}"
+
+host_key="$state_dir/ssh_host_ed25519_key"
+client_key="$state_dir/client_ed25519"
+config_file="$state_dir/sshd_config"
+pid_file="$state_dir/sshd.pid"
+log_file="$state_dir/sshd.log"
+
+usage() {
+  cat <<'USAGE'
+Usage: user-sshd [setup|start|foreground|stop|restart|status|config|connect]
+
+Runs a user-space OpenSSH server without sudo.
+
+Environment overrides:
+  USER_SSHD_PORT              Port to listen on. Default: 2222
+  USER_SSHD_LISTEN_ADDRESS    Listen address. Default: 0.0.0.0
+  USER_SSHD_DIR               State/config directory. Default: ~/.ssh/user-sshd
+  USER_SSHD_AUTHORIZED_KEYS   Authorized keys file. Default: ~/.ssh/authorized_keys
+  USER_SSHD_SSHD_BIN          sshd binary. Default: /usr/sbin/sshd
+USAGE
+}
+
+die() {
+  printf '%s: %s\n' "$name" "$*" >&2
+  exit 1
+}
+
+validate_port() {
+  if [[ ! "$port" =~ ^[0-9]+$ ]] || (( port < 1024 || port > 65535 )); then
+    die "USER_SSHD_PORT must be a number from 1024 to 65535"
+  fi
+}
+
+ensure_tools() {
+  [[ -x "$sshd_bin" ]] || die "sshd not found or not executable at $sshd_bin"
+  command -v ssh-keygen >/dev/null 2>&1 || die "ssh-keygen is required"
+}
+
+write_config() {
+  cat >"$config_file" <<EOF
+Port $port
+ListenAddress $listen_address
+
+HostKey $host_key
+PidFile $pid_file
+
+AuthorizedKeysFile $authorized_keys
+PubkeyAuthentication yes
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+ChallengeResponseAuthentication no
+UsePAM no
+
+PermitRootLogin no
+AllowUsers $USER
+Subsystem sftp internal-sftp
+
+# Keep user-mode sshd sessions UTF-8 capable for Unicode prompts and Nerd Font glyphs.
+SetEnv LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
+AcceptEnv LANG LC_CTYPE
+EOF
+  chmod 600 "$config_file"
+}
+
+ensure_authorized_key() {
+  local public_key managed_entry tmp
+
+  public_key="$(<"$client_key.pub")"
+  managed_entry="$public_key"
+
+  touch "$authorized_keys"
+  chmod 600 "$authorized_keys"
+
+  if grep -Fqx "$managed_entry" "$authorized_keys"; then
+    return
+  fi
+
+  tmp="$(mktemp "$authorized_keys.XXXXXX")"
+  {
+    grep -Fv "$public_key" "$authorized_keys" || true
+    printf '%s\n' "$managed_entry"
+  } >"$tmp"
+  chmod 600 "$tmp"
+  mv "$tmp" "$authorized_keys"
+}
+
+setup() {
+  validate_port
+  ensure_tools
+
+  mkdir -p "$HOME/.ssh" "$state_dir"
+  chmod 700 "$HOME/.ssh" "$state_dir"
+
+  if [[ ! -f "$host_key" ]]; then
+    ssh-keygen -q -t ed25519 -N '' -C "$name host key" -f "$host_key"
+  fi
+  chmod 600 "$host_key"
+
+  if [[ ! -f "$client_key" ]]; then
+    ssh-keygen -q -t ed25519 -N '' -C "$USER@$HOSTNAME user-sshd client key" -f "$client_key"
+  fi
+  chmod 600 "$client_key"
+
+  ensure_authorized_key
+  write_config
+  "$sshd_bin" -t -f "$config_file"
+
+  printf '%s: ready\n' "$name"
+  printf '  config: %s\n' "$config_file"
+  printf '  log:    %s\n' "$log_file"
+  printf '  key:    %s\n' "$client_key"
+}
+
+running_pid() {
+  local pid
+  [[ -f "$pid_file" ]] || return 1
+  pid="$(<"$pid_file")"
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+  kill -0 "$pid" 2>/dev/null || return 1
+  printf '%s\n' "$pid"
+}
+
+status() {
+  local pid
+  if pid="$(running_pid)"; then
+    printf '%s: running on %s:%s pid=%s\n' "$name" "$listen_address" "$port" "$pid"
+  else
+    printf '%s: stopped\n' "$name"
+    return 1
+  fi
+}
+
+start() {
+  local pid
+  setup >/dev/null
+
+  if pid="$(running_pid)"; then
+    printf '%s: already running on %s:%s pid=%s\n' "$name" "$listen_address" "$port" "$pid"
+    return
+  fi
+
+  "$sshd_bin" -f "$config_file" -E "$log_file"
+  status
+}
+
+foreground() {
+  setup >/dev/null
+  exec "$sshd_bin" -D -e -f "$config_file"
+}
+
+stop() {
+  local pid
+  if ! pid="$(running_pid)"; then
+    printf '%s: stopped\n' "$name"
+    return
+  fi
+
+  kill "$pid"
+  printf '%s: stopped pid=%s\n' "$name" "$pid"
+}
+
+connect() {
+  local connect_host="$listen_address"
+
+  if [[ "$connect_host" == "0.0.0.0" ]]; then
+    connect_host="127.0.0.1"
+  fi
+
+  setup >/dev/null
+  printf 'ssh -i %q -p %q %q@%q\n' "$client_key" "$port" "$USER" "$connect_host"
+}
+
+case "${1:-start}" in
+  setup) setup ;;
+  start) start ;;
+  foreground) foreground ;;
+  stop) stop ;;
+  restart) stop >/dev/null || true; start ;;
+  status) status ;;
+  config) setup >/dev/null; printf '%s\n' "$config_file" ;;
+  connect) connect ;;
+  -h|--help|help) usage ;;
+  *) usage >&2; exit 2 ;;
+esac
