@@ -224,105 +224,147 @@ function wl --description "List all git worktrees with their corresponding branc
     end
 end
 
-# Git Worktree Remove (multi-select) Function
-function wr --description "Interactively select and remove git worktrees via fzf"
-    # Check if we're in a git repository
+# Worktrunk Pick Function
+function wp --description "Interactively select and switch to a Worktrunk worktree via fzf"
     if not git rev-parse --git-dir >/dev/null 2>&1
         echo "Error: Not in a git repository"
         return 1
     end
 
+    if not command -q wt
+        echo "Error: wt is not installed"
+        return 1
+    end
+
+    if not command -q jq
+        echo "Error: jq is not installed"
+        return 1
+    end
+
+    if not command -q fzf
+        echo "Error: fzf is not installed"
+        return 1
+    end
+
+    set worktrees (
+        wt list --format=json |
+        jq -r '.[] | select(.kind == "worktree") | [if .is_current then "@" else " " end, (.branch // "(detached)"), .path] | @tsv'
+    )
+
+    if test -z "$worktrees"
+        echo "No Worktrunk worktrees found."
+        return 0
+    end
+
+    set selected (
+        printf '%s\n' $worktrees |
+        fzf --delimiter '\t' \
+            --with-nth 1,2,3 \
+            --prompt "worktree> " \
+            --header "Select a Worktrunk worktree"
+    )
+
+    if test -z "$selected"
+        return 0
+    end
+
+    set worktree_path (string split \t -- $selected)[3]
+    cd "$worktree_path"
+end
+
+# Worktrunk Remove (multi-select) Function
+function wr --description "Interactively select and remove Worktrunk worktrees via fzf"
+    if not git rev-parse --git-dir >/dev/null 2>&1
+        echo "Error: Not in a git repository"
+        return 1
+    end
+
+    if not command -q wt
+        echo "Error: wt is not installed"
+        return 1
+    end
+
+    if not command -q jq
+        echo "Error: jq is not installed"
+        return 1
+    end
+
+    if not command -q fzf
+        echo "Error: fzf is not installed"
+        return 1
+    end
+
     set force_flag false
     set delete_branch false
+    set force_delete false
 
-    # Parse arguments
     for arg in $argv
         switch $arg
-            case '--force' '-f'
+            case --force -f
                 set force_flag true
-            case '--delete-branch' '-d'
+            case --delete-branch -d
                 set delete_branch true
+            case --force-delete -D
+                set delete_branch true
+                set force_delete true
             case '*'
-                echo "Usage: wr [--force|-f] [--delete-branch|-d]"
-                echo "Interactively select worktrees to remove via fzf"
+                echo "Usage: wr [--force|-f] [--delete-branch|-d] [--force-delete|-D]"
+                echo "Interactively select Worktrunk worktrees to remove via fzf"
                 echo ""
                 echo "Options:"
                 echo "  --force, -f           Force deletion of worktrees"
-                echo "  --delete-branch, -d   Also delete the associated branches"
+                echo "  --delete-branch, -d   Let Worktrunk delete branches when safe"
+                echo "  --force-delete, -D    Force deletion of unmerged branches"
                 return 1
         end
     end
 
-    # Get the main worktree path (first line of git worktree list is always the main one)
-    set main_worktree (git worktree list --porcelain | head -1 | string replace "worktree " "")
-
-    # Build the list of non-main worktrees for fzf
-    set worktree_lines (git worktree list | grep -v "^$main_worktree ")
+    set worktree_lines (
+        wt list --format=json |
+        jq -r '.[] | select(.kind == "worktree" and (.is_main | not)) | [if .is_current then "@" else " " end, (.symbols // ""), (.branch // "(detached)"), .path] | @tsv'
+    )
     if test -z "$worktree_lines"
         echo "No extra worktrees to remove."
         return 0
     end
 
-    # Let the user pick with fzf multi-select
-    set selected (printf '%s\n' $worktree_lines | fzf -m --header "Tab to select, Enter to confirm removal")
+    set selected (
+        printf '%s\n' $worktree_lines |
+        fzf -m --delimiter '\t' \
+            --with-nth 1,2,3,4 \
+            --prompt "remove> " \
+            --header "Tab to select, Enter to remove with wt remove"
+    )
     if test -z "$selected"
         echo "No worktrees selected."
         return 0
     end
 
-    # Show all worktrees that will be deleted upfront
-    echo "Worktrees to remove:"
+    set targets
     for line in $selected
-        set wt_path (echo $line | awk '{print $1}')
-        set wt_name (basename $wt_path)
-        set wt_branch (echo $line | string match -r '\[(.+)\]' | tail -1)
-        echo "  $wt_name ($wt_path) [branch: $wt_branch]"
-    end
-    echo ""
+        set fields (string split \t -- $line)
+        set wt_branch $fields[3]
+        set wt_path $fields[4]
 
-    # Process each selected worktree
-    for line in $selected
-        # Extract the path (first field of git worktree list output)
-        set wt_path (echo $line | awk '{print $1}')
-        set wt_name (basename $wt_path)
-
-        # Extract branch name from the bracketed portion, e.g. [branch-name]
-        set wt_branch (echo $line | string match -r '\[(.+)\]' | tail -1)
-
-        echo "Removing worktree: $wt_name ($wt_path)"
-
-        set git_cmd git worktree remove "$wt_path"
-        if test $force_flag = true
-            set git_cmd $git_cmd --force
-        end
-
-        if eval $git_cmd
-            echo "✅ Worktree '$wt_name' removed"
-
-            # Delete the branch if requested
-            if test $delete_branch = true; and test -n "$wt_branch"
-                if git show-ref --verify --quiet "refs/heads/$wt_branch"
-                    set branch_cmd git branch -d "$wt_branch"
-                    if test $force_flag = true
-                        set branch_cmd git branch -D "$wt_branch"
-                    end
-
-                    if eval $branch_cmd
-                        echo "✅ Branch '$wt_branch' deleted"
-                    else
-                        echo "❌ Failed to delete branch '$wt_branch'"
-                    end
-                else
-                    echo "⚠️  Branch '$wt_branch' not found locally"
-                end
-            end
+        if test "$wt_branch" = "(detached)"
+            set -a targets "$wt_path"
         else
-            echo "❌ Failed to remove worktree '$wt_name'"
-            if test $force_flag = false
-                echo "💡 Try with --force flag"
-            end
+            set -a targets "$wt_branch"
         end
     end
+
+    set wt_cmd wt remove --yes
+    if test $delete_branch = false
+        set -a wt_cmd --no-delete-branch
+    end
+    if test $force_flag = true
+        set -a wt_cmd --force
+    end
+    if test $force_delete = true
+        set -a wt_cmd --force-delete
+    end
+
+    $wt_cmd $targets
 end
 
 # Git Worktree Switch Function
@@ -347,11 +389,14 @@ function ws --description "Interactively switch to a git worktree via fzf"
         set current_dir (realpath "$current_dir")
     end
 
-    if test -n "$current_root"; and string match -q "$current_root*" "$current_dir"
-        set relative_dir (string replace "$current_root" "" "$current_dir" | string replace -r '^/' '')
+    set escaped_root (string escape --style=regex "$current_root")
+    if test "$current_dir" = "$current_root"
+        set relative_dir ""
+    else if test -n "$escaped_root"; and string match -qr "^$escaped_root/" -- "$current_dir"
+        set relative_dir (string replace -r "^$escaped_root/" "" -- "$current_dir")
     end
 
-    set selected (git worktree list --porcelain | awk -v home="$HOME" -v branch_width=34 '
+    set selected (git worktree list --porcelain | awk -v home="$HOME" -v current_root="$current_root" -v branch_width=34 '
         function abbrev_path(path, parts, count, i, out) {
             if (home != "" && index(path, home) == 1) {
                 path = "~" substr(path, length(home) + 1)
@@ -393,7 +438,13 @@ function ws --description "Interactively switch to a git worktree via fzf"
                 branch_display = "(unknown)"
             }
 
-            printf "%-*s  %s  %s\t%s\n",
+            marker = " "
+            if (path == current_root) {
+                marker = "@"
+            }
+
+            printf "%s %-*s  %s  %s\t%s\n",
+                marker,
                 branch_width,
                 truncate(branch_display, branch_width),
                 abbrev_path(path),
@@ -433,7 +484,7 @@ function ws --description "Interactively switch to a git worktree via fzf"
         END {
             print_worktree()
         }
-    ' | fzf --delimiter='\t' --with-nth=1 --header "Pick a worktree")
+    ' | fzf --delimiter='\t' --with-nth=1 --prompt "worktree> " --header "Pick a worktree")
 
     if test -z "$selected"
         return 0
@@ -455,7 +506,9 @@ complete -c wk -l existing -s e -d "Only use existing branches (local or remote)
 complete -c wd -f -a "(git branch -a | string replace -r '^\s*\*?\s*' '' | string replace -r '^remotes/[^/]+/' '')"
 complete -c wd -l force -s f -d "Force deletion of worktree"
 complete -c wd -l delete-branch -s d -d "Also delete the associated branch"
+complete -c wp -f
 complete -c wr -f
 complete -c wr -l force -s f -d "Force deletion of worktrees"
-complete -c wr -l delete-branch -s d -d "Also delete the associated branches"
+complete -c wr -l delete-branch -s d -d "Let Worktrunk delete branches when safe"
+complete -c wr -l force-delete -s D -d "Force deletion of unmerged branches"
 complete -c ws -f
