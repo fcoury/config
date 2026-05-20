@@ -11,6 +11,8 @@
 - **No `Testing:` section** — don't list test commands in commit messages.
 - **Shell safety hint**: when commit text includes backticks, avoid double-quoted inline `-m` flags; use single quotes, escaped backticks, or `git commit -F <file>` to prevent command substitution.
 
+- NEVER commit contents of the .aidocs folder
+
 ## Tools
 
 ## Browser Automation

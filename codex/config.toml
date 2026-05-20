@@ -1,4 +1,4 @@
-model = "gpt-5.2"
+model = "arcanine"
 model_reasoning_effort = "high"
 model_reasoning_summary = "detailed"
 # model_reasoning_summary_format = "experimental"
@@ -7,6 +7,10 @@ show_raw_agent_reasoning = true    # show detailed raw thinking
 
 rmcp_client = true
 notify = ["python3", "/Users/fcoury/.codex/notify.py"]
+approvals_reviewer = "user"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+plan_mode_reasoning_effort = "xhigh"
 
 [projects."/Users/fcoury/code/pipeline"]
 trust_level = "trusted"
@@ -20,12 +24,59 @@ trust_level = "trusted"
 [projects."/Users/fcoury/code/config"]
 trust_level = "trusted"
 
+[projects."/Users/felipe.coury"]
+trust_level = "trusted"
+
+[projects."/Users/felipe.coury/code"]
+trust_level = "trusted"
+
+[projects."/Users/felipe.coury/code/config"]
+trust_level = "trusted"
+
+[projects."/Users/felipe.coury/code/codex"]
+trust_level = "trusted"
+
+[projects."/Users/felipe.coury/code/superset"]
+trust_level = "trusted"
+
+[projects."/Users/felipe.coury/Downloads"]
+trust_level = "trusted"
+
 [notice]
 hide_full_access_warning = true
+
+[notice.model_migrations]
+"gpt-5.2" = "gpt-5.4"
 # hide_gpt5_1_migration_prompt = true
 # "hide_gpt-5.1-codex-max_migration_prompt" = true
 
 [mcp_servers.playwright]
 command = "npx"
 args = ["-y", "@playwright/mcp@latest"]
+
+[plugins."slack@openai-curated"]
+enabled = true
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[plugins."google-drive@openai-curated"]
+enabled = true
+
+[plugins."gmail@openai-curated"]
+enabled = true
+
+[plugins."browser-use@openai-bundled"]
+enabled = true
+
+[plugins."notion@openai-curated"]
+enabled = true
+
+[features]
+js_repl = true
+image_detail_original = true
+guardian_approval = true
+
+[tui]
+status_line = ["model-with-reasoning", "git-branch", "context-remaining", "current-dir"]
 
