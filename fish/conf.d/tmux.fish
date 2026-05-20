@@ -101,9 +101,13 @@ end
 
 # zm: zellij equivalent of tm — attach to cwd session or create it
 function zm
-  set session_name (basename (pwd) | string replace '.' '_')
+  set -lx ZELLIJ_SOCKET_DIR /tmp/zellij-(id -u)
 
-  if zellij list-sessions -n | grep -q "^$session_name"
+  set base (basename (pwd) | string replace -a '.' '_' | string replace -a '/' '_')
+  set hash (pwd | shasum -a 1 | string split ' ' | head -n 1 | string sub -l 8)
+  set session_name (string sub -l 40 -- $base)-$hash
+
+  if zellij list-sessions -n | grep -q "^$session_name\$"
     zellij attach "$session_name"
   else
     zellij --session "$session_name"
