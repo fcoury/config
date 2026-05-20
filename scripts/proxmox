@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+JUMP_USER="${PROXMOX_JUMP_USER:-fcoury}"
+JUMP_HOST="${PROXMOX_JUMP_HOST:-192.168.68.107}"
+TARGET_USER="${PROXMOX_USER:-root}"
+TARGET_HOST="${PROXMOX_HOST:-pve}"
+TARGET_WEB_HOST="${PROXMOX_WEB_HOST:-100.110.131.65}"
+
+quote_arg() {
+  printf "'%s'" "${1//\'/\'\\\'\'}"
+}
+
+quote_args() {
+  local quoted=()
+  local arg
+
+  for arg in "$@"; do
+    quoted+=("$(quote_arg "$arg")")
+  done
+
+  printf '%s' "${quoted[*]}"
+}
+
+usage() {
+  cat <<EOF
+Usage:
+  proxmox [remote command]
+      SSH to ${JUMP_USER}@${JUMP_HOST}, then to ${TARGET_USER}@${TARGET_HOST}.
+
+  proxmox --web [local_port]
+      Open an SSH tunnel to the Proxmox web UI.
+      Then browse to https://localhost:<local_port> (default: 8006).
+
+Environment overrides:
+  PROXMOX_USER       Target SSH user. Default: root
+  PROXMOX_HOST       Target SSH host from the jump host. Default: pve
+  PROXMOX_WEB_HOST   Target web UI host from the jump host. Default: 100.110.131.65
+  PROXMOX_JUMP_USER  Jump host SSH user. Default: fcoury
+  PROXMOX_JUMP_HOST  Jump host address. Default: 192.168.68.107
+EOF
+}
+
+case "${1:-}" in
+  -h|--help)
+    usage
+    ;;
+  --web)
+    local_port="${2:-8006}"
+    echo "Forwarding https://localhost:${local_port} to https://${TARGET_WEB_HOST}:8006 through ${JUMP_USER}@${JUMP_HOST}"
+    exec ssh \
+      -N \
+      -L "${local_port}:${TARGET_WEB_HOST}:8006" \
+      "${JUMP_USER}@${JUMP_HOST}"
+    ;;
+  *)
+    remote_command="exec ssh ${TARGET_USER}@${TARGET_HOST}"
+    if [[ $# -gt 0 ]]; then
+      remote_command+=" $(quote_args "$@")"
+    fi
+
+    if [[ -t 0 ]]; then
+      exec ssh \
+        -t \
+        "${JUMP_USER}@${JUMP_HOST}" \
+        "$remote_command"
+    fi
+
+    exec ssh \
+      "${JUMP_USER}@${JUMP_HOST}" \
+      "$remote_command"
+    ;;
+esac
