@@ -1,1 +1,1 @@
-set -Ux WEZTERM_CONFIG_FILE ~/config/.wezterm.lua
+set -gx WEZTERM_CONFIG_FILE ~/code/config/wezterm/wezterm.lua

@@ -1,22 +1,23 @@
 # Look and feel
 
-auto-update-channel = tip
+#auto-update-channel = tip
 
 window-padding-color = extend
 # palette-generate = true
-background-opacity = 0.85
+# background-opacity = 0.85
+background-opacity = 1
 background-blur = 20
 
 window-colorspace = display-p3
-font-thicken = true
+font-thicken = false
 
 # font-family = "Iosevka Nerd Font Mono"
 # adjust-cell-height = 3
 # font-size = 18
 
 font-family = "FantasqueSansM Nerd Font"
-adjust-cell-height = 6
-font-size = 21
+adjust-cell-height = 2
+font-size = 22
 
 # font-family = "AtkynsonMono NFM"
 # adjust-cell-height = 5
@@ -96,4 +97,5 @@ keybind = cmd+k=text:\x1bk
 # Clear screen
 # keybind = super+k=clear_screen
 
+# Disabled this temporarily to see what users see
 # keybind = shift+enter=text:\x1b\r

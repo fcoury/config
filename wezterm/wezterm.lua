@@ -227,107 +227,106 @@ local config = {
 	color_scheme = "One Dark (Gogh)",
 
 	-- Custom theme (lackluster)
-	-- color_scheme = "Lackluster",
-	-- colors = {
-	-- 	foreground = "#deeeed", -- luster
-	-- 	background = "#101010", -- black
-	-- 	cursor_bg = "#deeeed", -- luster
-	-- 	cursor_border = "#deeeed", -- luster
-	-- 	cursor_fg = "#000000", -- black
-	-- 	selection_bg = "#444444", -- gray4
-	-- 	selection_fg = "#deeeed", -- luster
-	--
-	-- 	ansi = {
-	-- 		"#000000", -- black
-	-- 		"#D70000", -- red
-	-- 		"#789978", -- green
-	-- 		"#abab77", -- yellow
-	-- 		"#7788AA", -- blue
-	-- 		"#ffaa88", -- orange
-	-- 		"#708090", -- lack
-	-- 		"#aaaaaa", -- gray7
-	-- 	},
-	-- 	brights = {
-	-- 		"#555555", -- gray5
-	-- 		"#D70000", -- red
-	-- 		"#789978", -- green
-	-- 		"#abab77", -- yellow
-	-- 		"#7788AA", -- blue
-	-- 		"#ffaa88", -- orange
-	-- 		"#708090", -- lack
-	-- 		"#DDDDDD", -- gray9
-	-- 	},
-	--
-	-- 	tab_bar = {
-	-- 		background = "#101010",
-	--
-	-- 		active_tab = {
-	-- 			bg_color = "#333333",
-	-- 			fg_color = "#deeeed",
-	-- 			intensity = "Normal",
-	-- 			underline = "None",
-	-- 			italic = false,
-	-- 			strikethrough = false,
-	-- 		},
-	--
-	-- 		inactive_tab = {
-	-- 			bg_color = "#1a1a1a",
-	-- 			fg_color = "#999999",
-	-- 			intensity = "Normal",
-	-- 			underline = "None",
-	-- 			italic = false,
-	-- 			strikethrough = false,
-	-- 		},
-	--
-	-- 		inactive_tab_hover = {
-	-- 			bg_color = "#252525",
-	-- 			fg_color = "#cccccc",
-	-- 			intensity = "Normal",
-	-- 			underline = "None",
-	-- 			italic = false,
-	-- 			strikethrough = false,
-	-- 		},
-	--
-	-- 		new_tab = {
-	-- 			bg_color = "#1a1a1a",
-	-- 			fg_color = "#999999",
-	-- 		},
-	--
-	-- 		new_tab_hover = {
-	-- 			bg_color = "#333333",
-	-- 			fg_color = "#deeeed",
-	-- 			italic = false,
-	-- 		},
-	-- 	},
-	--
-	-- 	-- tab_bar = {
-	-- 	-- 	background = "#191919", -- gray2
-	-- 	--
-	-- 	-- 	active_tab = {
-	-- 	-- 		bg_color = "#444444", -- gray4
-	-- 	-- 		fg_color = "#deeeed", -- luster
-	-- 	-- 		intensity = "Bold",
-	-- 	-- 	},
-	-- 	-- 	inactive_tab = {
-	-- 	-- 		bg_color = "#191919", -- gray2
-	-- 	-- 		fg_color = "#555555", -- gray5
-	-- 	-- 	},
-	-- 	-- 	inactive_tab_hover = {
-	-- 	-- 		bg_color = "#444444", -- gray4
-	-- 	-- 		fg_color = "#deeeed", -- luster
-	-- 	-- 		italic = true,
-	-- 	-- 	},
-	-- 	-- 	new_tab = {
-	-- 	-- 		bg_color = "#191919", -- gray2
-	-- 	-- 		fg_color = "#deeeed", -- luster
-	-- 	-- 	},
-	-- 	-- 	new_tab_hover = {
-	-- 	-- 		bg_color = "#789978", -- green
-	-- 	-- 		fg_color = "#191919", -- gray2
-	-- 	-- 		italic = true,
-	-- 	-- 	},
-	-- 	-- },
-	-- },
+	colors = {
+		foreground = "#deeeed", -- luster
+		background = "#101010", -- black
+		cursor_bg = "#deeeed", -- luster
+		cursor_border = "#deeeed", -- luster
+		cursor_fg = "#000000", -- black
+		selection_bg = "#444444", -- gray4
+		selection_fg = "#deeeed", -- luster
+
+		ansi = {
+			"#000000", -- black
+			"#D70000", -- red
+			"#789978", -- green
+			"#abab77", -- yellow
+			"#7788AA", -- blue
+			"#ffaa88", -- orange
+			"#708090", -- lack
+			"#aaaaaa", -- gray7
+		},
+		brights = {
+			"#555555", -- gray5
+			"#D70000", -- red
+			"#789978", -- green
+			"#abab77", -- yellow
+			"#7788AA", -- blue
+			"#ffaa88", -- orange
+			"#708090", -- lack
+			"#DDDDDD", -- gray9
+		},
+
+		tab_bar = {
+			background = "#101010",
+
+			active_tab = {
+				bg_color = "#333333",
+				fg_color = "#deeeed",
+				intensity = "Normal",
+				underline = "None",
+				italic = false,
+				strikethrough = false,
+			},
+
+			inactive_tab = {
+				bg_color = "#1a1a1a",
+				fg_color = "#999999",
+				intensity = "Normal",
+				underline = "None",
+				italic = false,
+				strikethrough = false,
+			},
+
+			inactive_tab_hover = {
+				bg_color = "#252525",
+				fg_color = "#cccccc",
+				intensity = "Normal",
+				underline = "None",
+				italic = false,
+				strikethrough = false,
+			},
+
+			new_tab = {
+				bg_color = "#1a1a1a",
+				fg_color = "#999999",
+			},
+
+			new_tab_hover = {
+				bg_color = "#333333",
+				fg_color = "#deeeed",
+				italic = false,
+			},
+		},
+
+		-- tab_bar = {
+		-- 	background = "#191919", -- gray2
+		--
+		-- 	active_tab = {
+		-- 		bg_color = "#444444", -- gray4
+		-- 		fg_color = "#deeeed", -- luster
+		-- 		intensity = "Bold",
+		-- 	},
+		-- 	inactive_tab = {
+		-- 		bg_color = "#191919", -- gray2
+		-- 		fg_color = "#555555", -- gray5
+		-- 	},
+		-- 	inactive_tab_hover = {
+		-- 		bg_color = "#444444", -- gray4
+		-- 		fg_color = "#deeeed", -- luster
+		-- 		italic = true,
+		-- 	},
+		-- 	new_tab = {
+		-- 		bg_color = "#191919", -- gray2
+		-- 		fg_color = "#deeeed", -- luster
+		-- 	},
+		-- 	new_tab_hover = {
+		-- 		bg_color = "#789978", -- green
+		-- 		fg_color = "#191919", -- gray2
+		-- 		italic = true,
+		-- 	},
+		-- },
+	},
 }
 
 -- smart_splits.apply_to_config(config, {
