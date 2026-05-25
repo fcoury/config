@@ -1,19 +1,8 @@
 # Go configuration
 
-# Set GOPATH and add to PATH
+# Set GOPATH
 if test -d "$HOME/go"
     set -gx GOPATH $HOME/go
-    set -gx PATH $GOPATH/bin $PATH
-end
-
-# Add Go installation to PATH (if using Homebrew)
-if test -d "/opt/homebrew/opt/go/bin"
-    set -gx PATH /opt/homebrew/opt/go/bin $PATH
-end
-
-# Alternate Go install locations
-if test -d "/usr/local/go/bin"
-    set -gx PATH /usr/local/go/bin $PATH
 end
 
 # Go workspace management
@@ -33,7 +22,7 @@ function gowk
     end
     
     set -gx GOPATH $new_path
-    set -gx PATH $GOPATH/bin $PATH
+    fish_add_path --path --move --prepend $GOPATH/bin
     
     echo "Switched to Go workspace: $GOPATH"
 end
