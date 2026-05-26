@@ -1,0 +1,21 @@
+interface:
+  display_name: "X API"
+  short_description: "Search posts and perform explicit X actions"
+  default_prompt: "Use $x-api to search X for recent posts about a topic."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "x_docs"
+      description: "Current official X API documentation"
+      transport: "streamable_http"
+      url: "https://docs.x.com/mcp"
+    - type: "mcp"
+      value: "x_api"
+      description: "Official XMCP local X API server"
+      transport: "streamable_http"
+      url: "http://127.0.0.1:8000/mcp"
+
+policy:
+  allow_implicit_invocation: true
+
