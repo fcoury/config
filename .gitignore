@@ -9,3 +9,8 @@ zed/prompts/*
 .DS_Store
 .claude/settings.local.json
 opencode/antigravity-accounts.json
+ai/*
+!ai/skills/
+ai/skills/*
+!ai/skills/good-pr/
+!ai/skills/good-pr/**
