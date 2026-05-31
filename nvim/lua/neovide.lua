@@ -1,8 +1,14 @@
 if vim.g.neovide then
-	vim.o.guifont = "FantasqueSansM Nerd Font Mono:h22"
+	-- vim.o.guifont = "FantasqueSansM Nerd Font Mono:h22"
+	-- vim.o.guifont = "Berkeley Mono:h20"
+	vim.o.guifont = "Berkeley Mono:h22:w-0.2:#e-antialias:#h-slight"
 
 	-- vim.g.neovide_transparency = 0.95
-	vim.g.neovide_scale_factor = 1
+	vim.opt.linespace = 0
+	vim.g.neovide_text_gamma = 0.0
+	vim.g.neovide_text_contrast = 0.5
+	vim.g.neovide_scale_factor = 1.0
+
 	vim.g.neovide_floating_blur_amount_x = 8.0
 	vim.g.neovide_floating_blur_amount_y = 8.0
 	vim.g.neovide_cursor_animation_length = 0.05

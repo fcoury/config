@@ -6,12 +6,11 @@ return {
 		branch = true,
 	},
 	init = function()
-		-- Auto-restore session when opening nvim without file arguments
+		-- Auto-restore terminal sessions when opening nvim without file arguments.
 		vim.api.nvim_create_autocmd("VimEnter", {
 			nested = true,
 			callback = function()
-				-- Only restore if no files were passed as arguments
-				if vim.fn.argc() == 0 and not vim.g.started_with_stdin then
+				if not vim.g.neovide and vim.fn.argc() == 0 and not vim.g.started_with_stdin then
 					require("persistence").load()
 				end
 			end,
