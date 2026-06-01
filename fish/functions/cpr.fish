@@ -142,8 +142,15 @@ function __cpr_start_tmux --argument-names worktree_path recreate
         return 1
     end
 
+    __cpr_send_prompt_after_delay "$right_top_pane" '$pr-reviewer code only, dont run tests'
+    __cpr_send_prompt_after_delay "$right_bottom_pane" '$branch-smoke-test'
+
     tmux select-pane -t "$right_top_pane"
     __cpr_attach_or_switch "$session_name"
+end
+
+function __cpr_send_prompt_after_delay --argument-names pane prompt
+    tmux run-shell -b -d 2 "tmux send-keys -t '$pane' -l '$prompt'; tmux send-keys -t '$pane' Enter"
 end
 
 function __cpr_attach_or_switch --argument-names session_name
