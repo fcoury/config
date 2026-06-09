@@ -11,13 +11,17 @@ background-blur = 20
 window-colorspace = display-p3
 font-thicken = false
 
+font-family = "Berkeley Mono Regular"
+# adjust-cell-height = 2
+font-size = 18
+
 # font-family = "Iosevka Nerd Font Mono"
 # adjust-cell-height = 3
 # font-size = 18
 
-font-family = "FantasqueSansM Nerd Font"
-adjust-cell-height = 2
-font-size = 22
+# font-family = "FantasqueSansM Nerd Font"
+# adjust-cell-height = 2
+# font-size = 22
 
 # font-family = "AtkynsonMono NFM"
 # adjust-cell-height = 5
@@ -35,6 +39,12 @@ font-size = 22
 
 # Show tabs instead of a title bar
 macos-titlebar-style = tabs
+
+# Restore Ghostty windows, tabs, and splits across app restarts.
+window-save-state = always
+
+# Start tmux once when Ghostty launches so tmux-continuum can restore sessions.
+# initial-command = /Users/fcoury/code/config/scripts/ghostty-tmux-restore
 
 # Option behaves as alt
 macos-option-as-alt = true
