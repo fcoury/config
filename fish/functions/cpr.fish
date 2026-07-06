@@ -132,25 +132,23 @@ function __cpr_start_tmux --argument-names worktree_path recreate
         return 1
     end
 
-    set -l right_top_pane (tmux split-window -h -P -F '#{pane_id}' -t "$left_pane" -c "$worktree_path" "fish -lc 'cdx; exec fish'")
+    # Let Codex queue each initial prompt until its TUI session is ready instead of
+    # racing startup with synthetic tmux keystrokes.
+    set -l review_prompt '$pr-reviewer code only, dont run tests'
+    set -l smoke_prompt '$branch-smoke-test'
+
+    set -l right_top_pane (tmux split-window -h -P -F '#{pane_id}' -t "$left_pane" -c "$worktree_path" fish -lc 'cdx "$argv[1]"; exec fish' -- "$review_prompt")
     if test $status -ne 0
         return 1
     end
 
-    set -l right_bottom_pane (tmux split-window -v -P -F '#{pane_id}' -t "$right_top_pane" -c "$worktree_path" "fish -lc 'cdx; exec fish'")
+    set -l right_bottom_pane (tmux split-window -v -P -F '#{pane_id}' -t "$right_top_pane" -c "$worktree_path" fish -lc 'cdx "$argv[1]"; exec fish' -- "$smoke_prompt")
     if test $status -ne 0
         return 1
     end
-
-    __cpr_send_prompt_after_delay "$right_top_pane" '$pr-reviewer code only, dont run tests'
-    __cpr_send_prompt_after_delay "$right_bottom_pane" '$branch-smoke-test'
 
     tmux select-pane -t "$right_top_pane"
     __cpr_attach_or_switch "$session_name"
-end
-
-function __cpr_send_prompt_after_delay --argument-names pane prompt
-    tmux run-shell -b -d 2 "tmux send-keys -t '$pane' -l '$prompt'; tmux send-keys -t '$pane' Enter"
 end
 
 function __cpr_attach_or_switch --argument-names session_name
