@@ -97,6 +97,21 @@ function psm
   ps -Ao pid,etime,%cpu,%mem,command | sort -k4 -rn | head -10
 end
 
+function psx --description "Show full process details for an exact executable name"
+  if test (count $argv) -ne 1
+    echo "Usage: psx <executable>" >&2
+    return 2
+  end
+
+  set -l pids (pgrep -x -- $argv[1])
+  if test (count $pids) -eq 0
+    echo "No processes found for '$argv[1]'" >&2
+    return 1
+  end
+
+  ps -ww -o user,pid,ppid,%cpu,%mem,state,etime,start,command -p (string join , $pids)
+end
+
 # --- fd and rg aliases ---
 alias fdh 'fd --color=always --hidden --no-ignore'
 alias rgh 'rg --color=always --hidden --no-ignore'
