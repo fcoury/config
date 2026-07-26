@@ -8,14 +8,37 @@ return function()
 	-- Use vim.g.colors_name for the actual current colorscheme (more reliable than themery.getCurrentTheme())
 	local original_theme = vim.g.colors_name
 
+	local function theme_name(theme)
+		return type(theme) == "string" and theme or theme.name or theme.colorscheme or "unknown"
+	end
+
+	local function theme_preview(theme, idx)
+		local name = theme_name(theme)
+		local colorscheme = type(theme) == "string" and theme or theme.colorscheme or name
+
+		return table.concat({
+			string.format("Theme: %s", name),
+			string.format("Index: %d", idx),
+			string.format("Colorscheme: %s", colorscheme),
+			"",
+			"The preview applies this theme live.",
+			"Press <Enter> to save it, or <Esc> to restore the previous theme.",
+		}, "\n")
+	end
+
 	-- Build items for the picker
 	local items = {}
 	for i, theme in ipairs(themes) do
-		local name = type(theme) == "string" and theme or theme.name
+		local name = theme_name(theme)
 		table.insert(items, {
 			text = name,
 			idx = i,
 			theme = theme,
+			preview = {
+				text = theme_preview(theme, i),
+				ft = "text",
+				loc = false,
+			},
 		})
 	end
 
@@ -40,6 +63,7 @@ return function()
 	Snacks.picker({
 		title = "Themes",
 		items = items,
+		preview = "preview",
 		format = function(item)
 			return { { item.text } }
 		end,
@@ -72,6 +96,8 @@ return function()
 						mode = { "n", "i" },
 						desc = "Cancel and restore theme",
 					},
+					["<C-f>"] = { "list_scroll_down", mode = { "n", "i" }, desc = "Page down" },
+					["<C-b>"] = { "list_scroll_up", mode = { "n", "i" }, desc = "Page up" },
 				},
 			},
 		},

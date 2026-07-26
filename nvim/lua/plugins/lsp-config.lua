@@ -81,11 +81,14 @@ return {
 				"yamlls",
 				"ts_ls",
 				"clangd",
-				"husk_lsp",
 			}
 
 			if vim.fn.executable("htmx-lsp") == 1 then
 				table.insert(server_list, "htmx")
+			end
+
+			if vim.fn.executable("husk-lsp") == 1 then
+				table.insert(server_list, "husk_lsp")
 			end
 
 			lsp.config("ts_ls", {

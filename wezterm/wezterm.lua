@@ -3,15 +3,15 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 
 local config = {
-	font = wezterm.font("FantasqueSansM Nerd Font"),
-	font_size = 20.0,
-	line_height = 1.2,
+	-- font = wezterm.font("FantasqueSansM Nerd Font"),
+	-- font_size = 20.0,
+	-- line_height = 1.2,
 	-- font = wezterm.font("Cousine Nerd Font Mono"),
 	-- font_size = 16.0,
 	-- line_height = 1.1,
-	-- font = wezterm.font("IosevkaTerm Nerd Font"),
-	-- font_size = 20.0,
-	-- line_height = 1.1,
+	font = wezterm.font("IosevkaTerm Nerd Font"),
+	font_size = 20.0,
+	line_height = 1.1,
 	-- font = wezterm.font("MesloLGS Nerd Font Mono"),
 	-- font_size = 22.0,
 	-- color_scheme = "catppuccin-mocha",
@@ -134,10 +134,10 @@ local config = {
 		-- create_vim_aware_key("j", "Down"),
 		-- create_vim_aware_key("k", "Up"),
 		-- create_vim_aware_key("l", "Right"),
-		{ key = "h", mods = "ALT", action = act.ActivatePaneDirection("Left") },
-		{ key = "j", mods = "ALT", action = act.ActivatePaneDirection("Down") },
-		{ key = "k", mods = "ALT", action = act.ActivatePaneDirection("Up") },
-		{ key = "l", mods = "ALT", action = act.ActivatePaneDirection("Right") },
+		-- { key = "h", mods = "ALT", action = act.ActivatePaneDirection("Left") },
+		-- { key = "j", mods = "ALT", action = act.ActivatePaneDirection("Down") },
+		-- { key = "k", mods = "ALT", action = act.ActivatePaneDirection("Up") },
+		-- { key = "l", mods = "ALT", action = act.ActivatePaneDirection("Right") },
 
 		-- Resize pane (replacing your existing resize_pane function)
 		-- { key = "H", mods = "LEADER", action = act.AdjustPaneSize({ "Left", 5 }) },
@@ -160,14 +160,14 @@ local config = {
 		{ key = "w", mods = "CMD", action = act.CloseCurrentPane({ confirm = false }) },
 		{ key = "k", mods = "CMD|SHIFT", action = act.CloseCurrentPane({ confirm = false }) },
 		{ key = "s", mods = "CTRL|OPT|CMD", action = act.EmitEvent("toggle-font") },
-		{
-			key = "k",
-			mods = "CMD",
-			action = act.Multiple({
-				-- act.SendKey({ key = "L", mods = "CTRL" }),
-				act.ClearScrollback("ScrollbackAndViewport"),
-			}),
-		},
+		-- {
+		-- 	key = "k",
+		-- 	mods = "CMD",
+		-- 	action = act.Multiple({
+		-- 		-- act.SendKey({ key = "L", mods = "CTRL" }),
+		-- 		act.ClearScrollback("ScrollbackAndViewport"),
+		-- 	}),
+		-- },
 		{ key = "[", mods = "CMD", action = act.ActivatePaneDirection("Prev") },
 		{ key = "]", mods = "CMD", action = act.ActivatePaneDirection("Next") },
 		{ key = "t", mods = "CMD", action = act.SpawnTab("CurrentPaneDomain") },

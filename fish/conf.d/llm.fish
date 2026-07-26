@@ -3,11 +3,11 @@
 # alias codex='command codex -m gpt-5.2 --full-auto -c model_reasoning_effort="medium" -c model_reasoning_summary_format=experimental --search'
 #alias cdx='command codex -m gpt-5.3-codex -c model_reasoning_effort="high" --search --yolo'
 # alias cdx='command codex --yolo'
-set -g __codex_bin "$HOME/code/openai/project/dotslash-gen/bin/codex"
+set -g __codex_bin "/opt/homebrew/bin/codex"
 
-function codex
-    command "$__codex_bin" $argv
-end
+# function codex
+#     command "$__codex_bin" $argv
+# end
 
 # alias cdx='command codex -c approvals_reviewer=auto_review -a on-request -s workspace-write'
 function cdx

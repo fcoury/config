@@ -1,0 +1,55 @@
+{
+  "latest": {
+    "version": 1,
+    "cwd": "/Users/fcoury/code/red.plugin-session-restore",
+    "savedAt": 1780023135,
+    "buffers": [
+      {
+        "index": 0,
+        "path": "CLAUDE.md",
+        "dirty": false,
+        "cursor": {
+          "x": 0,
+          "y": 45
+        },
+        "viewportTop": 1
+      },
+      {
+        "index": 1,
+        "path": "docs/unicode-handling.md",
+        "dirty": false,
+        "cursor": {
+          "x": 5,
+          "y": 4
+        },
+        "viewportTop": 0
+      }
+    ],
+    "currentBufferIndex": 1,
+    "windowLayout": {
+      "active_window_id": 1,
+      "root": {
+        "kind": "horizontal",
+        "ratio": 0.5,
+        "top": {
+          "kind": "window",
+          "buffer_index": 0,
+          "vtop": 1,
+          "vleft": 0,
+          "cx": 0,
+          "cy": 44,
+          "vx": 5
+        },
+        "bottom": {
+          "kind": "window",
+          "buffer_index": 1,
+          "vtop": 0,
+          "vleft": 0,
+          "cx": 5,
+          "cy": 4,
+          "vx": 5
+        }
+      }
+    }
+  }
+}
