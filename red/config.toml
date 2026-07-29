@@ -1,4 +1,273 @@
+# This is a sample configuration file for red.
+#
+# The configuration file is a TOML file. The configuration file is read from
+# the following locations:
+#
+# 1. $XDG_CONFIG_HOME/red/config.toml
+# 2. $HOME/.config/red/config.toml
+#
+
+# Name of the VSCode theme to use. The theme file should be present in the
+# themes directory: $XDG_CONFIG_HOME/red/themes or $HOME/.config/red/themes
 theme = "termy-dark.json"
 
+# The number of lines to scroll when using the mouse wheel
+mouse_scroll_lines = 3
+
+# The minimum number of visible lines to keep above and below the cursor
+# when scrolling is possible. This matches Vim/Neovim's 'scrolloff'.
+scrolloff = 3
+
+# Wrap long lines at the window edge. This matches Vim/Neovim's 'wrap'.
+wrap = true
+
+# Horizontal scrolling behavior when wrap = false. These match
+# Vim/Neovim's 'sidescroll' and 'sidescrolloff'.
+sidescroll = 1
+sidescrolloff = 0
+
+# The full path to the log file. If the log file is not present, red will
+# create it. If the log file is present, red will append to it.
+# This setting is optional, if not present, red will not log anything.
+log_file = "/tmp/red.log"
+
+# When this setting is either absent or set to true, red will show
+# diagnostics in the log file. When set to false, red will not show
+# them.
+#show_diagnostics = false
+
+[search]
+# Preview the next match while typing / or ?.
+incsearch = true
+# Highlight all visible matches for the current search.
+hlsearch = true
+# Wrap searches around the end or beginning of the buffer.
+wrapscan = true
+# Case matching follows Neovim defaults: case-sensitive unless configured.
+ignorecase = false
+smartcase = false
+
+# Cursor shape per editor state. Supported values are "default",
+# "blinking_block", "steady_block", "blinking_underscore",
+# "steady_underscore", "blinking_bar", and "steady_bar".
+[cursor]
+normal = "default"
+insert = "steady_bar"
+command = "default"
+search = "default"
+visual = "default"
+visual_line = "default"
+visual_block = "default"
+waiting = "steady_underscore"
+
+# Language servers are selected by file extension. The built-in defaults cover
+# Rust, Markdown, JavaScript/TypeScript, JSON, TOML, YAML, and Python. You can
+# override or add servers here. Existing single-language configs still work:
+#
+# [lsp.servers.rust]
+# command = "rust-analyzer"
+# args = ["-v"]
+# language_id = "rust"
+# file_extensions = ["rs"]
+# root_markers = ["Cargo.toml", ".git"]
+#
+# Servers that handle multiple language ids can use document selectors:
+#
+# [lsp.servers.typescript]
+# command = "typescript-language-server"
+# args = ["--stdio"]
+# root_markers = ["package.json", "tsconfig.json", "jsconfig.json", ".git"]
+#
+# [[lsp.servers.typescript.documents]]
+# language_id = "typescript"
+# file_extensions = ["ts"]
+#
+# [[lsp.servers.typescript.documents]]
+# language_id = "javascript"
+# file_extensions = ["js", "mjs", "cjs"]
+
+[keys.insert]
+Enter = "InsertNewLine"
+Backspace = "DeletePreviousChar"
+Tab = "InsertTab"
+"Ctrl-Space" = "RequestCompletion"
+Esc = { EnterMode = "Normal" }
+
 [keys.normal]
+"w" = [ "MoveToNextWord" ]
+"b" = [ "MoveToPreviousWord" ]
+"o" = [ { EnterMode = "Insert" }, "InsertLineBelowCursor" ]
+"O" = [ { EnterMode = "Insert" }, "InsertLineAtCursor" ]
+"G" = "MoveToBottom"
+"g" = { "g" = "MoveToTop", "%" = "MatchitBackward", "d" = "GoToDefinition", "j" = "MoveScreenLineDown", "k" = "MoveScreenLineUp", "0" = "MoveToScreenLineStart", "^" = "MoveToScreenLineFirstNonBlank", "$" = "MoveToScreenLineEnd" }
+"u" = "Undo"
+"Ctrl-r" = "Redo"
+"Down" = "MoveDown"
+"Left" = "MoveLeft"
+"Right" = "MoveRight"
+"Up" = "MoveUp"
+"k" = "MoveUp"
+"j" = "MoveDown"
+"h" = "MoveLeft"
+"l" = "MoveRight"
+"0" = "MoveToLineStart"
+"Home" = "MoveToLineStart"
+"$" = "MoveToLineEnd"
+"End" = "MoveToLineEnd"
+"H" = "MoveToFirstLineChar"
+"L" = "MoveToLastLineChar"
+"Ctrl-b" = "PageUp"
+"Ctrl-f" = "PageDown"
+"Ctrl-o" = "JumpBack"
+"Tab" = "JumpForward"
+"x" = "DeleteCharAtCursorPos"
+"z" = { "z" = "MoveLineToViewportCenter", "h" = "ScrollViewLeft", "l" = "ScrollViewRight", "H" = "ScrollViewHalfPageLeft", "L" = "ScrollViewHalfPageRight", "s" = "ScrollCursorToViewStart", "e" = "ScrollCursorToViewEnd" }
+"*" = "SearchWordUnderCursor"
+"%" = "MatchitForward"
+"n" = "RepeatSearch"
+"N" = "RepeatSearchOpposite"
+"a" = [ { EnterMode = "Insert" }, "MoveRight" ]
+"A" = [ "MoveToLineEnd", { EnterMode = "Insert" }, "MoveRight" ]
+"i" = { EnterMode = "Insert" }
+"I" = [ { EnterMode = "Insert" }, "MoveToFirstLineChar" ]
 ";" = { EnterMode = "Command" }
+":" = { EnterMode = "Command" }
+"/" = { EnterSearch = "Forward" }
+"?" = { EnterSearch = "Backward" }
+# "|" = "Split"
+# "_" = "SplitVertical"
+"Ctrl-p" = "FilePicker"
+"Ctrl-z" = "Suspend"
+"Ctrl-e" = { PluginCommand = "NeoTree" }
+"Ctrl-t" = { PluginCommand = "LspDocumentSymbols" }
+"K" = "Hover"
+"W" = "ToggleWrap"
+# "L" = "DecreaseLeft"
+# "R" = "IncreaseLeft"
+"v" = { EnterMode = "Visual" }
+"V" = { EnterMode = "VisualLine" }
+"Ctrl-v" = { EnterMode = "VisualBlock" }
+"p" = "Paste"
+"P" = "PasteBefore"
+
+[keys.normal.">"]
+">" = "IndentLine"
+
+[keys.normal."<"]
+"<" = "UnindentLine"
+
+[keys.normal."["]
+"%" = "MatchitPreviousUnmatched"
+
+[keys.normal."]"]
+"%" = "MatchitNextUnmatched"
+
+[keys.normal."Ctrl-w"]
+"h" = "MoveWindowLeft"
+"j" = "MoveWindowDown"
+"k" = "MoveWindowUp"
+"l" = "MoveWindowRight"
+"w" = "NextWindow"
+"W" = "PreviousWindow"
+"p" = "PreviousWindow"
+"s" = "SplitHorizontal"
+"v" = "SplitVertical"
+"-" = "SplitHorizontal"
+"|" = "SplitVertical"
+"c" = "CloseWindow"
+"q" = "CloseWindow"
+"Ctrl-w" = "NextWindow"
+"+" = { ResizeWindowDown = 1 }
+"<" = { ResizeWindowLeft = 1 }
+">" = { ResizeWindowRight = 1 }
+"=" = "BalanceWindows"
+"_" = "MaximizeWindow"
+"o" = "OnlyWindow"
+
+[keys.normal." "]
+" " = "NextBuffer"
+"n" = "NextBuffer"
+"p" = "PreviousBuffer"
+"b" = { PluginCommand = "BufferPicker" }
+"g" = { PluginCommand = "ProjectSearch" }
+"t" = { PluginCommand = "ThemeBrowser" }
+"w" = { PluginCommand = "LspWorkspaceSymbols" }
+"k" = { PluginCommand = "LspReferences" }
+
+[keys.normal." "."d"]
+"b" = "DumpBuffer"
+"i" = "DumpDiagnostics"
+"c" = "DumpCapabilities"
+"h" = "DumpHistory"
+"l" = "ViewLogs"
+"p" = "ListPlugins"
+
+[keys.normal."d"]
+"d" = "DeleteCurrentLine"
+"w" = "DeleteWord"
+
+[keys.search]
+Esc = { EnterMode = "Normal" }
+
+[keys.command]
+Esc = { EnterMode = "Normal" }
+
+[keys.visual]
+Esc = { EnterMode = "Normal" }
+"k" = "MoveUp"
+"j" = "MoveDown"
+"h" = "MoveLeft"
+"l" = "MoveRight"
+"$" = "MoveToLineEnd"
+"End" = "MoveToLineEnd"
+"y" = [ "Yank", { EnterMode = "Normal" } ]
+"x" = [ "Delete", { EnterMode = "Normal" } ]
+"p" = [ "Paste", { EnterMode = "Normal" } ]
+"w" = "MoveToNextWord"
+"b" = "MoveToPreviousWord"
+"%" = "MatchitForward"
+"g" = { "%" = "MatchitBackward" }
+"I" = "InsertBlock"
+
+# TODO: "i" = "SelectInside"
+# TODO: "o" = "SelectOutside"
+# TODO: "c" = "ChangeBlock"
+# TODO: "r" = "ReplaceBlock"
+
+[keys.visual_block]
+Esc = { EnterMode = "Normal" }
+"$" = "MoveToLineEnd"
+"End" = "MoveToLineEnd"
+
+[keys.visual_line]
+Esc = { EnterMode = "Normal" }
+
+[commands]
+"write" = "Save"
+"quit" = "Quit"
+
+[plugins]
+buffer_picker = "buffer_picker.js"
+cool_search = "cool_search.js"
+fidget = "fidget.js"
+indent_guides = "indent_guides.js"
+inlay_hints = "inlay_hints.js"
+lsp_symbols = "lsp_symbols.ts"
+neotree = "neotree.js"
+project_search = "project_search.js"
+session_restore = "session_restore.js"
+theme_browser = "theme_browser.js"
+
+[plugin_permissions.project_search]
+process = ["rg"]
+
+# Symbol kind icons use Nerd Font glyphs matching the Snacks picker defaults.
+# Set enabled to false to hide them. Override any lowercase LSP kind with a
+# custom string; an empty string hides only that kind.
+[plugin_config.lsp_symbols.icons]
+enabled = true
+
+[plugin_config.lsp_symbols.icons.overrides]
+# class = "C"
+# function = "fn"
+# struct = ""

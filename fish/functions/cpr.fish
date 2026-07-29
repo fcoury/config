@@ -1,10 +1,10 @@
-# Checkout an openai/codex PR worktree and open the standard review tmux layout.
+# Checkout an openai/codex-internal PR worktree and open the standard review tmux layout.
 #
 # Supports:
 #   cpr 22225
-#   cpr https://github.com/openai/codex/pull/22225
+#   cpr https://github.com/openai/codex-internal/pull/22225
 #   cpr --recreate 22225
-function cpr --description "Checkout an openai/codex PR and open the Codex review tmux layout"
+function cpr --description "Checkout an openai/codex-internal PR and open the Codex review tmux layout"
     set -l recreate false
     set -l pr_args
 
@@ -20,15 +20,15 @@ function cpr --description "Checkout an openai/codex PR and open the Codex revie
     if test (count $pr_args) -ne 1
         echo "Usage:"
         echo "  cpr [--recreate|-r] <pr-number>"
-        echo "  cpr [--recreate|-r] <https://github.com/openai/codex/pull/pr-number>"
+        echo "  cpr [--recreate|-r] <https://github.com/openai/codex-internal/pull/pr-number>"
         return 1
     end
 
     set -l pr_arg (string replace -r '/$' '' -- $pr_args[1])
     set -l pr_number $pr_arg
     if not string match -rq '^[0-9]+$' -- $pr_arg
-        if not string match -rq '^https://github\.com/openai/codex/pull/[0-9]+$' -- $pr_arg
-            echo "Error: expected an openai/codex PR number or URL"
+        if not string match -rq '^https://github\.com/openai/codex-internal/pull/[0-9]+$' -- $pr_arg
+            echo "Error: expected an openai/codex-internal PR number or URL"
             return 1
         end
 
@@ -68,9 +68,9 @@ function cpr --description "Checkout an openai/codex PR and open the Codex revie
         return 1
     end
 
-    set -l branch (gh pr view $pr_number -R openai/codex --json headRefName --jq '.headRefName' 2>/dev/null)
+    set -l branch (gh pr view $pr_number -R openai/codex-internal --json headRefName --jq '.headRefName' 2>/dev/null)
     if test $status -ne 0; or test -z "$branch"
-        echo "Error: PR #$pr_number not found in openai/codex"
+        echo "Error: PR #$pr_number not found in openai/codex-internal"
         cd "$original_dir"
         return 1
     end

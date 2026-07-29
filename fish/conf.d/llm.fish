@@ -10,8 +10,35 @@ set -g __codex_bin "/opt/homebrew/bin/codex"
 # end
 
 # alias cdx='command codex -c approvals_reviewer=auto_review -a on-request -s workspace-write'
+# set -g __codex_bin "$HOME/code/openai/project/dotslash-gen/bin/codex"
+#
+# function codex
+#     command "$__codex_bin" $argv
+# end
+#
+# # alias cdx='command codex -c approvals_reviewer=auto_review -a on-request -s workspace-write'
+# function cdx
+#     command "$__codex_bin" -c approvals_reviewer=auto_review -a on-request -s workspace-write $argv
+# end
+#
+# function cdxp
+#     if not set -q OPENAI_PRO_API_KEY
+#         echo "OPENAI_PRO_API_KEY is not set" >&2
+#         return 1
+#     end
+#
+#     command "$__codex_bin" \
+#         -m gpt-5.5-pro \
+#         -c 'model_provider="openai-pro"' \
+#         -c 'model_providers.openai-pro={ name = "OpenAI Pro API key", base_url = "https://api.openai.com/v1", env_key = "OPENAI_PRO_API_KEY", wire_api = "responses" }' \
+#         -c approvals_reviewer=auto_review \
+#         -a on-request \
+#         -s workspace-write \
+#         $argv
+# end
+
 function cdx
-    command "$__codex_bin" -c approvals_reviewer=auto_review -a on-request -s workspace-write $argv
+    codex -c approvals_reviewer=auto_review -a on-request -s workspace-write $argv
 end
 
 function cdxp
@@ -20,7 +47,7 @@ function cdxp
         return 1
     end
 
-    command "$__codex_bin" \
+    codex \
         -m gpt-5.5-pro \
         -c 'model_provider="openai-pro"' \
         -c 'model_providers.openai-pro={ name = "OpenAI Pro API key", base_url = "https://api.openai.com/v1", env_key = "OPENAI_PRO_API_KEY", wire_api = "responses" }' \
@@ -29,6 +56,7 @@ function cdxp
         -s workspace-write \
         $argv
 end
+
 
 alias cmt="yolo --model sonnet 'Let\'s commit all our pending changes. Check if we need one or more commits and suggest them before committing.'"
 

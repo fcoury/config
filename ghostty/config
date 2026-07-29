@@ -13,8 +13,7 @@ window-colorspace = display-p3
 font-thicken = false
 
 font-family = "Berkeley Mono Regular"
-# adjust-cell-height = 2
-font-size = 18
+font-size = 20
 
 # font-family = "Iosevka Nerd Font Mono"
 # adjust-cell-height = 3

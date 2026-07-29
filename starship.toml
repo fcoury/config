@@ -119,6 +119,7 @@ format = "[$symbol($version )]($style)"
 
 # Formats my git status indicators
 [git_status]
+use_git_executable = true
 format = '([\[$all_status$ahead_behind\]]($style) )'
 modified = "●"
 stashed = ""
@@ -176,4 +177,3 @@ command = '''
 when = "git rev-parse --is-inside-work-tree 2>/dev/null"
 description = "Displays the formatted git branch name"
 format = "on [$symbol ($output )]($style)"
-

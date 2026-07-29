@@ -7,6 +7,7 @@ target_cwd="${CODEX_TMUX_RESUME_CWD:-$PWD}"
 codex_bin="${CODEX_TMUX_RESUME_CODEX_BIN:-codex}"
 max_days="${CODEX_TMUX_RESUME_MAX_DAYS:-14}"
 codex_args=("--yolo")
+exact_session_id="${1:-${CODEX_TMUX_RESUME_SESSION_ID:-}}"
 
 if [[ ${CODEX_TMUX_RESUME_CODEX_ARGS+x} ]]; then
   read -r -a codex_args <<<"$CODEX_TMUX_RESUME_CODEX_ARGS"
@@ -19,6 +20,15 @@ run_or_print() {
     exec "$@"
   fi
 }
+
+if [[ -n "$exact_session_id" ]]; then
+  if [[ ! "$exact_session_id" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]]; then
+    printf 'codex-tmux-resume: invalid Codex session id: %s\n' "$exact_session_id" >&2
+    exit 1
+  fi
+  run_or_print "$codex_bin" "${codex_args[@]}" resume "$exact_session_id"
+  exit 0
+fi
 
 if ! command -v jq >/dev/null 2>&1; then
   printf 'codex-tmux-resume: jq is required to inspect Codex session metadata\n' >&2

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Branch Smoke Test"
+  short_description: "Manual smoke tests for PR branches"
+  default_prompt: "Use $branch-smoke-test to write manual smoke test steps for the current branch or PR."

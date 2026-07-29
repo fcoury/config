@@ -54,6 +54,13 @@ hide_full_access_warning = true
 command = "npx"
 args = ["-y", "@playwright/mcp@latest"]
 
+[mcp_servers.x_docs]
+url = "https://docs.x.com/mcp"
+
+[mcp_servers.x_api]
+url = "http://127.0.0.1:8000/mcp"
+enabled = false
+
 [plugins."slack@openai-curated"]
 enabled = true
 
@@ -76,7 +83,15 @@ enabled = true
 js_repl = true
 image_detail_original = true
 guardian_approval = true
+hooks = true
+
+[[hooks.SessionStart]]
+matcher = "startup|resume|clear|compact"
+
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = "~/.config/scripts/codex-tmux-session-hook"
+timeout = 5
 
 [tui]
 status_line = ["model-with-reasoning", "git-branch", "context-remaining", "current-dir"]
-

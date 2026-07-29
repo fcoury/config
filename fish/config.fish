@@ -30,3 +30,6 @@ set -gx PATH "/Users/fcoury/.local/bin" $PATH
 
 # kimi-code
 fish_add_path -g "/Users/fcoury/.kimi-code/bin"
+
+# opencode
+fish_add_path /Users/felipe.coury/.opencode/bin

@@ -4,8 +4,11 @@ set -euo pipefail
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 script="$root_dir/scripts/codex-tmux-resume"
 
-tmp_dir="$(mktemp -d)"
-trap 'rm -rf "$tmp_dir"' EXIT
+tmp_dir="${CODEX_TMUX_RESUME_TEST_DIR:-$(mktemp -d)}"
+mkdir -p "$tmp_dir"
+if [[ -z "${CODEX_TMUX_RESUME_TEST_KEEP:-}" ]]; then
+  trap 'rm -rf "$tmp_dir"' EXIT
+fi
 
 codex_home="$tmp_dir/codex"
 sessions_dir="$codex_home/sessions/2026/04/24"
@@ -52,10 +55,18 @@ output="$(
 
 assert_eq $'/opt/homebrew/bin/codex\n--yolo\nresume\n019dc000-0000-7000-8000-000000000002' "$output" "chooses newest exact cwd match with cdx yolo mode"
 
+exact_output="$(
+  CODEX_TMUX_RESUME_CODEX_BIN="/opt/homebrew/bin/codex" \
+  CODEX_TMUX_RESUME_PRINT=1 \
+  "$script" "$other_id"
+)"
+
+assert_eq $'/opt/homebrew/bin/codex\n--yolo\nresume\n019dc000-0000-7000-8000-000000000003' "$exact_output" "resumes an explicitly captured pane session id"
+
 if CODEX_HOME="$codex_home" \
   CODEX_TMUX_RESUME_CWD="/repo missing" \
   CODEX_TMUX_RESUME_PRINT=1 \
-  "$script" >/tmp/codex-tmux-resume-unmatched.out 2>/tmp/codex-tmux-resume-unmatched.err; then
+  "$script" >"$tmp_dir/unmatched.out" 2>"$tmp_dir/unmatched.err"; then
   printf 'not ok - unmatched cwd should fail without fallback\n' >&2
   exit 1
 fi
