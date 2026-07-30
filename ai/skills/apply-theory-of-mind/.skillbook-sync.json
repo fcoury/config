@@ -1,0 +1,16 @@
+{
+  "sync_format": 2,
+  "family_id": "71b2ee3a-43ed-4fc3-80da-7f35e74592fd",
+  "skill_id": "ded1bf8b-950c-450c-9103-bec4cf61c5ba",
+  "name": "jmiano/apply-theory-of-mind",
+  "namespace": "jmiano",
+  "slug": "apply-theory-of-mind",
+  "version": "1.0.0",
+  "recommended_version": "1.0.0",
+  "package_kind": "folder",
+  "entrypoint_path": "SKILL.md",
+  "file_count": 3,
+  "package_digest": "6670f5a0e380bc1d4ddd14aa89e707f158677fdd56ea8f3a23efa8629aaf96bb",
+  "updated_at": "2026-05-30T03:00:07Z",
+  "synced_at": "2026-05-30T23:21:23.546299+00:00"
+}

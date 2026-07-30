@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apply Theory of Mind"
+  short_description: "Model the audience and produce context-aware outputs"
+  default_prompt: "Use $apply-theory-of-mind to model the reader or user before producing the final output."
