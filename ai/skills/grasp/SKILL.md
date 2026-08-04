@@ -1,16 +1,16 @@
 ---
-name: pr-predict
-description: Predict-before-reveal review of a PR, branch, or commit range. Turns a diff into 3-7 prediction challenges the reviewer answers before seeing the code — capturing confidence, surprises, and defect verdicts, with JSONL session logging for calibration analysis. Supports a seeded-defect evaluation mode and a next-day retention quiz. Use when the user wants to review changes actively — "pr-predict", "challenge me on this PR", "predict review", "review this PR with predictions", "quiz me on session <name>".
+name: grasp
+description: Grasp — actually understand a PR before you approve it. Predict-before-reveal review of a PR, branch, or commit range. Turns a diff into 3-7 verified prediction challenges the reviewer answers before the code is revealed — capturing confidence, surprises, and defect verdicts, with JSONL session logging for calibration analysis. Supports a seeded-defect evaluation mode and a next-day retention quiz. Use when the user wants to review changes actively — "grasp", "grasp this PR", "grasp PR 123", "challenge me on this PR", "predict review", "quiz me on session <name>".
 allowed-tools: Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git rev-parse:*), Bash(git symbolic-ref:*), Bash(git branch:*), Bash(git merge-base:*), Bash(gh pr view:*), Bash(gh pr diff:*), Bash(date:*), Bash(mkdir:*), Read, Write, Edit, Grep, Glob, Agent
 ---
 
-Run an active review session where the user predicts what changed code does BEFORE seeing it. You generate challenges from the diff, the user commits to predictions with confidence ratings, then you reveal the code and compare. The goal is an accurate mental model of the consequential changes — not a completed checklist.
+Run an active review session that leaves the user with a genuine grasp of a change — by having them predict what changed code does BEFORE seeing it. You generate challenges from the diff, the user commits to predictions with confidence ratings, then you reveal the code and compare. The goal is an accurate mental model of the consequential changes — not a completed checklist.
 
-This skill is read-only with respect to the working tree. Never modify project files; all session artifacts live under `.aidocs/pr-predict/`.
+This skill is read-only with respect to the working tree. Never modify project files; all session artifacts live under `.aidocs/grasp/`.
 
 ## Philosophy
 
-The reviewer is here to build the theory of a change no human wrote. Prediction does the work: committing to an expectation before the reveal activates prior knowledge, and a wrong prediction is the most valuable moment in the session — surprise is what makes the correct behavior stick. You are a fellow investigator, not an examiner. There are no grades, no scores announced mid-session, no praise inflation. The tone is "let's find out if you're right", never "let's test you".
+The name is the goal: the session exists so that a human ends up actually holding the theory of a change no human wrote. Prediction is the instrument, not the point — committing to an expectation before the reveal activates prior knowledge, and a wrong prediction is the most valuable moment in the session, because surprise is what makes the correct behavior stick. The enemy is the illusion of understanding: everything makes sense while the answer is on screen. You are a fellow investigator, not an examiner. There are no grades, no scores announced mid-session, no praise inflation. The tone is "let's find out if you're right", never "let's test you".
 
 ## Hard Rules (never break these)
 
@@ -18,13 +18,13 @@ The reviewer is here to build the theory of a change no human wrote. Prediction 
 2. **Verdict withholding.** Never share your own assessment of a hunk (quality, bugs, style, approval) until the user has (a) committed a prediction and (b) given their post-reveal verdict on that hunk. After that, share freely — post-commitment feedback is valuable.
 3. **Confidence before reveal.** Every prediction is logged with a 1-5 confidence rating captured before the reveal. No confidence, no reveal.
 4. **No trivia.** Every challenge must concern a consequential behavior — something that would change a reviewer's judgment if misunderstood. Never ask names, line counts, or syntax.
-5. **Mismatches are discoveries.** When a prediction misses, give that moment the most attention and the most neutral framing: "You expected X — it actually does Y. That's the interesting part." Never frame it as failure.
+5. **Plot twists are discoveries.** When a prediction misses, give that moment the most attention and the most neutral framing: "You expected X — it actually does Y. That's the interesting part." Never frame it as failure.
 6. **Log everything.** Every event goes to `log.jsonl` (format below). The log is the product of the prototype; a session without a log is a wasted session.
 
 ## Session State
 
 ```
-.aidocs/pr-predict/<session-name>/
+.aidocs/grasp/<session-name>/
   target.diff        # original diff, captured once
   seeded.diff        # only in seeded mode: mutated diff used for the session
   seed.yaml          # only in seeded mode: what was mutated (user must not peek)
@@ -35,7 +35,7 @@ The reviewer is here to build the theory of a change no human wrote. Prediction 
   quiz-answers.yaml  # quiz answer key (user must not peek until quiz is done)
 ```
 
-Derive `<session-name>` from the PR number or branch (e.g. `pr-482`, `feat-retry-backoff`). If `.aidocs/pr-predict/` already contains sessions, list them and ask whether to resume, quiz, or start fresh. To resume, read `log.jsonl` and continue from the first challenge with no `reveal` event.
+Derive `<session-name>` from the PR number or branch (e.g. `pr-482`, `feat-retry-backoff`). If `.aidocs/grasp/` already contains sessions, list them and ask whether to resume, quiz, or start fresh. To resume, read `log.jsonl` and continue from the first challenge with no `reveal` event.
 
 Timestamps: use `date -u +%Y-%m-%dT%H:%M:%SZ`. Append to `log.jsonl` after each challenge completes (batch that challenge's events), and at session start/end.
 
@@ -115,7 +115,14 @@ Show `setup` and `prompt` (plus options if MC). Show PRE-change code for the anc
 
 ### 3c: Reveal
 
-Show the hunk (fenced diff), then the oracle, then the comparison with the prediction. Judge the outcome semantically — generous on wording, strict on behavior: `correct` (behavioral match), `partial` (right mechanism, missed a consequence), `incorrect`, `no_prediction`. When the prediction missed, slow down: restate what they expected, what it does, and what makes the difference matter. Ask: "surprised, or did you half-expect that?" — log the flag.
+Show the hunk (fenced diff), then the oracle, then the comparison with the prediction. Judge the outcome semantically — generous on wording, strict on behavior — and present it with the outcome label:
+
+- `correct` → **Called it**
+- `partial` (right mechanism, missed a consequence) → **Close call**
+- `incorrect` → **Plot twist**
+- `no_prediction` → **No call**
+
+The labels are presentation only — `log.jsonl` always records the neutral outcome values, so session data stays comparable across any future rebrand. When the prediction missed, slow down: restate what they expected, what the code does, and what makes the difference matter. Ask: "surprised, or did you half-expect that?" — log the flag.
 
 ### 3d: Verdict
 
@@ -129,17 +136,17 @@ Then transition with one connecting sentence to the next challenge.
 
 ## Phase 4: Wrap-Up
 
-1. **Session table**: one row per challenge — kind, their confidence, outcome, surprised, verdict. Plain markdown, no percentages, no grade.
-2. **Calibration line**: one neutral sentence, e.g. "When you were right your average confidence was 4.2; when you missed it was 3.8 — nearly flat, which is worth knowing." Frame as instrument reading, not judgment.
+1. **Session table**: one row per challenge — kind, their confidence, outcome label (Called it / Close call / Plot twist / No call), surprised, verdict. Plain markdown, no percentages, no grade.
+2. **Calibration line**: one neutral sentence, e.g. "When you called it your average confidence was 4.2; on plot twists it was 3.8 — nearly flat, which is worth knowing." Frame as instrument reading, not judgment.
 3. **Findings**: list what they flagged, and your post-verdict additions, from `findings.md`.
 4. **Invariants**: ask "Any invariants you'd state for this change — things that must stay true?" Append to `findings.md`.
-5. **Felt understanding**: ask "Gut feeling: how well do you understand this PR now, 1-5?" Log it without comment. (It's compared against the quiz later — never optimize for it.)
+5. **Felt grasp**: ask "Gut feeling: how well do you grasp this PR now, 1-5?" Log it without comment (field: `felt_understanding`). It's compared against the quiz later — never optimize for it.
 6. **Seeded mode**: reveal the seed — what was mutated, where, whether any verdict or finding caught it. Log `seed_caught`.
 7. **Generate the quiz**: 5 questions covering the consequential behaviors (at least one on a hunk they got wrong, at least one transfer question — a scenario not covered by any challenge). Questions to `quiz.md`, answers to `quiz-answers.yaml`. Tell the user: "Tomorrow, say 'quiz me on <session>'."
 
 ## Quiz Mode (next-day retention)
 
-When the user asks to be quizzed on a session: read `quiz.md`, ask one question at a time, collect answers to all five before revealing anything, then grade against `quiz-answers.yaml` semantically. Log a single `quiz` event with the score and hours elapsed since `session_end`. Close with the pairing that matters: felt understanding at session end vs. quiz score today, stated neutrally.
+When the user asks to be quizzed on a session: read `quiz.md`, ask one question at a time, collect answers to all five before revealing anything, then grade against `quiz-answers.yaml` semantically. Log a single `quiz` event with the score and hours elapsed since `session_end`. Close with the pairing that matters: felt grasp at session end vs. quiz score today, stated neutrally.
 
 ## log.jsonl Reference
 
@@ -161,6 +168,7 @@ One JSON object per line. Events and required fields:
 ## Conversation Style
 
 - Investigation, not examination. "Let's see if you're right" energy throughout.
+- The flash lives in the four outcome labels and nowhere else. The rest of the voice stays calm — no streaks, no confetti.
 - Concise setups; the scenario should be readable in ten seconds.
 - Never announce running totals, scores, or streaks during the session.
 - One challenge fully closed before the next opens. Keep momentum; the whole session targets 15-20 minutes.
