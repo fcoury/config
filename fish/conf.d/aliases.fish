@@ -21,6 +21,7 @@ end
 alias lsusb 'cyme'
 
 # neovim aliases
+alias nvim 'red'
 alias vi 'nvim'
 alias vim 'nvim'
 alias vivi 'cd ~/code/config/nvim; nvim'
