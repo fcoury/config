@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+  echo "Usage: hub browse" >&2
+}
+
+if [[ $# -ne 1 || $1 != "browse" ]]; then
+  usage
+  exit 1
+fi
+
+# hub opened the repository homepage for detached, default, and unpushed
+# branches. For a pushed topic branch, it opened that branch in the repository
+# of the matching remote.
+current_branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)
+if [[ -z $current_branch ]]; then
+  exec gh browse
+fi
+
+main_remote=""
+for candidate in upstream github origin; do
+  if git remote get-url "$candidate" >/dev/null 2>&1; then
+    main_remote=$candidate
+    break
+  fi
+done
+
+if [[ -z $main_remote ]]; then
+  main_remote=$(git remote | sed -n '1p')
+fi
+
+default_branch=master
+if [[ -n $main_remote ]]; then
+  default_ref=$(git symbolic-ref --quiet --short "refs/remotes/$main_remote/HEAD" 2>/dev/null || true)
+  if [[ -n $default_ref ]]; then
+    default_branch=${default_ref#"$main_remote/"}
+  fi
+fi
+
+if [[ $current_branch == "$default_branch" ]]; then
+  exec gh browse
+fi
+
+remote_name=""
+remote_branch=""
+push_default=$(git config --get push.default || true)
+
+if [[ $push_default == "upstream" || $push_default == "tracking" ]]; then
+  if git rev-parse --verify --quiet "${current_branch}@{upstream}" >/dev/null; then
+    remote_name=$(git config --get "branch.$current_branch.remote" || true)
+    remote_branch=$(git config --get "branch.$current_branch.merge" || true)
+    remote_branch=${remote_branch#refs/heads/}
+
+    if [[ $remote_name == "." ]]; then
+      remote_name=""
+      remote_branch=""
+    fi
+  fi
+else
+  remotes=$(git remote)
+
+  # hub preferred user/fork remotes, then its conventional remote names.
+  while IFS= read -r candidate; do
+    case $candidate in
+      origin | github | upstream | "") continue ;;
+    esac
+
+    if git show-ref --verify --quiet "refs/remotes/$candidate/$current_branch"; then
+      remote_name=$candidate
+      remote_branch=$current_branch
+      break
+    fi
+  done <<< "$remotes"
+
+  if [[ -z $remote_name ]]; then
+    for candidate in origin github upstream; do
+      if git show-ref --verify --quiet "refs/remotes/$candidate/$current_branch"; then
+        remote_name=$candidate
+        remote_branch=$current_branch
+        break
+      fi
+    done
+  fi
+fi
+
+if [[ -z $remote_name || -z $remote_branch ]]; then
+  exec gh browse
+fi
+
+remote_url=$(git remote get-url "$remote_name")
+exec gh browse --repo "$remote_url" --branch "$remote_branch"
