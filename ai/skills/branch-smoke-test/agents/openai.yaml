@@ -1,4 +1,4 @@
 interface:
   display_name: "Branch Smoke Test"
-  short_description: "Manual smoke tests for PR branches"
-  default_prompt: "Use $branch-smoke-test to write manual smoke test steps for the current branch or PR."
+  short_description: "Run branch smoke tests and retain tmux evidence"
+  default_prompt: "Use $branch-smoke-test to execute focused smoke tests for the current branch or PR in tmux and preserve evidence for a later walkthrough."
