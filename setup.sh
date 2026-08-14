@@ -102,7 +102,14 @@ link-extra() {
       tgt_expanded="${tgt_expanded/#\~/$HOME}"
     fi
 
-    if [ -e "$tgt_expanded" ]; then
+    if [ -L "$tgt_expanded" ]; then
+      if [ "$(readlink "$tgt_expanded")" == "$src_abs" ]; then
+        echo "Skipping (already exists): $src_abs"
+      else
+        echo "Updating link: $src_abs -> $tgt_expanded"
+        ln -sfn "$src_abs" "$tgt_expanded"
+      fi
+    elif [ -e "$tgt_expanded" ]; then
       echo "Skipping (already exists): $src_abs"
     else
       echo "Linking: $src_abs -> $tgt_expanded"
@@ -113,22 +120,42 @@ link-extra() {
 }
 
 link-codex-skills() {
-  local skills_dir="$SCRIPT_PATH/ai/skills"
+  local skills_dir="$SCRIPT_PATH/skills"
   local codex_skills="$HOME/.codex/skills"
   if [ ! -d "$skills_dir" ]; then return; fi
   mkdir -p "$codex_skills"
   for skill in "$skills_dir"/*/; do
     local name=$(basename "$skill")
     local target="$codex_skills/$name"
-    if [ -e "$target" ]; then
+    local source=$(to-abs-path "$skill")
+    if [ -L "$target" ]; then
+      local existing_target=$(readlink "$target")
+      if [ "$existing_target" == "$source" ]; then
+        echo "Skipping (already exists): $target"
+      elif [[ "$existing_target" == "$SCRIPT_PATH/ai/skills/"* ]]; then
+        echo "Updating link: $source -> $target"
+        ln -sfn "$source" "$target"
+      else
+        echo "Skipping (already exists): $target"
+      fi
+    elif [ -e "$target" ]; then
       echo "Skipping (already exists): $target"
     else
       echo "Linking: $skill -> $target"
-      ln -s "$(to-abs-path "$skill")" "$target"
+      ln -s "$source" "$target"
     fi
   done
+}
+
+remove-legacy-skill-link() {
+  local legacy_link="$HOME/.config/ai"
+  if [ -L "$legacy_link" ] && [ "$(readlink "$legacy_link")" == "$SCRIPT_PATH/ai" ]; then
+    echo "Removing legacy skills link: $legacy_link"
+    unlink "$legacy_link"
+  fi
 }
 
 link-path "."
 link-extra
 link-codex-skills
+remove-legacy-skill-link

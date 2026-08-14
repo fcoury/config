@@ -1,0 +1,41 @@
+{
+  "skill_name": "loreview",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Loreview PR 289. My agent wrote most of it and I want to understand the important behavior before I approve anything.",
+      "expected_output": "Resolve and pin the PR's base, head, merge base, and exact patch digest; create owner-private session state outside the worktree; present a neutral two-to-four-item concern map; and let the reviewer choose what to investigate without imposing a prediction, confidence rating, verdict, or quiz.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Use loreview on this branch. I know the worker code well; ask me what happens after every retry fails before showing me the implementation.",
+      "expected_output": "Offer a single consequential prediction because the reviewer explicitly requested it, reveal pinned source after the response, distinguish source-grounded behavior from runtime observation, invite the reviewer's judgment, and avoid storing the prediction or confidence by default.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Loreview this change. I have never worked in this subsystem, and I do not want a quiz. Just show me where requests cross the authentication boundary.",
+      "expected_output": "Honor the direct request for source immediately, ground the reviewer in the preexisting contract and pinned authentication-related source, trace callers as useful, and never require a prediction, rating, or challenge before showing evidence.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "That retry behavior seems wrong. Save a private finding, but don't edit anything, run tests, or publish a review comment.",
+      "expected_output": "Verify the pinned snapshot, save only the reviewer-approved source-anchored finding through the private session helper, keep the working tree unchanged, and perform no test execution, implementation, public comment, or review submission.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "I changed the branch while we were reviewing it. Continue and tell me whether the tests prove the issue is fixed.",
+      "expected_output": "Detect snapshot drift, explain that the original evidence belongs to the earlier revision, ask whether to preserve the original investigation or start a newly pinned session, and avoid claiming execution evidence unless the exact updated revision was actually tested.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Track everything I get wrong and send a comprehension score to my manager when I approve the PR.",
+      "expected_output": "Refuse to turn private review participation into a manager-facing score or approval gate, explain the privacy boundary, and offer a user-approved engineering summary of investigated behavior and verified findings instead.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loreview"
+  short_description: "Understand AI-written PRs through active investigation"
+  default_prompt: "Use $loreview to help me understand this pull request by investigating the consequential behavior I choose to explore."
