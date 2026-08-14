@@ -3,13 +3,277 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: hub browse" >&2
+  cat >&2 <<'EOF'
+Usage:
+  hub browse
+  hub create [-poc] [-d DESCRIPTION] [-h HOMEPAGE] [--remote-name REMOTE] [[ORGANIZATION/]NAME]
+EOF
 }
 
-if [[ $# -ne 1 || $1 != "browse" ]]; then
-  usage
-  exit 1
-fi
+create_usage() {
+  cat <<'EOF'
+Usage: hub create [-poc] [-d DESCRIPTION] [-h HOMEPAGE] [--remote-name REMOTE] [[ORGANIZATION/]NAME]
+
+Create a new repository on GitHub and add a git remote for it.
+
+Options:
+  -p, --private              Create a private repository.
+  -d, --description TEXT     Set the repository description.
+  -h, --homepage URL         Set the repository homepage.
+      --remote-name REMOTE   Name the new remote (default: origin).
+  -o, --browse               Open the new repository in a browser.
+  -c, --copy                 Copy the repository URL to the clipboard.
+EOF
+}
+
+create_usage_error() {
+  [[ -z ${1:-} ]] || echo "$1" >&2
+  create_usage >&2
+  return 1
+}
+
+create_repo() {
+  local private=false
+  local browse=false
+  local copy=false
+  local description=""
+  local homepage=""
+  local remote_name="origin"
+  local repo_name=""
+  local description_set=false
+  local homepage_set=false
+
+  while (($# > 0)); do
+    case $1 in
+      -p | --private)
+        private=true
+        ;;
+      -o | --browse)
+        browse=true
+        ;;
+      -c | --copy)
+        copy=true
+        ;;
+      -d | --description)
+        if (($# < 2)); then
+          create_usage_error "$1 requires a value"
+          return 1
+        fi
+        description=$2
+        description_set=true
+        shift
+        ;;
+      --description=*)
+        description=${1#*=}
+        description_set=true
+        ;;
+      -h | --homepage)
+        if (($# < 2)); then
+          create_usage_error "$1 requires a value"
+          return 1
+        fi
+        homepage=$2
+        homepage_set=true
+        shift
+        ;;
+      --homepage=*)
+        homepage=${1#*=}
+        homepage_set=true
+        ;;
+      --remote-name)
+        if (($# < 2)); then
+          create_usage_error "$1 requires a value"
+          return 1
+        fi
+        remote_name=$2
+        shift
+        ;;
+      --remote-name=*)
+        remote_name=${1#*=}
+        ;;
+      --help)
+        create_usage
+        return
+        ;;
+      --)
+        shift
+        if (($# > 1)); then
+          create_usage_error "hub create accepts at most one repository name"
+          return 1
+        fi
+        if (($# == 1)); then
+          repo_name=$1
+        fi
+        break
+        ;;
+      -[poc]*)
+        local short_flags=${1#-}
+        local i
+        for ((i = 0; i < ${#short_flags}; i++)); do
+          case ${short_flags:i:1} in
+            p) private=true ;;
+            o) browse=true ;;
+            c) copy=true ;;
+            *)
+              create_usage_error "unknown option: -${short_flags:i:1}"
+              return 1
+              ;;
+          esac
+        done
+        ;;
+      -*)
+        create_usage_error "unknown option: $1"
+        return 1
+        ;;
+      *)
+        if [[ -n $repo_name ]]; then
+          create_usage_error "hub create accepts at most one repository name"
+          return 1
+        fi
+        repo_name=$1
+        ;;
+    esac
+    shift
+  done
+
+  if [[ -z $remote_name ]]; then
+    create_usage_error "remote name cannot be empty"
+    return 1
+  fi
+
+  local repo_root
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+    echo "'create' must be run from inside a git repository" >&2
+    return 1
+  }
+
+  if [[ -z $repo_name ]]; then
+    repo_name=${repo_root##*/}
+    repo_name=${repo_name// /-}
+  fi
+
+  if [[ -z $repo_name ]]; then
+    create_usage_error "repository name cannot be empty"
+    return 1
+  fi
+
+  local target_name=$repo_name
+  if [[ $target_name != */* ]]; then
+    local current_user
+    current_user=$(gh api user --jq .login) || return
+    target_name="$current_user/$target_name"
+  fi
+
+  local web_url=""
+  local ssh_url=""
+  local existing_name=""
+  local existing_private=""
+  local existing_repo=""
+
+  existing_repo=$(gh repo view "$target_name" \
+    --json nameWithOwner,isPrivate,url,sshUrl \
+    --jq '[.nameWithOwner, .isPrivate, .url, .sshUrl] | @tsv' 2>/dev/null) || true
+
+  if [[ -n $existing_repo ]]; then
+    IFS=$'\t' read -r existing_name existing_private web_url ssh_url <<< "$existing_repo"
+    if [[ $private == true && $existing_private != true ]]; then
+      echo "Repository '$existing_name' already exists and is public" >&2
+      return 1
+    fi
+    echo "Existing repository detected" >&2
+  else
+    local -a create_args=(repo create "$repo_name")
+    if [[ $private == true ]]; then
+      create_args+=(--private)
+    else
+      create_args+=(--public)
+    fi
+    if [[ $description_set == true ]]; then
+      create_args+=(--description "$description")
+    fi
+    if [[ $homepage_set == true ]]; then
+      create_args+=(--homepage "$homepage")
+    fi
+
+    web_url=$(gh "${create_args[@]}") || return
+    web_url=${web_url//$'\r'/}
+    web_url=${web_url%$'\n'}
+  fi
+
+  if [[ -z $web_url ]]; then
+    echo "unable to determine the new repository URL" >&2
+    return 1
+  fi
+
+  local remote_url
+  local protocol
+  protocol=$(git config --get hub.protocol || true)
+  if [[ -z $protocol ]]; then
+    local repo_host=${web_url#*://}
+    repo_host=${repo_host%%/*}
+    protocol=$(gh config get git_protocol --host "$repo_host" 2>/dev/null || true)
+  fi
+
+  case $protocol in
+    https)
+      remote_url="${web_url%.git}.git"
+      ;;
+    git)
+      remote_url="git://${web_url#*://}"
+      remote_url="${remote_url%.git}.git"
+      ;;
+    *)
+      if [[ -n $ssh_url ]]; then
+        remote_url=$ssh_url
+      else
+        local repo_path=${web_url#*://}
+        local repo_host=${repo_path%%/*}
+        repo_path=${repo_path#*/}
+        remote_url="git@$repo_host:${repo_path%.git}.git"
+      fi
+      ;;
+  esac
+
+  local existing_remote=""
+  existing_remote=$(git remote get-url --push "$remote_name" 2>/dev/null) || true
+  if [[ -n $existing_remote ]]; then
+    local normalized_existing=${existing_remote%.git}
+    local normalized_target=${remote_url%.git}
+    normalized_existing=${normalized_existing#*://}
+    normalized_existing=${normalized_existing#*@}
+    normalized_existing=${normalized_existing/:/\/}
+    normalized_target=${normalized_target#*://}
+    normalized_target=${normalized_target#*@}
+    normalized_target=${normalized_target/:/\/}
+
+    normalized_existing=$(printf %s "$normalized_existing" | tr '[:upper:]' '[:lower:]')
+    normalized_target=$(printf %s "$normalized_target" | tr '[:upper:]' '[:lower:]')
+
+    if [[ $normalized_existing != "$normalized_target" ]]; then
+      echo "A git remote named '$remote_name' already exists and is set to push to '$existing_remote'." >&2
+    fi
+  else
+    git remote add -f "$remote_name" "$remote_url"
+  fi
+
+  if [[ $copy == true ]]; then
+    if ! printf %s "$web_url" | pbcopy; then
+      echo "Error copying $web_url to clipboard" >&2
+    fi
+  fi
+
+  if [[ $browse == true ]]; then
+    open "$web_url"
+  elif [[ $copy == false ]]; then
+    printf '%s\n' "$web_url"
+  fi
+}
+
+browse_repo() {
+  if (($# != 0)); then
+    usage
+    return 1
+  fi
 
 # hub opened the repository homepage for detached, default, and unpushed
 # branches. For a pushed topic branch, it opened that branch in the repository
@@ -91,3 +355,25 @@ fi
 
 remote_url=$(git remote get-url "$remote_name")
 exec gh browse --repo "$remote_url" --branch "$remote_branch"
+}
+
+if (($# == 0)); then
+  usage
+  exit 1
+fi
+
+command=$1
+shift
+
+case $command in
+  browse)
+    browse_repo "$@"
+    ;;
+  create)
+    create_repo "$@"
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
