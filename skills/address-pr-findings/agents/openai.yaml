@@ -1,0 +1,3 @@
+interface:
+  display_name: "Address PR Findings"
+  short_description: "Fix, answer, and resolve open PR findings"
