@@ -2,7 +2,7 @@
 #
 # tms - Remote tmux session manager
 #
-# Manages tmux sessions on the remote host "m3pro" over SSH.
+# Manages tmux sessions on a remote host over SSH.
 # Think of it as a remote version of the local `tp` function
 # (defined in fish/conf.d/tmux.fish).
 #
@@ -13,7 +13,7 @@
 # The terminal title is prefixed with 🔗 to indicate a remote connection.
 #
 # Prerequisites:
-#   - SSH access to "m3pro" (configured in ~/.ssh/config)
+#   - SSH access to the configured host (default: "m5pro")
 #   - tmux installed on the remote host
 #   - fzf (optional, falls back to numbered menu)
 #
@@ -24,65 +24,91 @@ set_title() {
     printf '\033]0;🔗 %s\007' "$1"
 }
 
+# Override the destination with TMS_SSH_HOST when needed.
+remote_host="${TMS_SSH_HOST:-m5pro}"
+
+# Format remote session rows for display while keeping the raw session name
+# separate from the attachment marker.
+format_session_rows() {
+    while IFS='|' read -r attached session_name; do
+        [ -n "$session_name" ] || continue
+
+        if [ "${attached:-0}" -gt 0 ] 2>/dev/null; then
+            printf '%s (attached)\texisting\t%s\n' "$session_name" "$session_name"
+        else
+            printf '%s\texisting\t%s\n' "$session_name" "$session_name"
+        fi
+    done <<< "$sessions"
+}
+
 # If a session name was passed as an argument, skip the picker
 # and go straight to attaching (or creating) that session
 if [ -n "$1" ]; then
     session_name="$1"
-    set_title "m3pro:$session_name"
-    ssh -t m3pro "tmux attach -t '$session_name' || tmux new -s '$session_name'"
+    set_title "$remote_host:$session_name"
+    ssh -t "$remote_host" "tmux attach -t '$session_name' || tmux new -s '$session_name'"
     exit 0
 fi
 
 # Fetch the list of existing tmux sessions from the remote host
-sessions=$(ssh m3pro "tmux list-sessions -F '#S' 2>/dev/null" | sort)
+sessions=$(ssh "$remote_host" "tmux list-sessions -F '#{session_attached}|#{session_name}' 2>/dev/null" | sort -t '|' -k1,1nr -k2,2)
 
 # No sessions at all — prompt for a name and create one
 if [ -z "$sessions" ]; then
     echo "No tmux sessions found. Creating new session..."
     read -p "Session name: " session_name
-    set_title "m3pro:$session_name"
-    ssh -t m3pro "tmux new -s '$session_name'"
+    set_title "$remote_host:$session_name"
+    ssh -t "$remote_host" "tmux new -s '$session_name'"
     exit 0
 fi
+
+picker_rows=$(format_session_rows)
 
 # Sessions exist — let the user pick one
 if command -v fzf >/dev/null 2>&1; then
     # fzf is available — use an interactive fuzzy picker
     echo "Select a session (or type new name):"
-    choice=$(echo -e "── Create new session ──\n$sessions" | fzf --height=~50% --prompt="tmux> " --header="↑/↓ to navigate, Enter to select, Esc to cancel")
+    choice=$(
+        {
+            printf '%s\tnew\t\n' '── Create new session ──'
+            printf '%s\n' "$picker_rows"
+        } | fzf --delimiter=$'\t' --with-nth=1 --height=~50% --prompt="tmux> " --header="↑/↓ to navigate, Enter to select, Esc to cancel"
+    )
 
     if [ -z "$choice" ]; then
         echo "Cancelled."
         exit 0
-    elif [ "$choice" = "── Create new session ──" ]; then
+    elif [ "$(printf '%s\n' "$choice" | cut -f2)" = "new" ]; then
         read -p "New session name: " session_name
-        set_title "m3pro:$session_name"
-        ssh -t m3pro "tmux new -s '$session_name'"
+        set_title "$remote_host:$session_name"
+        ssh -t "$remote_host" "tmux new -s '$session_name'"
     else
-        set_title "m3pro:$choice"
-        ssh -t m3pro "tmux attach -t '$choice'"
+        session_name=$(printf '%s\n' "$choice" | cut -f3-)
+        set_title "$remote_host:$session_name"
+        ssh -t "$remote_host" "tmux attach -t '$session_name'"
     fi
 else
     # No fzf — fall back to a numbered menu
     echo "Available sessions:"
-    echo "$sessions" | nl
+    printf '%s\n' "$picker_rows" | cut -f1 | nl
     echo "0) Create new session"
     read -p "Choose session (or enter name): " choice
 
     if [[ "$choice" =~ ^[0-9]+$ ]]; then
         if [ "$choice" -eq 0 ]; then
             read -p "New session name: " session_name
-            set_title "m3pro:$session_name"
-            ssh -t m3pro "tmux new -s '$session_name'"
+            set_title "$remote_host:$session_name"
+            ssh -t "$remote_host" "tmux new -s '$session_name'"
         else
             # Pick session by number from the list
-            session_name=$(echo "$sessions" | sed -n "${choice}p")
-            set_title "m3pro:$session_name"
-            ssh -t m3pro "tmux attach -t '$session_name'"
+            selected_row=$(printf '%s\n' "$sessions" | sed -n "${choice}p")
+            session_name="${selected_row#*|}"
+            set_title "$remote_host:$session_name"
+            ssh -t "$remote_host" "tmux attach -t '$session_name'"
         fi
     else
         # Input wasn't a number — treat it as a session name
-        set_title "m3pro:$choice"
-        ssh -t m3pro "tmux attach -t '$choice' || tmux new -s '$choice'"
+        set_title "$remote_host:$choice"
+        ssh -t "$remote_host" "tmux attach -t '$choice' || tmux new -s '$choice'"
     fi
 fi
