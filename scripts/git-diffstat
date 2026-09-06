@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+"""Show net branch/worktree changes, including nonignored untracked files."""
+
+import argparse
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
+
+
+class GitError(Exception):
+    pass
+
+
+def git(*args, cwd=None, env=None, optional=False):
+    result = subprocess.run(
+        ["git", *args], cwd=cwd, env=env, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode:
+        if optional:
+            return b""
+        raise GitError(os.fsdecode(result.stderr).strip() or "Git command failed")
+    return result.stdout
+
+
+def resolve_base(explicit):
+    configured = os.fsdecode(git("config", "--get", "diffstat.base", optional=True)).strip()
+    if explicit or configured:
+        return explicit or configured
+    remote_head = os.fsdecode(git(
+        "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD", optional=True,
+    )).strip()
+    if remote_head and git("rev-parse", "--verify", remote_head + "^{commit}", optional=True):
+        return remote_head
+    candidates = []
+    for name in ("main", "master"):
+        for ref in ("refs/remotes/origin/" + name, "refs/heads/" + name):
+            if git("rev-parse", "--verify", ref + "^{commit}", optional=True):
+                candidates.append(ref)
+                break
+    if len(candidates) != 1:
+        raise GitError("Cannot choose a base branch; pass --base REF or set git config diffstat.base REF")
+    return candidates[0].removeprefix("refs/heads/").removeprefix("refs/remotes/")
+
+
+def totals(raw):
+    records = iter(raw.split(b"\0"))
+    added = deleted = files = binaries = 0
+    for record in records:
+        if not record:
+            continue
+        plus, minus, path = record.split(b"\t", 2)
+        if not path:
+            next(records)  # Rename source.
+            next(records)  # Rename destination.
+        files += 1
+        if plus == b"-":
+            binaries += 1
+        else:
+            added += int(plus)
+            deleted += int(minus)
+    return added, deleted, files, binaries
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, epilog=(
+        "Uses the merge base and locally available refs without fetching. "
+        "Set diffstat.base for a repository default. Submodules count as Git pointers; "
+        "their uncommitted file contents are not included."
+    ))
+    parser.add_argument("--base", metavar="REF", help="base branch or commit")
+    parser.add_argument("--stat", action="store_true", help="also show per-file statistics")
+    args = parser.parse_args()
+
+    root = os.fsdecode(git("rev-parse", "--show-toplevel")).rstrip("\n")
+    os.chdir(root)
+    head = os.fsdecode(git("rev-parse", "--verify", "HEAD")).strip()
+    if git("ls-files", "--unmerged"):
+        raise GitError("Resolve merge conflicts before running git diffstat")
+    base = resolve_base(args.base)
+    base_commit = os.fsdecode(git(
+        "rev-parse", "--verify", "--end-of-options", base + "^{commit}",
+    )).strip()
+    merge_bases = git("merge-base", "--all", head, base_commit, optional=True).splitlines()
+    if len(merge_bases) != 1:
+        raise GitError("Expected one merge base; check --base and fetch missing history if this is a shallow clone")
+    ancestor = os.fsdecode(merge_bases[0])
+    branch = os.fsdecode(git("symbolic-ref", "--quiet", "--short", "HEAD", optional=True)).strip()
+    index = os.fsdecode(git("rev-parse", "--path-format=absolute", "--git-path", "index")).rstrip("\n")
+    objects = os.fsdecode(git("rev-parse", "--path-format=absolute", "--git-path", "objects")).rstrip("\n")
+
+    # Keep both the snapshot index and newly written objects outside the repo.
+    with tempfile.TemporaryDirectory(prefix="git-diffstat-") as directory:
+        env = os.environ.copy()
+        env["GIT_INDEX_FILE"] = str(Path(directory) / "index")
+        env["GIT_OBJECT_DIRECTORY"] = str(Path(directory) / "objects")
+        Path(env["GIT_OBJECT_DIRECTORY"]).mkdir()
+        alternates = env.get("GIT_ALTERNATE_OBJECT_DIRECTORIES")
+        env["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = json.dumps(objects, ensure_ascii=False)
+        if alternates:
+            env["GIT_ALTERNATE_OBJECT_DIRECTORIES"] += os.pathsep + alternates
+        if Path(index).exists():
+            shutil.copyfile(index, env["GIT_INDEX_FILE"])
+            git("update-index", "--no-split-index", env=env)
+        else:
+            git("read-tree", head, env=env)
+        git("-c", "core.splitIndex=false", "add", "--all", "--", ".", env=env)
+        diff = ("diff", "--cached", "--no-ext-diff", "--no-textconv", "--find-renames")
+        added, deleted, files, binaries = totals(git(*diff, "--numstat", "-z", ancestor, "--", env=env))
+        detail = git(*diff, "--stat", "--color=never", ancestor, "--", env=env) if args.stat else b""
+
+    print(f"{branch or 'detached@' + head[:8]} · base {base}")
+    summary = f"+{added} -{deleted} · {files} {'file' if files == 1 else 'files'}"
+    if binaries:
+        summary += f" · {binaries} binary"
+    print(summary)
+    if detail:
+        print(os.fsdecode(detail), end="")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (GitError, OSError) as error:
+        print(f"git diffstat: {error}", file=sys.stderr)
+        sys.exit(1)
