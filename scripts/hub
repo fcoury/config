@@ -6,6 +6,7 @@ usage() {
   cat >&2 <<'EOF'
 Usage:
   hub browse
+  hub clone [OWNER/]REPO [DIRECTORY] [-- GIT_FLAGS...]
   hub create [-poc] [-d DESCRIPTION] [-h HOMEPAGE] [--remote-name REMOTE] [[ORGANIZATION/]NAME]
 EOF
 }
@@ -368,6 +369,9 @@ shift
 case $command in
   browse)
     browse_repo "$@"
+    ;;
+  clone)
+    exec gh repo clone "$@"
     ;;
   create)
     create_repo "$@"
