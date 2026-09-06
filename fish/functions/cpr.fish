@@ -49,6 +49,19 @@ function cpr --description "Checkout an openai/codex-internal PR and open the Co
         return 1
     end
 
+    set -l pr_details (gh pr view $pr_number -R openai/codex-internal --json state,headRefName --jq '.state, .headRefName' 2>/dev/null)
+    if test $status -ne 0; or test (count $pr_details) -ne 2
+        echo "Error: unable to fetch PR #$pr_number from openai/codex-internal" >&2
+        return 1
+    end
+
+    set -l pr_state $pr_details[1]
+    if test "$pr_state" != OPEN
+        echo "Error: PR #$pr_number is "(string lower -- "$pr_state")"; cpr requires an open PR" >&2
+        return 1
+    end
+    set -l branch $pr_details[2]
+
     set -l original_dir (pwd)
 
     echo "Updating $codex_root main..."
@@ -64,13 +77,6 @@ function cpr --description "Checkout an openai/codex-internal PR and open the Co
 
     cd "$codex_root"
     if test $status -ne 0
-        cd "$original_dir"
-        return 1
-    end
-
-    set -l branch (gh pr view $pr_number -R openai/codex-internal --json headRefName --jq '.headRefName' 2>/dev/null)
-    if test $status -ne 0; or test -z "$branch"
-        echo "Error: PR #$pr_number not found in openai/codex-internal"
         cd "$original_dir"
         return 1
     end
