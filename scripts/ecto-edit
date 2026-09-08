@@ -1,0 +1,20 @@
+#!/opt/homebrew/bin/fish --no-config
+# Edit the invoking pane's scrollback, then copy the saved text on exit.
+set -l ecto "$HOME/code/ecto/target/debug/ecto"
+set -l capture (mktemp -t ecto-scrollback); or exit 1
+$ecto --no-start capture-pane -p -S - -t "$argv[1]" > "$capture"
+or begin
+    rm -f "$capture"
+    exit 1
+end
+$ecto --no-start new-window -n 'Edit Pane' -- /opt/homebrew/bin/fish --no-config -c '
+    if nvim "$argv[1]"; and cat "$argv[1]" | pbcopy
+        echo "Content copied to clipboard."
+    end
+    rm -f "$argv[1]"
+    read -P "Press Enter to close... "
+' "$capture"
+or begin
+    rm -f "$capture"
+    exit 1
+end
