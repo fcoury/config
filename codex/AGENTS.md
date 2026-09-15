@@ -1,75 +1,105 @@
-## Commit Messages
+## Email Safety
 
-- **Subject**: Use conventional commits format: `type(scope): lowercase imperative description`
-  - Types: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`
-  - Scopes: `tui`, `core`, etc.
-- **Body**:
-  - 1-2 short paragraphs
-  - explain _what_ the change does and _why_
-  - wrap at 72 characters or less
-  - use backticks for config keys, paths, and code references
-- **No `Testing:` section** — don't list test commands in commit messages.
-- **Shell safety hint**: when commit text includes backticks, avoid double-quoted inline `-m` flags; use single quotes, escaped backticks, or `git commit -F <file>` to prevent command substitution.
+- Except for the self-email exception below, never send an email without the
+  user's explicit, immediate confirmation for that specific message. Present
+  the exact recipients, subject, body, and attachments, then wait for
+  confirmation to send. If recipients or content (including attachments)
+  materially change after approval, obtain renewed confirmation.
+- Self-email exception: when the user explicitly asks to send an email to
+  themselves (for example, "email me the report" or "send it to me again"),
+  that request authorizes preparing and sending the requested message without
+  a separate preview or confirmation. This exception applies only when every
+  recipient in To, Cc, Bcc, and the actual delivery envelope is one of these
+  user-owned addresses:
+  - `felipe.coury@gmail.com`
+  - `felipe@coury.com.br`
+  - `felipe@gistia.com`
+  - `felipe.coury@gistia.com`
+  - `felipe@galera.com`
+  - `felipe.coury@galera.com`
+- Match actual email addresses, not display names. An unlisted recipient or a
+  mix of self and other recipients requires the normal confirmation above.
+- A broad instruction such as "execute the plan" or "handle this end to end"
+  authorizes preparing an email draft only; it does not authorize sending it.
+  An affirmative reply (including "do it") directly approving the exact
+  recipients, subject, body, and attachments just presented authorizes sending
+  that specific message.
+- Creating or updating a draft alone does not authorize sending it. The
+  self-email exception still requires an explicit request to send.
 
-- NEVER commit contents of the .aidocs folder
+## Engineering Approach
 
-## Tools
+- Complete the requested scope with the simplest clear, correct solution.
+  Avoid speculative features, abstractions, configuration, and unrelated
+  cleanup. Optimize for maintainability, not minimum line count.
+- Inspect the affected flow and relevant callers before editing. Fix the
+  cause at the responsible layer; keep investigation and changes proportional
+  to the task and expand only when evidence warrants it.
+- Reuse suitable project code, standard-library functionality, native features,
+  and existing dependencies. Prefer maintained libraries over substantial
+  custom implementations when they reduce complexity or risk. Use supported
+  extension points before forking or rebuilding.
+- For unfamiliar or changed external API usage, verify official guidance
+  against the project's installed version. Avoid unrelated dependency upgrades.
+- Use existing test conventions. Add focused coverage for changed behavior
+  and realistic regressions, proportional to risk. Avoid redundant tests and
+  tests that merely repeat implementation details. Run required project checks;
+  add further validation when a concrete risk justifies it.
+- Preserve security, data integrity, accessibility, and explicit requirements.
+  Report the result, relevant validation, and remaining limitations concisely.
 
-## Browser Automation
+## Worktrees / Worktrunk
 
-Use `agent-browser` for web automation. Run `agent-browser --help` for all commands.
+- Prefer `wt` over raw `git worktree` when isolation benefits the task.
+  Reuse a suitable existing worktree; preserve unrelated work.
+- Inspect worktrees with `wt list`. Create one with
+  `wt switch --create BRANCH --base BASE`; choose the base deliberately.
+  Use `wt switch pr:NUMBER` for PR checkout.
+- Set subsequent commands' working directory explicitly to the selected
+  worktree. Do not assume a shell directory change persists across tool calls.
+- Use `wt remove` for authorized cleanup. Use `wt merge` only when local
+  integration is intended and consistent with the repository's PR workflow.
+  Inspect pending changes and command options before merging.
+- Consult `wt COMMAND --help` for details. Fall back to native Git commands
+  if Worktrunk is unavailable or unsuitable.
 
-Core workflow:
+<!-- codealmanac:start -->
+## CodeAlmanac
 
-1. `agent-browser open <url>` - Navigate to page
-2. `agent-browser snapshot -i` - Get interactive elements with refs (@e1, @e2)
-3. `agent-browser click @e1` / `fill @e2 "text"` - Interact using refs
-4. Re-snapshot after page changes
+When a repository contains `almanac/`, use its maintained wiki for project
+context. Consult it for unfamiliar subsystems, integrations, architectural
+choices, cross-cutting behavior, invariants, and history. Skip it for typos,
+small styling changes, and mechanical edits in code you already understand.
 
-### wt / Worktrunk
+### Find and read knowledge
 
-- Prefer `wt` over raw `git worktree` when a task benefits from isolation: parallel agents, risky refactors, PR review, or keeping the main checkout clean.
-- `wt` is a git worktree manager optimized for agent workflows: branch-addressed worktrees, fast switching, cross-worktree status, merge/cleanup automation, hooks, and PR checkout via `gh`.
-- One-time shell setup: `wt config shell install`
-- Core workflow:
-  1. `wt switch --create feat-name` - create a branch + worktree from the default branch and switch into it
-  2. `wt switch feat-name` - jump back to an existing worktree
-  3. `wt list` - inspect all worktrees; use `wt list --full` for CI/status and `wt list --format=json` for scripts
-  4. `wt merge` - squash/rebase/fast-forward the current branch into the default branch and remove the worktree
-  5. `wt remove` - delete an abandoned or already-merged worktree
-- Useful patterns:
-  - `wt switch` with no branch opens the interactive picker
-  - `wt switch pr:123` checks out a GitHub PR branch via `gh`
-  - `wt switch --create fix --base=@` starts a branch from the current worktree `HEAD`
-  - `wt switch --create -x 'codex' feat-name -- 'implement X'` creates a worktree and immediately launches an agent there
-- Prefer `wt merge` over manual `git merge` plus `git worktree remove` when hooks or local validation should run.
-- Prefer `wt remove` over manual deletion so merged-branch detection and cleanup stay consistent.
-- If `wt` cannot be used in a repo, fall back to native git commands.
+Start with `almanac/README.md` when present. Search from the repository root:
 
-### tmux
+- `codealmanac search "concept"`
+- `codealmanac search --mentions path/to/source`
+- `codealmanac search --topic TOPIC`
+- `codealmanac show PAGE`
 
-- When to use: long/hanging commands (servers, debuggers, long tests, interactive CLIs) should start in tmux; avoid `tmux wait-for` and `while tmux …` loops; if a run exceeds ~10 min, treat it as potentially hung and inspect via tmux.
-- Start: `tmux new -d -s codex-shell -n shell`
-- Show user how to watch:
-  - Attach: `tmux attach -t codex-shell`
-  - One-off capture: `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`
-- Send keys safely: `tmux send-keys -t codex-shell:0.0 -- 'python3 -q' Enter` (set `PYTHON_BASIC_REPL=1` for Python REPLs).
-- Wait for prompts: `./scripts/tmux/wait-for-text.sh -t codex-shell:0.0 -p '^>>>' -T 15 -l 2000` (add `-F` for fixed string).
-- List sessions: `tmux list-sessions` or `./scripts/tmux/find-sessions.sh`.
-- Cleanup: `tmux kill-session -t codex-shell` (or `tmux kill-server` if you must nuke all).
+Use `codealmanac list` to find registered wikis and `--wiki NAME` to select
+another wiki. Use command-specific `--help` for additional options. Read
+commands refresh the derived index automatically; no separate indexing is needed.
+If the CLI is unavailable, read the Markdown directly. If no relevant knowledge
+exists, continue with the code; do not invent project history.
 
-### psql
+### Evidence and citations
 
-Normally you can use `psql <project-name>` to connect to the local Postgres DB.
+Use current code as evidence of existing behavior. Prefer Almanac over ordinary
+repository documentation for architectural context. When implementation conflicts
+with a documented requirement or invariant, investigate and report the discrepancy
+rather than assuming the implementation is correct.
 
-### lldb
+When Almanac contributes to an answer, cite the supporting committed Markdown
+page inline, immediately after the claim, using its repository-relative path:
+`[Page title](almanac/path/to/page.md)`.
 
-- Use `lldb` inside tmux to debug native apps; attach to the running app to inspect state.
+### Maintenance boundary
 
-### gh
-
-- GitHub CLI for PRs, CI logs, releases, and repo queries; run `gh help`. When someone shares a GitHub issue/PR URL (full or relative like `/pull/5`), use `gh` to read it—do not web-search. Examples: `gh issue view <url> --comments -R owner/repo` and `gh pr view <url> --comments --files -R owner/repo`. If only a number is given, derive the repo from the URL or current checkout and still fetch details via `gh`.
-
-### timeout
-
-- Use `timeout <seconds> <command>` to limit execution time of commands that may hang.
+Treat the wiki as read-only during ordinary coding work. Do not edit its pages,
+sources, links, topics, or structure. Wiki maintenance belongs to explicitly
+requested CodeAlmanac Init, Ingest, Garden, and Sync workflows.
+<!-- codealmanac:end -->
