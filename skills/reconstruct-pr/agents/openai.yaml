@@ -1,0 +1,6 @@
+interface:
+  display_name: "Reconstruct PR"
+  short_description: "Rebuild a PR through review-gated patches"
+  default_prompt: "Use $reconstruct-pr to rebuild this PR as a sequence of review-gated conceptual patches."
+policy:
+  allow_implicit_invocation: true
