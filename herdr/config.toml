@@ -1,0 +1,49 @@
+onboarding = false
+
+[keys]
+prefix = "ctrl+s"
+
+# Management and navigation.
+reload_config = "prefix+g"
+workspace_picker = ["prefix+b", "prefix+o"]
+goto = "prefix+w"
+detach = "prefix+minus"
+
+# Relocated because b, o, and s are used above or for tmux-style actions below.
+toggle_sidebar = "prefix+shift+b"
+open_notification_target = "prefix+shift+o"
+settings = "prefix+shift+s"
+
+# Tmux windows map to Herdr tabs.
+switch_tab = ["prefix+1..9", "alt+1..9"]
+rename_tab = "prefix+comma"
+last_pane = "prefix+;"
+
+# Pane management.
+split_vertical = "prefix+d"
+split_horizontal = "prefix+s"
+clear_pane = "alt+k"
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+edit_scrollback = "prefix+e"
+close_pane = "prefix+x"
+zoom = "prefix+z"
+
+# Keep tmux's brace keys for horizontal swaps and free Shift+H/J/K/L for resize.
+swap_pane_left = "prefix+{"
+swap_pane_down = ""
+swap_pane_up = ""
+swap_pane_right = "prefix+}"
+resize_pane_left = "prefix+shift+h"
+resize_pane_down = "prefix+shift+j"
+resize_pane_up = "prefix+shift+k"
+resize_pane_right = "prefix+shift+l"
+
+[ui]
+# Use shared internal dividers like tmux instead of boxed panes with gaps.
+pane_borders = "auto"
+pane_outer_borders = false
+pane_gaps = false
+pane_scrollbars = false

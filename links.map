@@ -4,6 +4,7 @@
 
 codex/AGENTS.md ~/.codex/AGENTS.md
 codex/config.toml ~/.codex/config.toml
+herdr/config.toml ~/.config/herdr/config.toml
 
 skills ~/.claude/skills
 skills ~/.gemini/skills
