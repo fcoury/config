@@ -1,0 +1,4 @@
+interface:
+  display_name: "Simplify Code"
+  short_description: "Review changes for simpler code"
+  default_prompt: "Use $simplify-code to review the current branch for simplifications and reduced code churn."
