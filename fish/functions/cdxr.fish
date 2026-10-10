@@ -1,24 +1,58 @@
-function cdxr --description "Resume the latest Codex session from the current tmux pane"
-    if not command -sq tmux
-        cdx $argv
-        return $status
-    end
+function cdxr --description "Resume the latest Codex session from the current multiplexer pane"
+    set -l captured
 
-    set -l pane
-    if set -q TMUX_PANE; and test -n "$TMUX_PANE"
-        set pane "$TMUX_PANE"
-    else if set -q TMUX; and test -n "$TMUX"
-        set pane (tmux display-message -p '#{pane_id}' 2>/dev/null)
-    end
+    if set -q HERDR_ENV; and test "$HERDR_ENV" = 1
+        if not command -sq herdr
+            echo 'cdxr: herdr is unavailable' >&2
+            return 1
+        end
+        if not set -q HERDR_PANE_ID; or test -z "$HERDR_PANE_ID"
+            echo 'cdxr: could not find the current herdr pane' >&2
+            return 1
+        end
 
-    if test -z "$pane"
-        cdx $argv
-        return $status
+        set captured (herdr pane read "$HERDR_PANE_ID" --source recent-unwrapped --lines 10000 --raw 2>/dev/null)
+        if test $status -ne 0
+            echo "cdxr: could not capture herdr pane $HERDR_PANE_ID" >&2
+            return 1
+        end
+    else
+        if not command -sq tmux
+            if set -q TMUX; or set -q TMUX_PANE
+                echo 'cdxr: tmux is unavailable' >&2
+                return 1
+            end
+            cdx $argv
+            return $status
+        end
+
+        set -l pane
+        if set -q TMUX_PANE; and test -n "$TMUX_PANE"
+            set pane (tmux display-message -p -t "$TMUX_PANE" '#{pane_id}' 2>/dev/null)
+        end
+        if test -z "$pane"; and begin; set -q TMUX; or set -q TMUX_PANE; end
+            set pane (tmux display-message -p '#{pane_id}' 2>/dev/null)
+        end
+
+        if test -z "$pane"
+            if not set -q TMUX; and not set -q TMUX_PANE
+                cdx $argv
+                return $status
+            end
+            echo 'cdxr: could not find the current tmux pane' >&2
+            return 1
+        end
+
+        set captured (tmux capture-pane -p -J -S -10000 -t "$pane" 2>/dev/null)
+        if test $status -ne 0
+            echo "cdxr: could not capture tmux pane $pane" >&2
+            return 1
+        end
     end
 
     set -l session_ids (
-        tmux capture-pane -p -J -S -10000 -t "$pane" 2>/dev/null |
-        string match -rg 'codex resume ([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})' |
+        printf '%s\n' $captured |
+        string match -rg '(?:codex resume |To continue this session, run codex resume, then select .*\()([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})' |
         awk '!seen[$0]++'
     )
 
