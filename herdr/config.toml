@@ -8,6 +8,12 @@ reload_config = "prefix+g"
 workspace_picker = ["prefix+b", "prefix+o"]
 goto = "prefix+w"
 detach = "prefix+minus"
+previous_workspace = "prefix+left"
+next_workspace = "prefix+right"
+switch_workspace = "prefix+shift+1..9"
+previous_agent = "prefix+up"
+next_agent = "prefix+down"
+focus_agent = "prefix+alt+1..9"
 
 # Relocated because b, o, and s are used above or for tmux-style actions below.
 toggle_sidebar = "prefix+shift+b"
