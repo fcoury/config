@@ -8,8 +8,8 @@ reload_config = "prefix+g"
 workspace_picker = ["prefix+b", "prefix+o"]
 goto = "prefix+w"
 detach = "prefix+minus"
-previous_workspace = ["prefix+left", "alt+up"]
-next_workspace = ["prefix+right", "alt+down"]
+previous_workspace = ["prefix+left", "alt+up", "alt+h"]
+next_workspace = ["prefix+right", "alt+down", "alt+l"]
 switch_workspace = "alt+1..9"
 previous_agent = "prefix+up"
 next_agent = "prefix+down"
@@ -22,6 +22,8 @@ settings = "prefix+shift+s"
 
 # Tmux windows map to Herdr tabs.
 switch_tab = "prefix+1..9"
+previous_tab = "prefix+p"
+next_tab = "prefix+n"
 rename_tab = "prefix+comma"
 last_pane = "prefix+;"
 
