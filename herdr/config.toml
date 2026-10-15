@@ -10,7 +10,7 @@ goto = "prefix+w"
 detach = "prefix+minus"
 previous_workspace = "prefix+left"
 next_workspace = "prefix+right"
-switch_workspace = "prefix+shift+1..9"
+switch_workspace = "alt+1..9"
 previous_agent = "prefix+up"
 next_agent = "prefix+down"
 focus_agent = "prefix+alt+1..9"
@@ -21,7 +21,7 @@ open_notification_target = "prefix+shift+o"
 settings = "prefix+shift+s"
 
 # Tmux windows map to Herdr tabs.
-switch_tab = ["prefix+1..9", "alt+1..9"]
+switch_tab = "prefix+1..9"
 rename_tab = "prefix+comma"
 last_pane = "prefix+;"
 
