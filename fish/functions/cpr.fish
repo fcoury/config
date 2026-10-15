@@ -62,6 +62,10 @@ function cpr --description "Checkout an openai/codex-internal PR and open the Co
     end
     set -l branch $pr_details[2]
 
+    if not __cpr_clear_stale_index_lock "$codex_root"
+        return 1
+    end
+
     set -l original_dir (pwd)
 
     echo "Updating $codex_root main..."
@@ -99,7 +103,45 @@ function cpr --description "Checkout an openai/codex-internal PR and open the Co
         set worktree_path (pwd)
     end
 
-    __cpr_start_tmux "$worktree_path" "$recreate"
+    __cpr_start_tmux "$worktree_path" "$recreate" "$pr_number"
+end
+
+function __cpr_clear_stale_index_lock --argument-names repo_root
+    set -l index_lock (git -C "$repo_root" rev-parse --git-path index.lock)
+    if test $status -ne 0
+        echo "Error: unable to locate the Git index lock for $repo_root"
+        return 1
+    end
+
+    if not string match -q '/*' -- "$index_lock"
+        set index_lock "$repo_root/$index_lock"
+    end
+
+    if not test -e "$index_lock"
+        return 0
+    end
+
+    if not command -sq lsof
+        echo "Error: lsof is required to verify Git index lock: $index_lock"
+        return 1
+    end
+
+    set -l lock_owners (lsof -t -- "$index_lock" 2>/dev/null)
+    if test (count $lock_owners) -gt 0
+        echo "Error: active process owns Git index lock: $index_lock (PID(s): "(string join ', ' $lock_owners)")"
+        return 1
+    end
+
+    if not test -e "$index_lock"
+        return 0
+    end
+
+    echo "Removing stale Git index lock: $index_lock"
+    command rm -- "$index_lock"
+    if test $status -ne 0
+        echo "Error: unable to remove stale Git index lock: $index_lock"
+        return 1
+    end
 end
 
 function __cpr_worktree_for_branch --argument-names repo_root branch
@@ -114,7 +156,7 @@ function __cpr_worktree_for_branch --argument-names repo_root branch
     '
 end
 
-function __cpr_start_tmux --argument-names worktree_path recreate
+function __cpr_start_tmux --argument-names worktree_path recreate pr_number
     set -l session_name (basename "$worktree_path" | string replace -a '.' '_')
     printf '\033]0;💻 %s\007' "$session_name"
 
@@ -133,15 +175,15 @@ function __cpr_start_tmux --argument-names worktree_path recreate
         return $status
     end
 
-    set -l left_pane (tmux new-session -d -P -F '#{pane_id}' -s "$session_name" -c "$worktree_path" "fish -lc 'just c; exec fish'")
+    set -l left_pane (tmux new-session -d -P -F '#{pane_id}' -s "$session_name" -c "$worktree_path" "fish -lc 'cargo build --manifest-path codex-rs/Cargo.toml -p codex-code-mode-host --bin codex-code-mode-host; and just c --disable realtime_conversation; exec fish'")
     if test $status -ne 0
         return 1
     end
 
     # Let Codex queue each initial prompt until its TUI session is ready instead of
     # racing startup with synthetic tmux keystrokes.
-    set -l review_prompt '$pr-reviewer code only, dont run tests'
-    set -l smoke_prompt '$branch-smoke-test'
+    set -l review_prompt (string join ' — ' -- '$pr-reviewer code only, dont run tests' "PR #$pr_number")
+    set -l smoke_prompt (string join ' — ' -- '$branch-smoke-test' "PR #$pr_number")
 
     set -l right_top_pane (tmux split-window -h -P -F '#{pane_id}' -t "$left_pane" -c "$worktree_path" fish -lc 'cdx "$argv[1]"; exec fish' -- "$review_prompt")
     if test $status -ne 0
