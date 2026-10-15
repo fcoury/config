@@ -72,6 +72,10 @@ window-new-tab-position = end
 keybind = cmd+k=text:\x1bk
 
 # Keybindings
+# Pass Alt+arrows through to Herdr for workspace navigation.
+keybind = alt+left=unbind
+keybind = alt+right=unbind
+
 # keybind = cmd+h=goto_split:left
 # keybind = cmd+l=goto_split:right
 # keybind = cmd+j=goto_split:bottom
