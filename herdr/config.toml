@@ -54,3 +54,10 @@ pane_borders = "auto"
 pane_outer_borders = false
 pane_gaps = false
 pane_scrollbars = false
+status_indicators = "symbols"
+
+[ui.sidebar.agents]
+rows = [
+  ["state_icon", "machine", "workspace", "tab"],
+  ["agent", { token = "state_text", bold = true, dim = false }],
+]
