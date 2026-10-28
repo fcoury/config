@@ -1,0 +1,3 @@
+#!/bin/sh
+# Compatibility with the original command; implementation lives in herdr-codex.
+exec python3 "$(dirname "$0")/herdr-codex" save "$@"

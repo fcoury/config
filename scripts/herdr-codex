@@ -1,0 +1,332 @@
+#!/usr/bin/env python3
+"""Save, check, or restore Codex sessions across all local Herdr workspaces.
+
+Run save to repair references, check to inspect, or restore to resume idle panes.
+Only a single CLI conversation in a process's open, readable rollout files is authoritative;
+titles, newest-file searches, and subagent conversations are never used as IDs.
+Requires macOS/Linux, Python 3.10+, herdr, and lsof. Exit 1 means drift (--check)
+or unresolved panes; exit 2 means the session could not be inspected.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+import uuid
+
+
+def run(*args: str, allow_empty: bool = False) -> str:
+    result = subprocess.run(args, capture_output=True, text=True, timeout=15)
+    # lsof returns 1 when the process has no accessible open files.
+    if result.returncode and not (allow_empty and result.returncode == 1 and not result.stderr.strip()):
+        raise RuntimeError(f"{args[0]}: {result.stderr.strip() or 'exit ' + str(result.returncode)}")
+    return result.stdout
+
+
+def herdr(session: str, *args: str):
+    output = run("herdr", "--session", session, *args)
+    return json.loads(output) if output.strip() else None
+
+
+def foreground(session: str, pane: str) -> int:
+    info = process_info(session, pane)
+    processes = info.get("foreground_processes", [])
+    if len(processes) != 1 or processes[0].get("name") != "codex":
+        raise ValueError("foreground is not one Codex process")
+    return processes[0]["pid"]
+
+
+def process_info(session: str, pane: str) -> dict:
+    return herdr(session, "pane", "process-info", "--pane", pane)["result"]["process_info"]
+
+
+def open_rollouts(pid: int) -> list[Path]:
+    output = run("lsof", "-nP", "-a", "-p", str(pid), "-Fn", allow_empty=True)
+    return sorted({Path(line[1:]) for line in output.splitlines()
+                   if line.startswith("n") and Path(line[1:]).name.startswith("rollout-")
+                   and line.endswith(".jsonl")})
+
+
+def identify(paths: list[Path], codex_home: Path) -> str:
+    roots = set()
+    for path in paths:
+        try:
+            with path.open() as handle:
+                event = json.loads(handle.readline(1024 * 1024))
+        except FileNotFoundError:
+            raise ValueError(f"open rollout is missing on disk: {path}") from None
+        if event.get("type") != "session_meta":
+            raise ValueError(f"no session metadata: {path}")
+        meta = event["payload"]
+        if meta.get("source") != "cli":
+            continue
+        try:
+            path.resolve().relative_to((codex_home / "sessions").resolve())
+        except ValueError:
+            raise ValueError(f"custom CODEX_HOME needs its own resume command: {path}") from None
+        session_id = str(uuid.UUID(meta["id"]))
+        roots.add(session_id)
+    if len(roots) != 1:
+        raise ValueError(f"found {len(roots)} main conversations; cannot choose safely")
+    return roots.pop()
+
+
+def reference(session_id: str) -> dict:
+    return {"source": "herdr:codex", "agent": "codex", "kind": "id", "value": session_id}
+
+
+def saved_references(path: Path) -> dict:
+    """Herdr public pane numbers use Crockford base32, not hexadecimal/base36."""
+    def number(value):
+        text = ""
+        while value:
+            text = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"[value % 32] + text
+            value //= 32
+        return text or "0"
+
+    saved = json.loads(path.read_text())
+    return {w["id"] + ":p" + number(w["public_pane_numbers"][key]): pane.get("agent_session")
+            for w in saved["workspaces"] for tab in w["tabs"] for key, pane in tab["panes"].items()}
+
+
+def backup(session_file: Path, snapshot: dict) -> Path:
+    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+    directory = Path.home() / ".cache" / "herdr-save-codex" / stamp
+    directory.mkdir(parents=True, mode=0o700)
+    for name, data in [("session.before.json", session_file.read_bytes()),
+                       ("live.before.json", json.dumps(snapshot, indent=2).encode())]:
+        with (directory / name).open("xb") as handle:
+            os.chmod(handle.name, 0o600)
+            handle.write(data)
+    return directory
+
+
+def ready_shell(session: str, pane: str) -> int | None:
+    """Require this user's empty Fish prompt, not just an idle shell process."""
+    info = process_info(session, pane)
+    processes = info.get("foreground_processes", [])
+    if len(processes) != 1 or processes[0]["pid"] != info.get("shell_pid"):
+        return None
+    if processes[0].get("name") != "fish":
+        return None
+    output = run("herdr", "--session", session, "pane", "read", pane,
+                 "--source", "visible", "--lines", "8")
+    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    # A partial command or autosuggestion after the prompt must not be submitted.
+    if not lines or lines[-1] != "> $":
+        return None
+    return processes[0]["pid"]
+
+
+def rollout_exists(session_id: str) -> bool:
+    root = Path.home() / ".codex" / "sessions"
+    for path in root.glob(f"*/*/*/rollout-*{session_id}*.jsonl"):
+        with path.open() as handle:
+            event = json.loads(handle.readline(1024 * 1024))
+        if (event.get("type") == "session_meta" and event["payload"].get("source") == "cli"
+                and event["payload"].get("id") == session_id):
+            return True
+    return False
+
+
+def wait_restored(session: str, pane: str, session_id: str, timeout: float) -> None:
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            pid = foreground(session, pane)
+            if identify(open_rollouts(pid), Path.home() / ".codex") == session_id:
+                return
+        except ValueError:
+            pass
+        if time.monotonic() >= deadline:
+            raise ValueError("command sent but session not verified; inspect pane before retrying")
+        time.sleep(0.5)
+
+
+def restore(args, saved: dict, snapshot: dict) -> int:
+    live = {p["pane_id"]: p for p in snapshot["panes"]}
+    pending = {}
+    submitted = {}
+    unresolved = 0
+    restored = 0
+    running = 0
+    ids = [ref.get("value") for ref in saved.values() if ref and ref.get("agent") == "codex"]
+    for pane, ref in saved.items():
+        if not ref or ref.get("agent") != "codex":
+            continue
+        try:
+            if ref.get("source") != "herdr:codex" or ref.get("kind") != "id":
+                raise ValueError("unsupported resume reference")
+            session_id = str(uuid.UUID(ref["value"]))
+            if ref["value"] != session_id:
+                raise ValueError("saved session ID is not a canonical UUID")
+            if ids.count(ref["value"]) != 1:
+                raise ValueError("same conversation saved for multiple panes")
+            if pane not in live:
+                raise ValueError("pane is absent; start Herdr to restore the layout first")
+            info = process_info(args.session, pane)
+            processes = info.get("foreground_processes", [])
+            if any(p.get("name") == "codex" for p in processes):
+                pid = foreground(args.session, pane)
+                actual = identify(open_rollouts(pid), Path.home() / ".codex")
+                if actual != session_id:
+                    raise ValueError(f"already running another conversation: {actual}")
+                print(f"RUNNING  {pane:12} {session_id}")
+                running += 1
+                continue
+            if not rollout_exists(session_id):
+                raise ValueError(f"saved conversation file is missing: {session_id}")
+            if not any(p["pid"] == info.get("shell_pid") and p.get("name") == "fish" for p in processes):
+                raise ValueError("pane is busy; nothing sent")
+            pending[pane] = session_id
+        except (OSError, ValueError, KeyError, RuntimeError, subprocess.TimeoutExpired) as error:
+            unresolved += 1
+            print(f"UNRESOLVED {pane}: {error}")
+
+    # Poll every pending pane; submit ready panes before waiting for Codex loads.
+    deadline = time.monotonic() + args.wait
+    while pending:
+        for pane, session_id in list(pending.items()):
+            try:
+                if ready_shell(args.session, pane) is None:
+                    if args.dry_run or time.monotonic() >= deadline:
+                        raise ValueError("waiting for empty Fish prompt (> $); nothing sent")
+                    continue
+                if args.dry_run:
+                    print(f"WOULD RESTORE {pane:8} codex resume {session_id}")
+                else:
+                    # Recheck identity and readiness directly before admission.
+                    current = herdr(args.session, "pane", "get", pane)["result"]["pane"]
+                    if current.get("terminal_id") != live[pane].get("terminal_id"):
+                        raise ValueError("pane terminal changed; nothing sent")
+                    if current.get("agent_session") != saved[pane]:
+                        raise ValueError("saved reference changed; nothing sent")
+                    if ready_shell(args.session, pane) is None:
+                        continue
+                    herdr(args.session, "pane", "run", pane, f"codex resume {session_id}")
+                    submitted[pane] = session_id
+                    print(f"SENT     {pane:12} {session_id}")
+                if args.dry_run:
+                    restored += 1
+            except (OSError, ValueError, KeyError, RuntimeError, subprocess.TimeoutExpired) as error:
+                unresolved += 1
+                print(f"UNRESOLVED {pane}: {error}")
+            del pending[pane]
+        if pending:
+            time.sleep(0.5)
+    verify_deadline = time.monotonic() + args.wait
+    for pane, session_id in submitted.items():
+        try:
+            wait_restored(args.session, pane, session_id, max(0, verify_deadline - time.monotonic()))
+            restored += 1
+            print(f"RESTORED {pane:12} {session_id}")
+        except (OSError, ValueError, KeyError, RuntimeError, subprocess.TimeoutExpired) as error:
+            unresolved += 1
+            print(f"UNRESOLVED {pane}: {error}")
+    print(f"{restored} {'ready to restore' if args.dry_run else 'restored'}; "
+          f"{running} already running; {unresolved} unresolved.")
+    return int(bool(unresolved))
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("action", nargs="?", choices=("save", "check", "restore"), default="save")
+    parser.add_argument("--check", action="store_true", help="report only; do not save or create backups")
+    parser.add_argument("--session", default="default", help="local Herdr session name (default: default)")
+    parser.add_argument("--dry-run", action="store_true", help="show restore commands without sending them")
+    parser.add_argument("--wait", type=float, default=60, help="seconds for prompts, then for all resumed sessions (default: 60)")
+    args = parser.parse_args()
+    if args.wait <= 0 or not args.wait < float("inf"):
+        parser.error("--wait must be finite and positive")
+    if args.action == "check":
+        args.check = True
+    if args.action == "restore" and args.check:
+        parser.error("use restore --dry-run to preview")
+    if args.dry_run and args.action != "restore":
+        parser.error("--dry-run requires restore")
+    for command in ("herdr", "lsof"):
+        if not shutil.which(command):
+            raise RuntimeError(f"{command} is required")
+
+    sessions = json.loads(run("herdr", "session", "list", "--json"))["sessions"]
+    selected = next((s for s in sessions if s["name"] == args.session), None)
+    if not selected or not selected["running"]:
+        raise RuntimeError(f"local session {args.session!r} is not running")
+    session_file = Path(selected["session_dir"]) / "session.json"
+    snapshot = herdr(args.session, "api", "snapshot")["result"]["snapshot"]
+    saved = saved_references(session_file)
+    if args.action == "restore":
+        return restore(args, saved, snapshot)
+    codex_home = Path.home() / ".codex"
+    expected = {}
+    unresolved = 0
+    changed = 0
+    backup_dir = None
+    agents = [a for a in snapshot["agents"] if a["agent"] == "codex"]
+
+    for agent in agents:
+        pane = agent["pane_id"]
+        try:
+            pid = foreground(args.session, pane)
+            session_id = identify(open_rollouts(pid), codex_home)
+            target = reference(session_id)
+            if agent.get("agent_session") == target and saved.get(pane) == target:
+                expected[pane] = target
+                print(f"OK       {pane:12} {session_id}")
+                continue
+            if args.check:
+                changed += 1
+                print(f"NEEDS SAVE {pane:10} {session_id}")
+                continue
+            if backup_dir is None:
+                backup_dir = backup(session_file, snapshot)
+                print(f"Backup: {backup_dir}")
+            # A process may exit or switch conversations during the inspection.
+            if foreground(args.session, pane) != pid or identify(open_rollouts(pid), codex_home) != session_id:
+                raise ValueError("conversation changed during inspection; run again")
+            herdr(args.session, "pane", "report-agent-session", pane,
+                  "--source", "herdr:codex", "--agent", "codex",
+                  "--seq", str(time.time_ns()), "--agent-session-id", session_id,
+                  "--session-start-source", "resume")
+            current = herdr(args.session, "agent", "get", pane)["result"]["agent"]
+            if current.get("agent_session") != target:
+                raise ValueError("Herdr did not accept the session reference")
+            expected[pane] = target
+            changed += 1
+            print(f"REPORTED {pane:12} {session_id}")
+        except (OSError, ValueError, KeyError, RuntimeError, subprocess.TimeoutExpired) as error:
+            unresolved += 1
+            print(f"UNRESOLVED {pane}: {error}")
+
+    # Reporting is asynchronous. Check the saved file, not merely API success.
+    deadline = time.monotonic() + (0 if args.check else 15)
+    while True:
+        saved = saved_references(session_file)
+        pending = [pane for pane, value in expected.items() if saved.get(pane) != value]
+        if not pending or time.monotonic() >= deadline:
+            break
+        time.sleep(0.5)
+    if pending:
+        print("NOT SAVED on disk: " + ", ".join(pending))
+    if backup_dir:
+        with (backup_dir / "session.after.json").open("xb") as handle:
+            os.chmod(handle.name, 0o600)
+            handle.write(session_file.read_bytes())
+    print(f"{len(expected) - len(pending)}/{len(agents)} Codex panes verified on disk; "
+          f"{changed} {'need saving' if args.check else 'updated'}; {unresolved} unresolved.")
+    return int(bool(unresolved or pending or (args.check and changed)))
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except (OSError, ValueError, KeyError, RuntimeError, subprocess.TimeoutExpired) as error:
+        print(f"herdr-codex: {error}", file=sys.stderr)
+        sys.exit(2)
