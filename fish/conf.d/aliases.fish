@@ -4,6 +4,7 @@ alias gp 'git pull'
 alias gps 'git push'
 alias gs 'git status'
 alias gpr 'hub pull-request|xargs open'
+alias ccl 'cpr-clean'
 alias gtr 'git track'
 alias gap 'git add -p'
 alias fgit git-fcoury
