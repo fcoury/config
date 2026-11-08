@@ -24,6 +24,7 @@ echo "Linked: $target"
 
 config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
 link_config "$repo/fish/omarchy" "$config_home/fish"
+link_config "$repo/red" "$config_home/red"
 link_config "$repo/omarchy/ghostty/config" "$config_home/ghostty/config"
 link_config "$repo/omarchy/hypr/input.lua" "$config_home/hypr/input.lua"
 link_config "$repo/omarchy/hypr/bindings.lua" "$config_home/hypr/bindings.lua"

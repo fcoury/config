@@ -8,6 +8,7 @@ Other Omarchy desktop settings remain managed by Omarchy.
 The saved customizations include:
 
 - Fish with shared aliases, AI helpers, Hunk, and custom Starship dark/light prompts.
+- Red editor configuration and themes linked from `red/`.
 - Ghostty starting Fish, plus font, padding, cursor, and key bindings.
 - US International dead keys and swapped Alt/Win modifiers.
 - Physical Alt+Tab / Alt+Shift+Tab cycle windows instead of workspaces.
