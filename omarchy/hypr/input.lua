@@ -62,5 +62,9 @@ hl.config({
     kb_options = "omarchy:shift_caps_compose,altwin:swap_alt_win",
     kb_layout = "us",
     kb_variant = "intl",
+    natural_scroll = false,
+    touchpad = {
+      natural_scroll = true,
+    },
   },
 })

@@ -13,6 +13,7 @@ The saved customizations include:
 - US International dead keys and swapped Alt/Win modifiers.
 - Physical Alt+Tab / Alt+Shift+Tab cycle windows instead of workspaces.
 - Built-in display at 2560 × 1600, 90 Hz, with 1.6× scaling.
+- Natural trackpad scrolling; standard mouse scrolling.
 - Portuguese cedilla (`'` then `c` → `ç`) and literal apostrophes before other consonants.
 
 After installation, run in a desktop terminal:
