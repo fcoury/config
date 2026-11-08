@@ -19,17 +19,23 @@ end
 
 # best lsusb for macOS is cyme
 # https://github.com/tuna-f1sh/cyme
-alias lsusb 'cyme'
+if command -q cyme
+    alias lsusb 'cyme'
+end
 
 # neovim aliases
-alias nvim 'red'
+if command -q red
+    alias nvim 'red'
+end
 alias vi 'nvim'
 alias vim 'nvim'
 alias vivi 'cd ~/code/config/nvim; nvim'
 alias vic 'cd ~/code/config; nvim'
 
 # homebrew
-alias bi 'HOMEBREW_NO_AUTO_UPDATE=1 brew install'
+if command -q brew
+    alias bi 'HOMEBREW_NO_AUTO_UPDATE=1 brew install'
+end
 
 # ai and vibecoding
 #alias yolo 'ENABLE_BACKGROUND_TASKS=1 FORCE_AUTO_BACKGROUND_TASKS=1 claude --dangerously-skip-permissions'

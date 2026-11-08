@@ -1,0 +1,54 @@
+# Run omarchy-restart-xcompose to apply changes
+
+# Include fast emoji access
+include "/usr/share/omarchy/default/xcompose"
+
+# Identification
+<Multi_key> <space> <n> : "Felipe Coury"
+<Multi_key> <space> <e> : "felipe.coury@gmail.com"
+
+# Portuguese cedilla with US International dead keys.
+<dead_acute> <c> : "ç" ccedilla
+<dead_acute> <C> : "Ç" Ccedilla
+
+# Literal apostrophe before consonants, except c (cedilla).
+<dead_acute> <b> : "'b"
+<dead_acute> <B> : "'B"
+<dead_acute> <d> : "'d"
+<dead_acute> <D> : "'D"
+<dead_acute> <f> : "'f"
+<dead_acute> <F> : "'F"
+<dead_acute> <g> : "'g"
+<dead_acute> <G> : "'G"
+<dead_acute> <h> : "'h"
+<dead_acute> <H> : "'H"
+<dead_acute> <j> : "'j"
+<dead_acute> <J> : "'J"
+<dead_acute> <k> : "'k"
+<dead_acute> <K> : "'K"
+<dead_acute> <l> : "'l"
+<dead_acute> <L> : "'L"
+<dead_acute> <m> : "'m"
+<dead_acute> <M> : "'M"
+<dead_acute> <n> : "'n"
+<dead_acute> <N> : "'N"
+<dead_acute> <p> : "'p"
+<dead_acute> <P> : "'P"
+<dead_acute> <q> : "'q"
+<dead_acute> <Q> : "'Q"
+<dead_acute> <r> : "'r"
+<dead_acute> <R> : "'R"
+<dead_acute> <s> : "'s"
+<dead_acute> <S> : "'S"
+<dead_acute> <t> : "'t"
+<dead_acute> <T> : "'T"
+<dead_acute> <v> : "'v"
+<dead_acute> <V> : "'V"
+<dead_acute> <w> : "'w"
+<dead_acute> <W> : "'W"
+<dead_acute> <x> : "'x"
+<dead_acute> <X> : "'X"
+<dead_acute> <y> : "'y"
+<dead_acute> <Y> : "'Y"
+<dead_acute> <z> : "'z"
+<dead_acute> <Z> : "'Z"

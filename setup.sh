@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
-SCRIPT=$(basename $0)
-SCRIPT_PATH=$(pwd)
+SCRIPT=$(basename "$0")
+SCRIPT_PATH=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
+# Use the selected Omarchy shell and desktop overrides.
+if [[ ${1:-} == --omarchy ]] || { [[ $OSTYPE == linux* ]] && command -v omarchy >/dev/null 2>&1; }; then
+  exec bash "$SCRIPT_PATH/scripts/setup-omarchy.sh" "$@"
+fi
+cd -- "$SCRIPT_PATH"
 LINK_TARGET="$HOME/.config"
 HOSTNAME=$(hostname -s)
 
