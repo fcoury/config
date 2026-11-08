@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex PR"
+  short_description: "Review, publish, and babysit a Codex pull request"
+  default_prompt: "Use $codex-pr to review, publish, and babysit the current change."
