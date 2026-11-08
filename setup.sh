@@ -51,6 +51,8 @@ link-path() {
   for f in "$1"/*; do
     if [ "$f" != "./$SCRIPT" ] && [ "$(basename "$f")" != "_override" ]; then
       FOLDER_NAME=$(basename "$f")
+      # Red keeps runtime state locally; only config.toml is linked below.
+      if [[ "$FOLDER_NAME" == red ]]; then continue; fi
       SKIP_FOLDER=false
       
       # Check for machine-specific override
@@ -162,6 +164,11 @@ remove-legacy-skill-link() {
 }
 
 link-path "."
+RED_SOURCE="$SCRIPT_PATH/red"
+if [[ -d "$SCRIPT_PATH/_override/$HOSTNAME/red" ]]; then
+  RED_SOURCE="$SCRIPT_PATH/_override/$HOSTNAME/red"
+fi
+bash "$SCRIPT_PATH/scripts/setup-red.sh" "$RED_SOURCE" "$LINK_TARGET/red"
 link-extra
 link-codex-skills
 remove-legacy-skill-link
